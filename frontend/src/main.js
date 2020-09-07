@@ -10,15 +10,6 @@ import { stores, storePlugins } from '@/store/final';
 import { router } from '@/router/index';
 
 import vueg from 'vueg';
-import IdleVue from 'idle-vue'
-
-const eventsHub = new Vue()
-Vue.use(IdleVue, {
-	eventEmitter: eventsHub,
-	idleTime: 15 * 1000,
-	store: stores.store
-})
-
 
 Vue.config.productionTip = false
 Vue.use(vueg, router);

@@ -52,13 +52,10 @@ class AuthServiceClient extends BaseClient{
 		}
 	}
 	async login(username, password){
-		console.log("Pre login");
 		await authStore.setTokens(
 			await this.client.login(username, password)
 		);
-		console.log("Pre setAuthRefresher");
 		await this.setAuthRefresher();
-		console.log("Pre get_user");
 		return await this.get_user();
 	}
 
@@ -67,7 +64,7 @@ class AuthServiceClient extends BaseClient{
 			const cli = this;
 			var authRefresher = window.setInterval(async function(){
 				await cli.refresh_auth();
-			}, 1000);
+			}, 9 * 1000);
 			await authStore.setAuthRefresher(authRefresher);
 		}
 	}
@@ -79,9 +76,8 @@ class AuthServiceClient extends BaseClient{
 
 	async refresh_auth(){
 		this.requireLogin();
-		await authStore.setAuthToken(
-			await this.client.refresh_auth(authStore.authToken, authStore.refreshToken)
-		);
+		const newToken = await this.client.refresh_auth(authStore.authToken, authStore.refreshToken);
+		await authStore.setAuthToken(newToken);
 		await this.setAuthRefresher();
 	}
 
