@@ -55,12 +55,12 @@ backend = Flask("sistem_gaji_backend", template_folder='frontend', static_folder
 auth_server = make_server(AuthService, AuthServiceHandler())
 @backend.route('/api/akun/auth', methods=['POST'])
 def akun_auth():
-    respond(auth_server)
+    return respond(auth_server)
 
 hello_server = make_server(HelloService, HelloServiceHandler())
 @backend.route('/api/hello/hello', methods=['POST'])
 def hello_hello():
-    respond(hello_server)
+    return respond(hello_server)
 
 def init(app, cors_origins=None):
     cors_origins = cors_origins or DEFAULT_CORS_ORIGINS

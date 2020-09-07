@@ -25,5 +25,11 @@ router.beforeEach((to, from, next) => {
 
 Vue.use(VueRouter);
 
-export { routes, router }
+const safeRouterPush = async (route) => {
+	if (route.path != router.currentRoute.path && route.name != router.currentRoute.name)
+		return await router.push(route);
+}
+router.safePush = safeRouterPush;
+
+export { routes, router, safeRouterPush }
 export default { routes, router }

@@ -1,6 +1,7 @@
 import AuthService from '@/rpc/gen/AuthService';
 import { BaseClient } from '@/rpc/client/BaseClient';
 import { authStore } from "@/store/modules/auth";
+import { appStore } from "@/store/modules/app";
 import { UserRole, AuthError, AuthErrorCode, LoginError, LoginErrorCode } from '@/rpc/gen/auth_types';
 
 
@@ -25,7 +26,7 @@ class AuthServiceClient extends BaseClient{
 	requireLogout(){
 		if (authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
 	}
-	requireRole(){
+	requireRole(role){
 		if (!authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
 	}
 
@@ -68,6 +69,7 @@ class AuthServiceClient extends BaseClient{
 
 	async logout(){
 		await authStore.logout();
+		await appStore.setGlobalLogout(true);
 	}
 
 	async refresh_auth(){

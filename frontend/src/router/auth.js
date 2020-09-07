@@ -6,14 +6,14 @@ const dialogRequireLogin = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Anda harus login terlebih dahulu",
-		onDismiss: function(){ router.push({ name: "login"}) }
+		onDismiss: function(){ router.safePush({ name: "login"}) }
 	});
 	return false;
 }
 const routeRequireLoginNow = function(to=null, from=null, next=null) {
 	if (!authStore.authToken){
 		if (next) next(false);
-		router.push({ name: "login" });
+		router.safePush({ name: "login" });
 		return false;
 	}
 	if (next) next();
@@ -33,14 +33,14 @@ const dialogRequireLogout = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Anda sudah login",
-		onDismiss: function(){ router.push({ name: "beranda"}) }
+		onDismiss: function(){ router.safePush({ name: "beranda"}) }
 	});
 	return false;
 }
 const routeRequireLogoutNow = function(to=null, from=null, next=null) {
 	if (authStore.authToken){
 		if (next) next(false);
-		router.push({ name: "beranda" });
+		router.safePush({ name: "beranda" });
 		return false;
 	}
 	if (next) next();
@@ -60,14 +60,14 @@ const dialogRequireRole = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Anda tidak memiliki hak untuk melakukan ini",
-		onDismiss: function(){ router.push({ name: "beranda"}) }
+		onDismiss: function(){ router.safePush({ name: "beranda"}) }
 	});
 	return false;
 }
 const routeRequireRoleNow = function(to=null, from=null, next=null) {
 	if (!authStore.checkRole(role)){
 		if (next) next(false);
-		router.push({ path: "/" });
+		router.safePush({ path: "/" });
 		return false;
 	}
 	if (next) next();
@@ -86,7 +86,16 @@ const dialogSessionExpired = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Sesi kadaluarsa. Silahkan login ulang.",
-		onDismiss: function(){ router.push({ name: "login"}) }
+		onDismiss: function(){ router.safePush({ name: "login"}) }
+	});
+	return false;
+}
+
+const dialogIdleLogout = () => {
+	appStore.pushTabDialog({
+		title: "Pemberitahuan",
+		text: "Anda telah diam terlalu lama. Silahkan login kembali.",
+		onDismiss: function(){ router.safePush({ path: "/login"}) }
 	});
 	return false;
 }
@@ -101,7 +110,8 @@ export {
 	dialogRequireLogin, 
 	dialogRequireLogout, 
 	dialogRequireRole,
-	dialogSessionExpired
+	dialogSessionExpired,
+	dialogIdleLogout
 }
 
 export default { 
@@ -114,5 +124,6 @@ export default {
 	dialogRequireLogin, 
 	dialogRequireLogout, 
 	dialogRequireRole,
-	dialogSessionExpired
+	dialogSessionExpired,
+	dialogIdleLogout
 }

@@ -137,7 +137,7 @@ class AuthModel:
 
     def refresh_auth(self, auth_token, refresh_token):
         auth_payload = self.decode_auth(auth_token)
-        refresh_token = self.decode_refresh(refresh_token, auth_token['auth_secret_2'])
+        refresh_token = self.decode_refresh(refresh_token, auth_payload['auth_secret_2'])
         auth_token = self.encode_auth(auth_payload)
         return auth_token
 

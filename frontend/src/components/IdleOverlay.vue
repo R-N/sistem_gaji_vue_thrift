@@ -10,6 +10,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { appStore, authStore, clientStore } from '@/store/stores';
 import SharedIdle from '@/components/SharedIdle';
+import { dialogIdleLogout } from '@/router/auth';
 
 
 @Component({
@@ -47,18 +48,14 @@ class IdleOverlay extends Vue {
 		this.stopCountdown();
 		await clientStore.auth.logout();
 		const comp = this;
-		appStore.pushTabDialog({
-			title: "Pemberitahuan",
-			text: "Anda telah diam terlalu lama. Silahkan login kembali.",
-			onDismiss: function(){ comp.$router.push({ path: "/login"}) }
-		});
+		dialogIdleLogout();
 	}
 
 	stopCountdown(){
 		if (this.logoutTimer){
 			window.clearInterval(this.logoutTimer);
 			this.logoutTimer = null;
-			this.logoutCountdown = 0;
+			this.logoutCountdown = -1;
 		}
 	}
 
@@ -74,8 +71,12 @@ class IdleOverlay extends Vue {
 	@Watch('idle')
 	onIdle(val, oldVal){
 		console.log("Idle: " + val);
-		if (val != oldVal && val && this.isLoggedIn){
-			this.startCountdown();
+		if (val != oldVal){
+			if (val && this.isLoggedIn){
+				this.startCountdown();
+			}else{
+				this.stopCountdown();
+			}
 		}
 	}
 	@Watch('logoutCountdown')
@@ -92,10 +93,7 @@ class IdleOverlay extends Vue {
 		}
 	}
 	beforeDestroy(){
-		if(this.logoutTimer){
-			window.clearInterval(this.logoutTimer);
-			this.logoutTimer = null;
-		}
+		this.stopCountdown();
 	}
 }
 export { IdleOverlay }

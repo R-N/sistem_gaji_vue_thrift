@@ -1,6 +1,6 @@
 import HelloService from '@/rpc/gen/HelloService';
 import { BaseClient } from '@/rpc/client/BaseClient';
-import { authStore, clientStore } from "@/store/modules/auth";
+import { authStore, clientStore } from "@/store/stores";
 import { UserRole } from '@/rpc/gen/auth_types';
 
 

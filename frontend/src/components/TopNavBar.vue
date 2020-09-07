@@ -109,7 +109,6 @@ class TopNavBar extends Vue {
 		view.globalBusy = true;
 		try{
 			await clientStore.auth.logout();
-			await appStore.setGlobalLogout(true);
 		} catch (error){
 			console.log(error);
 		} finally {

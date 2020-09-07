@@ -7,5 +7,5 @@ class HelloServiceHandler(HelloService.Iface):
 		self.auth_model = get_model('auth')
 
 	def hello_admin_utama(self, auth_token):
-		auth_payload = self.auth_model.require_role(UserRole.ADMIN_UTAMA)
+		auth_payload = self.auth_model.require_role(auth_token, UserRole.ADMIN_UTAMA)
 		return "Halo, Admin Utama!"
