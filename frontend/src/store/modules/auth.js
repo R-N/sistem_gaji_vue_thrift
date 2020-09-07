@@ -8,6 +8,7 @@ import {
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
 import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
+import { dateAsInt } from '@/lib/util';
 
 const name = 'auth'
 unregisterModule(name);
@@ -23,17 +24,19 @@ class AuthStore extends VuexModule {
 	refreshToken = null
 	user = null
 	authRefresher = null
+	loginDate = 0
 
-	@MutationAction({ mutate: ['authToken', 'refreshToken'] })
+	@MutationAction({ mutate: ['authToken', 'refreshToken', 'loginDate'] })
 	async setTokens(loginResult){
 		var refreshToken = loginResult.refresh_token || this.state.refreshToken
 		return {
 			authToken: loginResult.auth_token,
-			refreshToken
+			refreshToken,
+			loginDate: dateAsInt(new Date())
 		};
 	}
 
-	@MutationAction({ mutate: ['authToken', 'refreshToken', 'authRefresher', 'user'] })
+	@MutationAction({ mutate: ['authToken', 'refreshToken', 'loginDate', 'authRefresher', 'user'] })
 	async logout(){
 		if (this.state.authRefresher) {
 			try{
@@ -43,6 +46,7 @@ class AuthStore extends VuexModule {
 		return {
 			authToken: null,
 			refreshToken: null,
+			loginDate: 0,
 			authRefresher: null,
 			user: null
 		}
@@ -76,6 +80,12 @@ class AuthStore extends VuexModule {
 			}catch(error){}
 		}
 		return { authRefresher }
+	}
+
+	get dateChanged(){
+		return function(){
+			return dateAsInt(new Date()) != this.loginDate;
+		}
 	}
 }
 

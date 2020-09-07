@@ -31,11 +31,16 @@ class AuthServiceClient extends BaseClient{
 	}
 
 	async rehydrate(payload=null){
-		if (!authStore.authToken) return;
+		if (!authStore.authToken) return true;
+		if (authStore.dateChanged()){
+			await this.logout();
+			return false;
+		}
 		try{
 			await this.refresh_auth();
 			await this.get_user();
 			await this.setAuthRefresher();
+			return true;
 		}catch(error){
 			if ((error instanceof AuthError && ERROR_NEED_REFRESH.includes(error.code))
 				|| (error instanceof LoginError && ERROR_NEED_LOGIN.includes(error.code))){

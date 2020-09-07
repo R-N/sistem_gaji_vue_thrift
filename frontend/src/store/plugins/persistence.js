@@ -1,5 +1,6 @@
 import { store, appStore, clientStore } from "@/store/stores";
 import createPersistedState from 'vuex-persistedstate'
+import { dialogSessionExpired } from '@/router/auth';
 
 const storageKey = 'vuex'
 
@@ -9,10 +10,13 @@ const persistencePlugin = createPersistedState({
 	paths: [
 		'auth.authToken',
 		'auth.refreshToken',
-		'auth.user'
+		'auth.user',
+		'auth.loginDate'
 	],
 	rehydrated: async store => {
-		await clientStore.auth.rehydrate();
+		if(!await clientStore.auth.rehydrate()){
+			dialogSessionExpired();
+		}
 	}
 })
 persistencePlugin.storageKey = storageKey;

@@ -9,7 +9,7 @@
         <transition name="bounce" mode="out-in">
 			<router-view v-transition/>
 		</transition>
-		<idle-overlay :idle-wait="5" :logout-wait="5"/>
+		<idle-overlay :idle-wait="300" :logout-wait="300"/>
 		<loading-overlay/>
 		<dialog-stack :items="tabDialogs" @dialogstackpop="popTabDialog"/>
 	</v-app>
