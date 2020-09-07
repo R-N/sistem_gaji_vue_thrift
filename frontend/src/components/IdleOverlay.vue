@@ -1,7 +1,10 @@
 <template>
 	<div>
 	    <v-overlay :value="logoutTimer">
-	    	<div>{{ logoutCountdown }}</div>
+	    	<v-row align="center" justify="center" class="flex-column">
+		    	<h3>Anda akan otomatis logout dalam</h3>
+		    	<h2>{{ logoutCountdownMinutes }}:{{ logoutCountdownSeconds }}</h2>
+		    </v-row>
 	    </v-overlay>
 	    <shared-idle :idle-wait="idleWait" v-model="idle"/>
 	</div>
@@ -32,6 +35,12 @@ class IdleOverlay extends Vue {
 		console.log("idleWait: " + this.idleWait);
 	}
 
+	get logoutCountdownMinutes(){
+		return ('0' + parseInt(this.logoutCountdown/60)).slice(-2);
+	}
+	get logoutCountdownSeconds(){
+		return ('0' + parseInt(this.logoutCountdown%60)).slice(-2);
+	}
 	get idle(){
 		return appStore.idle;
 	}

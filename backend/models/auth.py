@@ -129,7 +129,7 @@ class AuthModel:
         elif username == "admin_utama" and password == "admin_utama":
             auth_payload = {
                 'username': 'admin_utama',
-                'role': UserRole.admin_utama
+                'role': UserRole.ADMIN_UTAMA
             }
         else:
             raise LoginError(LoginErrorCode.USERNAME_PASSWORD_SALAH)
