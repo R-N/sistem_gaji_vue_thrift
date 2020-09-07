@@ -6,32 +6,29 @@ const dialogRequireLogin = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Anda harus login terlebih dahulu",
-		onDismiss: function(){ router.push({ path: "/login"}) }
+		onDismiss: function(){ router.push({ name: "login"}) }
 	});
 	return false;
 }
-const routeRequireLogin = (immediate=false) =>{
-	if (immediate){
-		return async function(to=null, from=null, next=null) {
-			if (!authStore.authToken){
-				if (next) next(false);
-				await router.push({ name: "login" });
-				return false;
-			}
-			if (next) next();
-			return true;
-		}
-	} else {
-		return function(to=null, from=null, next=null) {
-			if (!authStore.authToken){
-				if (next) next(false);
-				return dialogRequireLogin();
-			}
-			if (next) next();
-			return true;
-		}
+const routeRequireLoginNow = function(to=null, from=null, next=null) {
+	if (!authStore.authToken){
+		if (next) next(false);
+		router.push({ name: "login" });
+		return false;
 	}
+	if (next) next();
+	return true;
 }
+const routeRequireLoginDialog = function(to=null, from=null, next=null) {
+	if (!authStore.authToken){
+		if (next) next(false);
+		return dialogRequireLogin();
+	}
+	if (next) next();
+	return true;
+}
+
+
 const dialogRequireLogout = () => {
 	appStore.pushTabDialog({
 		title: "Error",
@@ -40,58 +37,82 @@ const dialogRequireLogout = () => {
 	});
 	return false;
 }
-const routeRequireLogout = (immediate=false) =>{
-	if (immediate){
-		return async function(to=null, from=null, next=null) {
-			if (authStore.authToken){
-				if (next) next(false);
-				await router.push({ name: "beranda" });
-				return false;
-			}
-			if (next) next();
-			return true;
-		}
-	} else {
-		return function(to=null, from=null, next=null) {
-			if (authStore.authToken){
-				if (next) next(false);
-				return dialogRequireLogout();
-			}
-			if (next) next();
-			return true;
-		}
+const routeRequireLogoutNow = function(to=null, from=null, next=null) {
+	if (authStore.authToken){
+		if (next) next(false);
+		router.push({ name: "beranda" });
+		return false;
 	}
+	if (next) next();
+	return true;
 }
+const routeRequireLogoutDialog = function(to=null, from=null, next=null) {
+	if (authStore.authToken){
+		if (next) next(false);
+		return dialogRequireLogout();
+	}
+	if (next) next();
+	return true;
+}
+
+
 const dialogRequireRole = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Anda tidak memiliki hak untuk melakukan ini",
-		onDismiss: function(){ router.push({ path: "/"}) }
+		onDismiss: function(){ router.push({ name: "beranda"}) }
 	});
 	return false;
 }
-const routeRequireRole = (role, immediate=false) =>{
-	if (immediate){
-		return async function(to=null, from=null, next=null) {
-			if (!authStore.checkRole(role)){
-				if (next) next(false);
-				await router.push({ path: "/" });
-				return false;
-			}
-			if (next) next();
-			return true;
-		}
-	} else {
-		return function(to=null, from=null, next=null) {
-			if (!authStore.checkRole(role)){
-				if (next) next(false);
-				return dialogRequireRole();
-			}
-			if (next) next();
-			return true;
-		}
+const routeRequireRoleNow = function(to=null, from=null, next=null) {
+	if (!authStore.checkRole(role)){
+		if (next) next(false);
+		router.push({ path: "/" });
+		return false;
 	}
+	if (next) next();
+	return true;
+}
+const routeRequireRoleDialog = function(to=null, from=null, next=null) {
+	if (!authStore.checkRole(role)){
+		if (next) next(false);
+		return dialogRequireRole();
+	}
+	if (next) next();
+	return true;
 }
 
-export { routeRequireLogin, routeRequireLogout, routeRequireRole, dialogRequireLogin, dialogRequireLogout, dialogRequireRole }
-export default { routeRequireLogin, routeRequireLogout, routeRequireRole }
+const dialogSessionExpired = () => {
+	appStore.pushTabDialog({
+		title: "Error",
+		text: "Sesi kadaluarsa. Silahkan login ulang.",
+		onDismiss: function(){ router.push({ name: "login"}) }
+	});
+	return false;
+}
+
+export { 
+	routeRequireLoginNow, 
+	routeRequireLogoutNow, 
+	routeRequireRoleNow, 
+	routeRequireLoginDialog, 
+	routeRequireLogoutDialog, 
+	routeRequireRoleDialog,
+	dialogRequireLogin, 
+	dialogRequireLogout, 
+	dialogRequireRole,
+	dialogSessionExpired
+}
+
+export default { 
+	routeRequireLoginNow, 
+	routeRequireLogoutNow, 
+	routeRequireRoleNow, 
+	routeRequireLoginDialog, 
+	routeRequireLogoutDialog, 
+	routeRequireRoleDialog,
+	dialogRequireLogin, 
+	dialogRequireLogout, 
+	dialogRequireRole,
+	dialogSessionExpired
+}

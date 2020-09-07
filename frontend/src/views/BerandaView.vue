@@ -19,27 +19,27 @@
 <script>
 import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
-import { routeRequireLogin } from '@/router/auth';
+import { routeRequireLoginNow } from '@/router/auth';
 import { authStore, clientStore, appStore } from "@/store/stores";
 import { AuthError, AuthErrorCode } from "@/rpc/gen/auth_types";
 import { router } from "@/router/index";
 
 @Component({
   	name: "BerandaView",
-	beforeRouteEnter: routeRequireLogin(true)
+	beforeRouteEnter: routeRequireLoginNow
 })
 class BerandaView extends BaseView {
 	msg = ''
 
 	beforeMount(){
-		if(!routeRequireLogin(true)()) return;
+		if(!routeRequireLoginNow()) return;
 	}
 	
 	async hello(){
 		const view = this;
 		view.busy=true;
 		try{
-			this.msg = await clientStore.auth.hello_admin_utama();
+			this.msg = await clientStore.hello.hello_admin_utama();
 		} catch (error){
 			if (error instanceof AuthError && error.code === AuthErrorCode.INVALID_ROLE){
 				this.msg = "You're not admin utama!";

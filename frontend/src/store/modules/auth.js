@@ -81,52 +81,7 @@ class AuthStore extends VuexModule {
 
 const authStore = getModule(AuthStore);
 
-const requireLogin = (async=true) => (target, name, descriptor) => {
-	const func = descriptor.value;
-	if(async){
-		descriptor.value = async function(...args) {
-			if (!authStore.authToken) throw new AuthError({ code: AuthErrorCode.NOT_LOGGED_IN });
-			return await func.apply(this, args);
-		}
-	}else{
-		descriptor.value = function(...args) {
-			if (!authStore.authToken) throw new AuthError({ code: AuthErrorCode.NOT_LOGGED_IN });
-			return func.apply(this, args);
-		}
-	}
-	return descriptor;
-}
-const requireLogout = (async=true) => (target, name, descriptor) => {
-	const func = descriptor.value;
-	if(async){
-		descriptor.value = async function(...args) {
-			if (authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
-			return await func.apply(this, args);
-		}
-	}else{
-		descriptor.value = function(...args) {
-			if (authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
-			return func.apply(this, args);
-		}
-	}
-	return descriptor;
-}
-const requireRole = (role, async=true) => (target, name, descriptor) => {
-	const func = descriptor.value;
-	if (async){
-		descriptor.value = async function(...args) {
-			if (!authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
-			return await func.apply(this, arguments);
-		}
-	}else{
-		descriptor.value = function(...args) {
-			if (!authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
-			return func.apply(this, arguments);
-		}
-	}
-	return descriptor;
-}
 
 
-export { name, AuthStore, authStore, requireLogin, requireRole, requireLogout };
+export { name, AuthStore, authStore };
 export default authStore;

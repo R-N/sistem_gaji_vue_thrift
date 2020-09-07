@@ -1,6 +1,6 @@
 import AuthService from '@/rpc/gen/AuthService';
 import { BaseClient } from '@/rpc/client/BaseClient';
-import { authStore, requireLogin, requireRole, requireLogout } from "@/store/modules/auth";
+import { authStore } from "@/store/modules/auth";
 import { UserRole, AuthError, AuthErrorCode, LoginError, LoginErrorCode } from '@/rpc/gen/auth_types';
 
 
@@ -15,8 +15,18 @@ const ERROR_NEED_LOGIN = [
 
 class AuthServiceClient extends BaseClient{
 	constructor(){
-		super(AuthService, '/api/auth');
+		super(AuthService, '/api/akun/auth');
 		this.authStore = authStore;
+	}
+
+	requireLogin(){
+		if (!authStore.authToken) throw new AuthError({ code: AuthErrorCode.NOT_LOGGED_IN });
+	}
+	requireLogout(){
+		if (authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
+	}
+	requireRole(){
+		if (!authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
 	}
 
 	async rehydrate(payload=null){
@@ -24,6 +34,7 @@ class AuthServiceClient extends BaseClient{
 		try{
 			await this.refresh_auth();
 			await this.get_user();
+			await this.setAuthRefresher();
 		}catch(error){
 			if ((error instanceof AuthError && ERROR_NEED_REFRESH.includes(error.code))
 				|| (error instanceof LoginError && ERROR_NEED_LOGIN.includes(error.code))){
@@ -35,10 +46,13 @@ class AuthServiceClient extends BaseClient{
 		}
 	}
 	async login(username, password){
+		console.log("Pre login");
 		await authStore.setTokens(
 			await this.client.login(username, password)
 		);
+		console.log("Pre setAuthRefresher");
 		await this.setAuthRefresher();
+		console.log("Pre get_user");
 		return await this.get_user();
 	}
 
@@ -56,27 +70,64 @@ class AuthServiceClient extends BaseClient{
 		await authStore.logout();
 	}
 
-	@requireLogin()
 	async refresh_auth(){
+		this.requireLogin();
 		await authStore.setAuthToken(
 			await this.client.refresh_auth(authStore.authToken, authStore.refreshToken)
 		);
 		await this.setAuthRefresher();
 	}
 
-	@requireLogin()
 	async get_user(){
+		this.requireLogin();
 		await authStore.setUser(
 			await this.client.get_user(authStore.authToken)
 		);
 		return authStore.user;
 	}
 
-	@requireRole(UserRole.ADMIN_UTAMA)
 	async hello_admin_utama(){
+		this.requireRole(UserRole.ADMIN_UTAMA);
 		return await this.client.hello_admin_utama(authStore.authToken);
+	}
+
+	authRefreshGuardAsync(target, name, descriptor) {
+		const func = descriptor.value;
+		const cli = this;
+		descriptor.value = async function(...args) {
+			cli.requireLogin();
+			try{
+				return await func.apply(this, args);
+			}catch(error){
+				if (error instanceof AuthError && error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+					await cli.refresh_auth();
+					return await func.apply(this, args);
+				}
+				throw error;
+			}
+		}
+		return descriptor;
+	}
+
+	//Everything that access API should be async
+	authRefreshGuard(target, name, descriptor) {
+		const func = descriptor.value;
+		const cli = this;
+		descriptor.value = async function(...args) {
+			cli.requireLogin();
+			try{
+				return func.apply(this, args);
+			}catch(error){
+				if (error instanceof AuthError && error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+					await cli.refresh_auth();
+					return func.apply(this, args);
+				}
+				throw error;
+			}
+		}
+		return descriptor;
 	}
 }
 
-export { AuthServiceClient, requireLogin, requireRole, requireLogout }
+export { AuthServiceClient }
 export default AuthServiceClient

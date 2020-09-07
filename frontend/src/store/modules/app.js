@@ -18,6 +18,8 @@ unregisterModule(name);
 	dynamic: true
 })
 class AppStore extends VuexModule {
+	globalLogout = false
+	globalRefresh = false
 	globalBusy = false
 	tabBusy = false
 	routerBusy = false
@@ -68,6 +70,14 @@ class AppStore extends VuexModule {
 	}
 	get idle(){
 		return !this.userPresent;
+	}
+	@MutationAction({ mutate: ['globalRefresh'] })
+	async setGlobalRefresh(globalRefresh){
+		return { globalRefresh }
+	}
+	@MutationAction({ mutate: ['globalLogout'] })
+	async setGlobalLogout(globalLogout){
+		return { globalLogout }
 	}
 }
 const appStore = getModule(AppStore);
