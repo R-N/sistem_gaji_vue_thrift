@@ -136,3 +136,5 @@ venv
 *.pyc
 .env
 venv/
+rpc/gen/*
+frontend/*
