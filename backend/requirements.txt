@@ -1,0 +1,8 @@
+sqlalchemy
+PyJWT
+pyOpenSSL
+python-dotenv
+thrift
+flask
+flask-cors
+gevent
