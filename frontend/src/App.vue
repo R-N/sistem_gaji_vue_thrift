@@ -6,8 +6,10 @@
 			</v-expand-transition>
 		</v-flex>
 		<side-nav-drawer :drawer="drawer" @update:drawer="toggleDrawer" v-if="isLoggedIn"/>
-        <transition name="bounce" mode="out-in">
-			<router-view v-transition/>
+        <transition name="fade" mode="out-in">
+			<server-down-view v-transition v-if="!serverReachable"/>
+			<login-view v-transition v-else-if="!isLoggedIn"/>
+			<router-view v-transition v-else />
 		</transition>
 		<idle-overlay :idle-wait="300" :logout-wait="300"/>
 		<loading-overlay/>
@@ -25,21 +27,16 @@ import SideNavDrawer from '@/components/SideNavDrawer';
 import TopNavBar from '@/components/TopNavBar';
 import DialogStack from '@/components/DialogStack';
 import IdleOverlay from '@/components/IdleOverlay';
+import ServerDownView from '@/views/ServerDownView';
+import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';
-import { dialogRequireLogin, dialogRequireLogout, dialogRequireRole, dialogSessionExpired } from '@/router/auth';
+import { dialogRequireLogin, dialogRequireLogout, dialogRequireRole, dialogSessionExpired, dialogUnknownAuthError, dialogUnknownError } from '@/router/auth';
 import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
 
 const dialogAuthExpired = () => {
 	appStore.pushTabDialog({
 		title: "Error",
 		text: "Sesi kecil kadaluarsa. Tolong coba lagi, refresh halaman, login ulang, atau laporkan bug."
-	});
-	return false;
-}
-const dialogUnknownAuthError = (error, code) => {
-	appStore.pushTabDialog({
-		title: "Error",
-		text: "Sesi invalid (" + error + ":" + code + "). Silahkan login ulang atau laporkan bug."
 	});
 	return false;
 }
@@ -52,13 +49,17 @@ const dialogUnknownAuthError = (error, code) => {
 		SideNavDrawer,
 		TopNavBar,
 		DialogStack,
-		IdleOverlay
+		IdleOverlay,
+		ServerDownView,
+		LoginView
 	}
 })
 class App extends BaseView{
 
 	drawer = false;
-
+	mounted(){
+		appStore.setTabBusy(false);
+	}
 	get tabDialogs(){
 		return appStore.tabDialogs;
 	}
@@ -75,6 +76,9 @@ class App extends BaseView{
 	}
 	get globalLogout(){
 		return appStore.globalLogout;
+	}
+	get serverReachable(){
+		return appStore.serverReachable;
 	}
 
 	@Watch('globalRefresh')
@@ -107,8 +111,7 @@ class App extends BaseView{
 			} else {
 				return dialogUnknownAuthError("LoginError", error.code);
 			}
-		}
-		if (error instanceof AuthError){
+		} else if (error instanceof AuthError){
 			if (error.code === AuthErrorCode.INVALID_ROLE){
 				return dialogRequireRole();
 			} else if (error.code === AuthErrorCode.NOT_LOGGED_IN){
@@ -118,6 +121,8 @@ class App extends BaseView{
 			} else {
 				return dialogUnknownAuthError("AuthError", error.code);
 			}
+		} else {
+			dialogUnknownError(error);
 		}
 	}
 }

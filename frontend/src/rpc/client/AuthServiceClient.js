@@ -3,6 +3,7 @@ import { BaseClient } from '@/rpc/client/BaseClient';
 import { authStore } from "@/store/modules/auth";
 import { appStore } from "@/store/modules/app";
 import { UserRole, AuthError, AuthErrorCode, LoginError, LoginErrorCode } from '@/rpc/gen/auth_types';
+import { dialogSessionExpired, dialogUnknownAuthError } from '@/router/auth';
 
 
 const ERROR_NEED_REFRESH = [
@@ -63,7 +64,26 @@ class AuthServiceClient extends BaseClient{
 		if (!authStore.authRefresher){
 			const cli = this;
 			var authRefresher = window.setInterval(async function(){
-				await cli.refresh_auth();
+				try{
+					await cli.refresh_auth();
+				}catch(error){
+					cli.logout();
+					if (error instanceof AuthError){
+						if(error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+							dialogSessionExpired();
+						}else{
+							dialogUnknownAuthError(error, error.code);
+						}
+					} else if (error instanceof LoginError){
+						if(error.code === LoginErrorCode.REFRESH_TOKEN_EXPIRED){
+							dialogSessionExpired();
+						}else{
+							dialogUnknownAuthError(error, error.code);
+						}
+					} else {
+						dialogUnknownError(error);
+					}
+				}
 			}, 9 * 1000);
 			await authStore.setAuthRefresher(authRefresher);
 		}

@@ -1,5 +1,5 @@
 <template>
-	<div class="bg" :style="{ backgroundImage: 'url(' + src + ')' }"></div>
+	<img class="bg" v-lazy="src"/>
 </template>
 
 <script>

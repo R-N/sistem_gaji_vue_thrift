@@ -11,7 +11,8 @@ const stateSharePlugin = createMultiTabState({
 		"app.lastUserPresentTime",
 		"app.userPresent",
 		"app.globalRefresh",
-		"app.globalLogout"
+		"app.globalLogout",
+		"app.serverReachable"
 	]
 });
 stateSharePlugin(store);

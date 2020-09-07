@@ -21,11 +21,18 @@ class AppStore extends VuexModule {
 	globalLogout = false
 	globalRefresh = false
 	globalBusy = false
-	tabBusy = false
-	routerBusy = false
+	tabBusy = true
+	routerBusy = true
 	tabDialogs = []
 	lastUserPresentTime = new Date().getTime();
 	userPresent = true
+	serverReachable = true
+
+	@MutationAction({ mutate: ['serverReachable'] })
+	async setServerReachable(serverReachable){
+		return { serverReachable }
+	}
+
 
 	@MutationAction({ mutate: ['globalBusy'] })
 	async setGlobalBusy(globalBusy){

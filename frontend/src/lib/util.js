@@ -13,3 +13,13 @@ export function dateAsInt(date){
     return parseInt(date / millisecondsPerDay);
 }
 
+export async function checkBackend(url){
+	var response = await fetch(url);
+	var data = await response.json();
+	return data;
+}
+
+export function backendUrl(https, host, port){
+	var scheme = https ? "https" : "http";
+	return scheme + "://" + host + ":" + port;
+}

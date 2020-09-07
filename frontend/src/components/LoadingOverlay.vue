@@ -10,9 +10,7 @@
 				class="flex-column"
 				>
 				<v-progress-circular indeterminate :size="circleSize">
-					<v-btn icon large @click.stop="refresh" v-if="mayRefresh">
-						<v-icon>fa-redo</v-icon>
-					</v-btn>
+					<refresh-button icon large v-if="mayRefresh"/>
 				</v-progress-circular>
 			</v-row>
 		</v-container>
@@ -22,10 +20,14 @@
 <script>
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
+import RefreshButton from '@/components/RefreshButton';
 import { appStore } from '@/store/modules/app';
 
 @Component({
-	name: "LoadingOverlay"
+	name: "LoadingOverlay",
+	components: {
+		RefreshButton
+	}
 })
 class LoadingOverlay extends WorkingComponent {
 	@Prop({ default: 96 }) circleSizeRefresh
@@ -68,15 +70,6 @@ class LoadingOverlay extends WorkingComponent {
 		}
 	}
 
-	async refresh(){
-		appStore.setRouterBusy(true);
-		if(!this.globalBusy){
-			window.location.reload();
-		}else{
-			appStore.setGlobalBusy(false);
-			appStore.setGlobalRefresh(true);
-		}
-	}
 }
 export { LoadingOverlay }
 export default LoadingOverlay

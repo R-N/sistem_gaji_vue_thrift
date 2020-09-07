@@ -26,13 +26,13 @@ import { router } from "@/router/index";
 
 @Component({
   	name: "BerandaView",
-	beforeRouteEnter: routeRequireLoginNow
+	//beforeRouteEnter: routeRequireLoginNow
 })
 class BerandaView extends BaseView {
 	msg = ''
 
 	beforeMount(){
-		if(!routeRequireLoginNow()) return;
+		//if(!routeRequireLoginNow()) return;
 	}
 	
 	async hello(){

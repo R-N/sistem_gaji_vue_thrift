@@ -1,5 +1,6 @@
 import { router } from '@/router/index';
-import { authStore, appStore } from '@/store/stores';
+import { authStore } from '@/store/modules/auth';
+import { appStore } from '@/store/modules/app';
 import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
 
 const dialogRequireLogin = () => {
@@ -100,6 +101,23 @@ const dialogIdleLogout = () => {
 	return false;
 }
 
+const dialogUnknownAuthError = (error, code) => {
+	appStore.pushTabDialog({
+		title: "Error",
+		text: "Sesi invalid (" + error + ":" + code + "). Silahkan login ulang atau laporkan bug.",
+		onDismiss: function(){ router.safePush({ path: "/login"}) }
+	});
+	return false;
+}
+const dialogUnknownError = (error) => {
+	appStore.pushTabDialog({
+		title: "Error",
+		text: "Error tidak diketahui: " + error,
+		onDismiss: function(){ router.safePush({ path: "/login"}) }
+	});
+	return false;
+}
+
 export { 
 	routeRequireLoginNow, 
 	routeRequireLogoutNow, 
@@ -111,7 +129,8 @@ export {
 	dialogRequireLogout, 
 	dialogRequireRole,
 	dialogSessionExpired,
-	dialogIdleLogout
+	dialogIdleLogout,
+	dialogUnknownAuthError
 }
 
 export default { 
@@ -125,5 +144,6 @@ export default {
 	dialogRequireLogout, 
 	dialogRequireRole,
 	dialogSessionExpired,
-	dialogIdleLogout
+	dialogIdleLogout,
+	dialogUnknownAuthError
 }

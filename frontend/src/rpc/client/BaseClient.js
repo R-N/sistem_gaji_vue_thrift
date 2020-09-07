@@ -6,6 +6,7 @@ import {
 	TBufferedTransport
 } from "thrift";
 
+import { appStore } from '@/store/modules/app';
 
 const createClient = (
 		serviceClass, 
@@ -43,8 +44,14 @@ const setBackendPort = (newPort) => { defaultBackendPort = newHost };
 class BaseClient{
 	client = null
 
-	constructor(clientClass, endpoint){
-		this.client = createClient(clientClass, endpoint);
+	constructor(
+		clientClass, 
+		endpoint, 
+		useHttps=null,
+		backendHost=null,
+		backendPort=null
+	){
+		this.client = createClient(clientClass, endpoint, useHttps, backendHost, backendPort);
 	}
 
 	async rehydrate(payload=null){
@@ -52,5 +59,5 @@ class BaseClient{
 	}
 }
 
-export { BaseClient, createClient };
+export { BaseClient, createClient, setUseHttps, setBackendHost, setBackendPort };
 export default BaseClient;
