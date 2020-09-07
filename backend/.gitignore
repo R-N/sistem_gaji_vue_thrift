@@ -143,3 +143,5 @@ certs/auth.enc
 certs/auth.dec
 certs/refresh.enc
 certs/refresh.dec
+.gitkeep
+!/**/.gitkeep
