@@ -138,3 +138,8 @@ venv
 venv/
 rpc/gen/*
 frontend/*
+
+certs/auth.enc
+certs/auth.dec
+certs/refresh.enc
+certs/refresh.dec
