@@ -1,7 +1,7 @@
 from rpc.gen.akun import AuthService
-from entities import User, UserRole
+from entities.user import User, UserRole
 
-class AuthServiceHandler(AuthService.IFace):
+class AuthServiceHandler(AuthService.Iface):
 	def __init__(self):
 		pass
 
