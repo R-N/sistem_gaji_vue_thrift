@@ -1,0 +1,18 @@
+@echo off
+
+SET PATH=%PATH%;bin
+
+SET BACKEND=backend
+SET FRONTEND=frontend
+
+SET BACKEND_RPC=%BACKEND%\rpc\gen
+SET FRONTEND_RPC=%FRONTEND%\src\rpc\gen
+
+SET BACKEND_NAME=sistem_gaji
+SET BACKEND_PORT=80
+
+SET IMAGES=images
+
+SET RPC=rpc
+
+SET SISTEM_GAJI_ENV=1

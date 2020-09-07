@@ -1,0 +1,17 @@
+<script>
+import { Component, Prop } from 'vue-property-decorator';
+import { WorkingComponent } from '@/components/WorkingComponent';
+import { authStore } from "@/store/stores";
+
+@Component({
+	name: "BaseView"
+})
+class BaseView extends WorkingComponent {
+	get isLoggedIn(){
+		return authStore.isLoggedIn;
+	}
+}
+
+export { BaseView }
+export default BaseView
+</script>
