@@ -12,10 +12,11 @@ Vue.use(vueg, router);
 import VueLazyload from 'vue-lazyload'
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: 'static/img/error.png',
-  loading: 'static/img/loading.gif',
+  //error: 'static/img/error.png',
+  //loading: 'static/img/loading.gif',
   attempt: 1
 })
+// TODO: add loading & error placeholder... maybe
 
 import { setUseHttps, setBackendHost, setBackendPort } from '@/rpc/client/base';
 import { checkBackend, backendUrl } from '@/lib/util';
