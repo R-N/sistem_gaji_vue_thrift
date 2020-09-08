@@ -30,16 +30,16 @@ const clients = {
 	auth: new AuthServiceClient(stores),
 	hello: new HelloServiceClient(stores)
 }
-stores.clientStore.init(clients);
-
-routers.init(stores, router);
-stores.routerStore.init(routers.forStore);
-
-console.log(store);
-plugins.init(store);
 
 Vue.config.productionTip = false;
 async function main(){
+	await stores.clientStore.init(clients);
+
+	routers.init(stores, router);
+	await stores.routerStore.init(routers.forStore);
+
+	plugins.init(store);
+
 	const serverHost = backendUrl(defaultUseHttps, defaultBackendHost, defaultBackendPort);
 	var serverReachable = false;
 	var backendInfo = null;

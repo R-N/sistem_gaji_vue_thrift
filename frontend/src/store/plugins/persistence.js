@@ -1,6 +1,9 @@
-import createPersistedState from 'vuex-persistedstate'
+import createPersistedState from 'vuex-persistedstate';
+import { routerStore, clientStore } from '@/store/stores';
 
 const storageKey = 'vuex'
+console.log(routerStore);
+console.log(clientStore);
 
 const persistencePlugin = createPersistedState({ 
 	key: 'keyname',
@@ -12,6 +15,13 @@ const persistencePlugin = createPersistedState({
 		'auth.loginDate'
 	],
 	rehydrated: async store => {
+		try{ 
+			if(!await clientStore.auth.rehydrate()){
+				routerStore.auth.dialogSessionExpired();
+			}
+		}catch(error){
+			routerStore.auth.dialogUnknownError(error);
+		}
 	}
 })
 persistencePlugin.storageKey = storageKey;
