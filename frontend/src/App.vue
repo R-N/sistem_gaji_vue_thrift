@@ -31,7 +31,7 @@ import ServerDownView from '@/views/ServerDownView';
 import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';
 import { authRouter } from '@/router/routers/auth';
-import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
+import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
 
 const dialogAuthExpired = () => {
 	appStore.pushTabDialog({
@@ -103,23 +103,23 @@ class App extends BaseView{
 		this.drawer = drawer;
 	}
 	errorCaptured(error, vm, info) {
-		if (error instanceof LoginError){
-			if (error.code === LoginErrorCode.ALREADY_LOGGED_IN){
+		if (error instanceof TLoginError){
+			if (error.code === TLoginErrorCode.ALREADY_LOGGED_IN){
 				return authRouter.dialogRequireLogout();
-			} else if (error.code === LoginErrorCode.REFRESH_TOKEN_EXPIRED){
+			} else if (error.code === TLoginErrorCode.REFRESH_TOKEN_EXPIRED){
 				return authRouter.dialogSessionExpired();
 			} else {
-				return authRouter.dialogUnknownAuthError("LoginError", error.code);
+				return authRouter.dialogUnknownTAuthError("TLoginError", error.code);
 			}
-		} else if (error instanceof AuthError){
-			if (error.code === AuthErrorCode.INVALID_ROLE){
+		} else if (error instanceof TAuthError){
+			if (error.code === TAuthErrorCode.INVALID_ROLE){
 				return authRouter.dialogRequireRole();
-			} else if (error.code === AuthErrorCode.NOT_LOGGED_IN){
+			} else if (error.code === TAuthErrorCode.NOT_LOGGED_IN){
 				return authRouter.dialogRequireLogin();
-			} else if (error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+			} else if (error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
 				return authRouter.dialogAuthExpired();
 			} else {
-				return authRouter.dialogUnknownAuthError("AuthError", error.code);
+				return authRouter.dialogUnknownTAuthError("TAuthError", error.code);
 			}
 		} else {
 			authRouter.dialogUnknownError(error);

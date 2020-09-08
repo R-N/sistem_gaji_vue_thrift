@@ -2,9 +2,14 @@ import jwt
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import hashlib
+from utils.crypto import md5
 
-from rpc.gen.akun.ttypes import User, UserRole, LoginResult, LoginError, LoginErrorCode, AuthError, AuthErrorCode
+from db import DBSession
+from db.entities import DBUser
+
+from rpc.gen.akun.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
+# MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
+# MODELS MAY NOT USE THRIFT STRUCTS
 
 load_dotenv()
 
@@ -18,8 +23,6 @@ REFRESH_SECRET = os.getenv("REFRESH_SECRET")
 AUTH_EXPIRATION = timedelta(minutes=int(os.getenv("AUTH_EXPIRATION_MINUTE") or "12"))
 REFRESH_EXPIRATION = timedelta(minutes=int(os.getenv("REFRESH_EXPIRATION_MINUTE") or "1440"))
 
-def md5(str):
-    return hashlib.md5(str.encode('utf-8')).hexdigest()
 
 class AuthModel:
     def __init__(
@@ -87,9 +90,9 @@ class AuthModel:
         try:
             return self.decode(token, self.auth_dec, issuer=self.auth_secret)
         except jwt.ExpiredSignatureError:
-            raise AuthError(AuthErrorCode.AUTH_TOKEN_EXPIRED)
+            raise TAuthError(TAuthErrorCode.AUTH_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
-            raise AuthError(AuthErrorCode.AUTH_TOKEN_INVALID)
+            raise TAuthError(TAuthErrorCode.AUTH_TOKEN_INVALID)
 
     def encode_refresh(self, payload, now=None):
         return self.encode(payload, self.refresh_enc, self.refresh_expiration, now=now)
@@ -98,9 +101,9 @@ class AuthModel:
         try:
             return self.decode(token, self.refresh_dec, issuer=self.refresh_secret, audience=auth_secret_2)
         except jwt.ExpiredSignatureError:
-            raise LoginError(LoginErrorCode.REFRESH_TOKEN_EXPIRED)
+            raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
-            raise LoginError(LoginErrorCode.REFRESH_TOKEN_INVALID)
+            raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_INVALID)
 
     def encode_pair(self, auth_payload, now=None):
         now = now or datetime.utcnow()
@@ -117,22 +120,20 @@ class AuthModel:
 
     def login(self, username, password):
         if not username:
-            raise LoginError(LoginErrorCode.USERNAME_KOSONG)
+            raise TLoginError(TLoginErrorCode.USERNAME_KOSONG)
         if not password:
-            raise LoginError(LoginErrorCode.PASSWORD_KOSONG)
-        if username == "admin" and password == "admin":
-            auth_payload = {
-                'username': 'admin',
-                'role': UserRole.ADMIN_BIASA
-            }
-        elif username == "admin_utama" and password == "admin_utama":
-            auth_payload = {
-                'username': 'admin_utama',
-                'role': UserRole.ADMIN_UTAMA
-            }
-        else:
-            raise LoginError(LoginErrorCode.USERNAME_PASSWORD_SALAH)
-        return LoginResult(*self.encode_pair(auth_payload))
+            raise TLoginError(TLoginErrorCode.PASSWORD_KOSONG)
+
+        with DBSession() as session:
+            user = session.query(DBUser).filter(DBUser.username == username).first()
+            if not (user and user.verify_password(password)):
+                raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
+
+        auth_payload = {
+            'username': user.username,
+            'role': user.role
+        }
+        return self.encode_pair(auth_payload)
 
     def refresh_auth(self, auth_token, refresh_token):
         auth_payload = self.decode_auth(auth_token)
@@ -143,5 +144,5 @@ class AuthModel:
     def require_role(self, auth_token, role):
         auth_payload = self.decode_auth(auth_token)
         if auth_payload['role'] != role:
-            raise AuthError(AuthErrorCode.INVALID_ROLE)
+            raise TAuthError(TAuthErrorCode.INVALID_ROLE)
         return auth_payload

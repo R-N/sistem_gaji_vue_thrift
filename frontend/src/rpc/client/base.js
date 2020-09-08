@@ -41,7 +41,7 @@ const setUseHttps = (newUseHttps) => { defaultUseHttps = newUseHttps };
 const setBackendHost = (newHost) => { defaultBackendHost = newHost };
 const setBackendPort = (newPort) => { defaultBackendPort = newHost };
 
-class BaseClient extends StoreUser{
+class TBaseClient extends StoreUser{
 	client = null
 
 	constructor(
@@ -61,5 +61,5 @@ class BaseClient extends StoreUser{
 	}
 }
 
-export { BaseClient, createClient, setUseHttps, setBackendHost, setBackendPort };
-export default BaseClient;
+export { TBaseClient, createClient, setUseHttps, setBackendHost, setBackendPort };
+export default TBaseClient;

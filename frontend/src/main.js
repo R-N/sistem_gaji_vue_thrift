@@ -24,12 +24,12 @@ import { App } from './App.vue'
 import { store, stores, plugins } from '@/store/final';
 import { router, routers } from '@/router/final';
 
-import { AuthServiceClient } from '@/rpc/client/auth';
-import { HelloServiceClient } from '@/rpc/client/hello';
+import { TAuthServiceClient } from '@/rpc/client/auth';
+import { THelloServiceClient } from '@/rpc/client/hello';
 
 const clients = {
-	auth: new AuthServiceClient(stores),
-	hello: new HelloServiceClient(stores)
+	auth: new TAuthServiceClient(stores),
+	hello: new THelloServiceClient(stores)
 }
 
 Vue.config.productionTip = false;

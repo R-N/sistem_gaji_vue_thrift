@@ -1,22 +1,22 @@
-import HelloService from '@/rpc/gen/HelloService';
-import { BaseClient } from '@/rpc/client/base';
-import { UserRole } from '@/rpc/gen/auth_types';
+import THelloService from '@/rpc/gen/THelloService';
+import { TBaseClient } from '@/rpc/client/base';
+import { TUserRole } from '@/rpc/gen/auth_types';
 
 
-class HelloServiceClient extends BaseClient{
+class THelloServiceClient extends TBaseClient{
 	constructor(stores=null){
-		super(stores, HelloService, '/api/hello/hello');
+		super(stores, THelloService, '/api/hello/hello');
 		return this;
 	}
 
 	async rehydrate(payload=null){
 	}
 	async hello_admin_utama(){
-		this.clientStore.auth.requireRole(UserRole.ADMIN_UTAMA);
+		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
 		return await this.client.hello_admin_utama(this.authStore.authToken);
 	}
 
 }
 
-export { HelloServiceClient }
-export default HelloServiceClient
+export { THelloServiceClient }
+export default THelloServiceClient

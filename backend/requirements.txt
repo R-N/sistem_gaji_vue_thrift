@@ -1,9 +1,12 @@
+python-dotenv
 psycopg2
 sqlalchemy
+bcrypt
+passlib
 PyJWT
 pyOpenSSL
-python-dotenv
 thrift
 flask
 flask-cors
+greenlet
 gevent

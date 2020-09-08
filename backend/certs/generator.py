@@ -1,5 +1,5 @@
-from OpenSSL import crypto, SSL
 import os
+from OpenSSL import crypto
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -56,7 +56,7 @@ def make_key_crt(signing_key=None, **kwargs):
     signing_key = signing_key or key
     crt.sign(signing_key, 'sha512')
     return key, crt
-
+    
 def pem_priv_key(key):
     return crypto.dump_privatekey(crypto.FILETYPE_PEM, key).decode("utf-8")
 

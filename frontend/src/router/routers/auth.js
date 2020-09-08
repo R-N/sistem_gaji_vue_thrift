@@ -1,4 +1,4 @@
-import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
+import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
 import { RouterUser } from '@/router/user';
 
 class AuthRouter extends RouterUser{
@@ -104,7 +104,7 @@ class AuthRouter extends RouterUser{
 		return false;
 	}
 
-	dialogUnknownAuthError(error, code){
+	dialogUnknownTAuthError(error, code){
 		this.appStore.pushTabDialog({
 			title: "Error",
 			text: "Sesi invalid (" + error + ":" + code + "). Silahkan login ulang atau laporkan bug.",

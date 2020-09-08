@@ -145,3 +145,6 @@ certs/refresh.enc
 certs/refresh.dec
 .gitkeep
 !/**/.gitkeep
+
+scratchpad.py
+playground.py

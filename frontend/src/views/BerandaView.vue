@@ -21,7 +21,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 import { authRouter } from '@/router/routers/auth';
 import { authStore, clientStore, appStore } from "@/store/stores";
-import { AuthError, AuthErrorCode } from "@/rpc/gen/auth_types";
+import { TAuthError, TAuthErrorCode } from "@/rpc/gen/auth_types";
 import { router } from "@/router/index";
 
 @Component({
@@ -41,7 +41,7 @@ class BerandaView extends BaseView {
 		try{
 			this.msg = await clientStore.hello.hello_admin_utama();
 		} catch (error){
-			if (error instanceof AuthError && error.code === AuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
 				this.msg = "You're not admin utama!";
 			}else{
 				console.log(error);

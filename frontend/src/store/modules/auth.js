@@ -7,7 +7,7 @@ import {
 	Module
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
-import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
+import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
 import { dateAsInt } from '@/lib/util';
 
 const name = 'auth'

@@ -19,11 +19,15 @@ if __name__ == "__main__":
     generator.generate_auth()
     generator.generate_refresh()
 
-from rpc.gen.akun import AuthService
-from rpc.handler.akun.auth import AuthServiceHandler
+import db
+import db.entities
+db.create_tables()
 
-from rpc.gen.hello import HelloService
-from rpc.handler.hello.hello import HelloServiceHandler
+from rpc.gen.akun import TAuthService
+from rpc.handler.akun.auth import TAuthServiceHandler
+
+from rpc.gen.hello import THelloService
+from rpc.handler.hello.hello import THelloServiceHandler
 
 
 def make_server(service_class, foo_handler):
@@ -51,13 +55,14 @@ DEFAULT_CORS_ORIGINS = os.getenv("CORS_ORIGINS").split(',') or [
 
 
 backend = Flask("sistem_gaji_backend", template_folder='frontend', static_folder='frontend/static')
+backend.config['SQLALCHEMY_DATABASE_URI'] = db.connect_str
 
-auth_server = make_server(AuthService, AuthServiceHandler())
+auth_server = make_server(TAuthService, TAuthServiceHandler())
 @backend.route('/api/akun/auth', methods=['POST'])
 def akun_auth():
     return respond(auth_server)
 
-hello_server = make_server(HelloService, HelloServiceHandler())
+hello_server = make_server(THelloService, THelloServiceHandler())
 @backend.route('/api/hello/hello', methods=['POST'])
 def hello_hello():
     return respond(hello_server)

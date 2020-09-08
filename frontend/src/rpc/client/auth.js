@@ -1,32 +1,32 @@
-import AuthService from '@/rpc/gen/AuthService';
-import { BaseClient } from '@/rpc/client/base';
-import { UserRole, AuthError, AuthErrorCode, LoginError, LoginErrorCode } from '@/rpc/gen/auth_types';
+import TAuthService from '@/rpc/gen/TAuthService';
+import { TBaseClient } from '@/rpc/client/base';
+import { TUserRole, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from '@/rpc/gen/auth_types';
 import { authRouter } from '@/router/routers/auth';
 
 
 const ERROR_NEED_REFRESH = [
-	AuthErrorCode.AUTH_TOKEN_INVALID,
-	AuthErrorCode.AUTH_TOKEN_EXPIRED
+	TAuthErrorCode.AUTH_TOKEN_INVALID,
+	TAuthErrorCode.AUTH_TOKEN_EXPIRED
 ]
 const ERROR_NEED_LOGIN = [
-	LoginErrorCode.REFRESH_TOKEN_INVALID,
-	LoginErrorCode.REFRESH_TOKEN_EXPIRED
+	TLoginErrorCode.REFRESH_TOKEN_INVALID,
+	TLoginErrorCode.REFRESH_TOKEN_EXPIRED
 ]
 
-class AuthServiceClient extends BaseClient{
+class TAuthServiceClient extends TBaseClient{
 	constructor(stores=null, authRefreshPeriod=9){
-		super(stores, AuthService, '/api/akun/auth');
+		super(stores, TAuthService, '/api/akun/auth');
 		this.authRefreshPeriod = authRefreshPeriod
 	}
 
 	requireLogin(){
-		if (!this.authStore.authToken) throw new AuthError({ code: AuthErrorCode.NOT_LOGGED_IN });
+		if (!this.authStore.authToken) throw new TAuthError({ code: TAuthErrorCode.NOT_LOGGED_IN });
 	}
 	requireLogout(){
-		if (this.authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
+		if (this.authStore.authToken) throw new TLoginError({ code: TLoginErrorCode.ALREADY_LOGGED_IN });
 	}
 	requireRole(role){
-		if (!this.authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
+		if (!this.authStore.checkRole(role)) throw new TAuthError({ code: TAuthErrorCode.INVALID_ROLE });
 	}
 
 	async rehydrate(payload=null){
@@ -41,10 +41,10 @@ class AuthServiceClient extends BaseClient{
 			await this.setAuthRefresher();
 			return true;
 		}catch(error){
-			if ((error instanceof AuthError && ERROR_NEED_REFRESH.includes(error.code))
-				|| (error instanceof LoginError && ERROR_NEED_LOGIN.includes(error.code))){
+			if ((error instanceof TAuthError && ERROR_NEED_REFRESH.includes(error.code))
+				|| (error instanceof TLoginError && ERROR_NEED_LOGIN.includes(error.code))){
 				await this.logout();
-				throw new AuthError(AuthErrorCode.NOT_LOGGED_IN);
+				throw new TAuthError(TAuthErrorCode.NOT_LOGGED_IN);
 			}else{
 				throw error;
 			}
@@ -66,17 +66,17 @@ class AuthServiceClient extends BaseClient{
 					await cli.refresh_auth();
 				}catch(error){
 					cli.logout();
-					if (error instanceof AuthError){
-						if(error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+					if (error instanceof TAuthError){
+						if(error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
 							authRouter.dialogSessionExpired();
 						}else{
-							authRouter.dialogUnknownAuthError(error, error.code);
+							authRouter.dialogUnknownTAuthError(error, error.code);
 						}
-					} else if (error instanceof LoginError){
-						if(error.code === LoginErrorCode.REFRESH_TOKEN_EXPIRED){
+					} else if (error instanceof TLoginError){
+						if(error.code === TLoginErrorCode.REFRESH_TOKEN_EXPIRED){
 							authRouter.dialogSessionExpired();
 						}else{
-							authRouter.dialogUnknownAuthError(error, error.code);
+							authRouter.dialogUnknownTAuthError(error, error.code);
 						}
 					} else {
 						authRouter.dialogUnknownError(error);
@@ -108,7 +108,7 @@ class AuthServiceClient extends BaseClient{
 	}
 
 	async hello_admin_utama(){
-		this.requireRole(UserRole.ADMIN_UTAMA);
+		this.requireRole(TUserRole.ADMIN_UTAMA);
 		return await this.client.hello_admin_utama(this.authStore.authToken);
 	}
 
@@ -120,7 +120,7 @@ class AuthServiceClient extends BaseClient{
 			try{
 				return await func.apply(this, args);
 			}catch(error){
-				if (error instanceof AuthError && error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+				if (error instanceof TAuthError && error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
 					await cli.refresh_auth();
 					return await func.apply(this, args);
 				}
@@ -139,7 +139,7 @@ class AuthServiceClient extends BaseClient{
 			try{
 				return func.apply(this, args);
 			}catch(error){
-				if (error instanceof AuthError && error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
+				if (error instanceof TAuthError && error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
 					await cli.refresh_auth();
 					return func.apply(this, args);
 				}
@@ -150,5 +150,5 @@ class AuthServiceClient extends BaseClient{
 	}
 }
 
-export { AuthServiceClient }
-export default AuthServiceClient
+export { TAuthServiceClient }
+export default TAuthServiceClient

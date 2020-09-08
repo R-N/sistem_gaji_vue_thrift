@@ -4,24 +4,25 @@ namespace js rpc.gen.akun
 typedef i32 int
 typedef i64 long
 
-enum UserRole{
+enum TUserRole{
 	ADMIN_BIASA,
 	ADMIN_UTAMA,
 	ADMIN_AKUN,
 	PENGAWAS,
 	SUPER_ADMIN
 }
-struct User{
-	1: string name;
-	2: UserRole role;
+struct TUser{
+	1: int id;
+	2: string name;
+	3: TUserRole role;
 }
-struct LoginResult {
+struct TLoginResult {
     1: required string auth_token;
     2: optional string refresh_token;
 }
 
 
-enum LoginErrorCode{
+enum TLoginErrorCode{
 	USERNAME_KOSONG,
 	PASSWORD_KOSONG,
 	USERNAME_PASSWORD_SALAH,
@@ -29,41 +30,41 @@ enum LoginErrorCode{
 	REFRESH_TOKEN_EXPIRED,
 	ALREADY_LOGGED_IN
 }
-exception LoginError{
-	1: LoginErrorCode code;
+exception TLoginError{
+	1: TLoginErrorCode code;
 }
 
-enum AuthErrorCode{
+enum TAuthErrorCode{
 	NOT_LOGGED_IN,
 	AUTH_TOKEN_INVALID,
 	AUTH_TOKEN_EXPIRED,
 	INVALID_ROLE,
 	NO_PERMISSION
 }
-exception AuthError{
-	1: AuthErrorCode code;
+exception TAuthError{
+	1: TAuthErrorCode code;
 }
 
-service AuthService
+service TAuthService
 {
-	LoginResult login(
+	TLoginResult login(
 		1: string username, 
 		2: string password
 	) throws (
-		1: LoginError loginError
+		1: TLoginError loginError
 	);
 
 	string refresh_auth(
 		1: string auth_token,
 		2: string refresh_token
 	) throws (
-		1: AuthError authError,
-		2: LoginError loginError
+		1: TAuthError authError,
+		2: TLoginError loginError
 	);
 
-	User get_user(
+	TUser get_user(
 		1: string auth_token
 	) throws (
-		1: AuthError authError
+		1: TAuthError authError
 	);
 }

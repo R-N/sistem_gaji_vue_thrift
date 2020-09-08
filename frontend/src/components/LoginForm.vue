@@ -15,6 +15,7 @@
 import { Component, Prop } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
 import { authStore, clientStore, appStore } from "@/store/stores";
+import { router } from '@/router/index';
 
 @Component({
 	name: "LoginForm"
@@ -38,7 +39,7 @@ class LoginForm extends WorkingComponent {
 		view.globalBusy = true;
 		try{
 			await clientStore.auth.login(this.username, this.password);
-			await this.$router.push({ name: "beranda" });
+			await router.safePush({ name: "beranda" });
 		} catch (error){
 			console.log(error);
 		} finally {
