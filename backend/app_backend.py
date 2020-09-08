@@ -65,9 +65,14 @@ def hello_hello():
 def init(app, cors_origins=None):
     cors_origins = cors_origins or DEFAULT_CORS_ORIGINS
     print("CORS origins: " + str(cors_origins))
-    CORS(app, resources={r"/api/*": {
-        "origins": cors_origins
-    }})
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": cors_origins
+        },
+        r"/backend": {
+            "origins": cors_origins
+        }
+    })
     return app
 
 

@@ -1,5 +1,5 @@
 from rpc.gen.hello import HelloService
-from entities.user import User, UserRole
+from rpc.gen.akun.ttypes import UserRole
 from models import get_model
 
 class HelloServiceHandler(HelloService.Iface):

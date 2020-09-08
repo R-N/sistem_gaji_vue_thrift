@@ -13,7 +13,7 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { appStore, authStore, clientStore } from '@/store/stores';
 import SharedIdle from '@/components/SharedIdle';
-import { dialogIdleLogout } from '@/router/auth';
+import { authRouter } from '@/router/routers/auth';
 
 
 @Component({
@@ -57,7 +57,7 @@ class IdleOverlay extends Vue {
 		this.stopCountdown();
 		await clientStore.auth.logout();
 		const comp = this;
-		dialogIdleLogout();
+		authRouter.dialogIdleLogout();
 	}
 
 	stopCountdown(){

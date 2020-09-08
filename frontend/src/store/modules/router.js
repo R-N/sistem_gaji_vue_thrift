@@ -8,7 +8,7 @@ import {
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
 
-const name = 'client'
+const name = 'rouer'
 unregisterModule(name);
 
 @Module({
@@ -17,23 +17,21 @@ unregisterModule(name);
 	store,
 	dynamic: true
 })
-class ClientStore extends VuexModule {
+class RouterStore extends VuexModule {
 	auth = null;
-	hello = null;
 
-	@MutationAction({ mutate: ['auth', 'hello'] })
+	@MutationAction({ mutate: ['auth'] })
 	async init(payload){
 		return payload;
 	}
 
 	get initClients(){
-		return (stores) => {
-			this.auth.init(stores);
-			this.hello.init(stores);
+		return (stores, router) => {
+			this.auth.init(stores, router);
 		}
 	}
 }
-const clientStore = getModule(ClientStore);
+const routerStore = getModule(RouterStore);
 
-export { name, clientStore }
-export default clientStore;
+export { name, routerStore }
+export default routerStore;

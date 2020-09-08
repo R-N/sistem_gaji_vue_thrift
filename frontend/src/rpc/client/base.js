@@ -6,7 +6,7 @@ import {
 	TBufferedTransport
 } from "thrift";
 
-import { appStore } from '@/store/modules/app';
+import { StoreUser } from '@/store/user';
 
 const createClient = (
 		serviceClass, 
@@ -41,16 +41,18 @@ const setUseHttps = (newUseHttps) => { defaultUseHttps = newUseHttps };
 const setBackendHost = (newHost) => { defaultBackendHost = newHost };
 const setBackendPort = (newPort) => { defaultBackendPort = newHost };
 
-class BaseClient{
+class BaseClient extends StoreUser{
 	client = null
 
 	constructor(
+		stores,
 		clientClass, 
 		endpoint, 
 		useHttps=null,
 		backendHost=null,
 		backendPort=null
 	){
+		super(stores);
 		this.client = createClient(clientClass, endpoint, useHttps, backendHost, backendPort);
 	}
 

@@ -19,14 +19,14 @@
 <script>
 import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
-import { routeRequireLoginNow } from '@/router/auth';
+import { authRouter } from '@/router/routers/auth';
 import { authStore, clientStore, appStore } from "@/store/stores";
 import { AuthError, AuthErrorCode } from "@/rpc/gen/auth_types";
 import { router } from "@/router/index";
 
 @Component({
   	name: "BerandaView",
-	//beforeRouteEnter: routeRequireLoginNow
+	//beforeRouteEnter: authRouter.routeRequireLoginNow
 })
 class BerandaView extends BaseView {
 	msg = ''

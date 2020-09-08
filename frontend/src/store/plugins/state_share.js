@@ -1,4 +1,3 @@
-import { store } from "@/store/stores";
 import createMultiTabState from 'vuex-multi-tab-state';
 
 const stateSharePlugin = createMultiTabState({ 
@@ -15,7 +14,6 @@ const stateSharePlugin = createMultiTabState({
 		"app.serverReachable"
 	]
 });
-stateSharePlugin(store);
 
 export { stateSharePlugin };
 export default stateSharePlugin;

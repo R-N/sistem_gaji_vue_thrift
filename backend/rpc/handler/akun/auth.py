@@ -1,7 +1,6 @@
 from rpc.gen.akun import AuthService
-from entities.user import User, UserRole
 from models import get_model
-from rpc.gen.akun.ttypes import AuthError, AuthErrorCode
+from rpc.gen.akun.ttypes import User, UserRole, AuthError, AuthErrorCode
 
 class AuthServiceHandler(AuthService.Iface):
 	def __init__(self):
@@ -9,9 +8,7 @@ class AuthServiceHandler(AuthService.Iface):
 		self.user_model = get_model('user')
 
 	def login(self, username, password):
-		ret = self.auth_model.login(username, password)
-		print(ret)
-		return ret
+		return self.auth_model.login(username, password)
 
 	def refresh_auth(self, auth_token, refresh_token):
 		return self.auth_model.refresh_auth(auth_token, refresh_token)

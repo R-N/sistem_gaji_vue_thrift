@@ -1,9 +1,7 @@
 import AuthService from '@/rpc/gen/AuthService';
-import { BaseClient } from '@/rpc/client/BaseClient';
-import { authStore } from "@/store/modules/auth";
-import { appStore } from "@/store/modules/app";
+import { BaseClient } from '@/rpc/client/base';
 import { UserRole, AuthError, AuthErrorCode, LoginError, LoginErrorCode } from '@/rpc/gen/auth_types';
-import { dialogSessionExpired, dialogUnknownAuthError } from '@/router/auth';
+import { authRouter } from '@/router/routers/auth';
 
 
 const ERROR_NEED_REFRESH = [
@@ -16,24 +14,24 @@ const ERROR_NEED_LOGIN = [
 ]
 
 class AuthServiceClient extends BaseClient{
-	constructor(){
-		super(AuthService, '/api/akun/auth');
-		this.authStore = authStore;
+	constructor(stores=null, authRefreshPeriod=9){
+		super(stores, AuthService, '/api/akun/auth');
+		this.authRefreshPeriod = authRefreshPeriod
 	}
 
 	requireLogin(){
-		if (!authStore.authToken) throw new AuthError({ code: AuthErrorCode.NOT_LOGGED_IN });
+		if (!this.authStore.authToken) throw new AuthError({ code: AuthErrorCode.NOT_LOGGED_IN });
 	}
 	requireLogout(){
-		if (authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
+		if (this.authStore.authToken) throw new LoginError({ code: LoginErrorCode.ALREADY_LOGGED_IN });
 	}
 	requireRole(role){
-		if (!authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
+		if (!this.authStore.checkRole(role)) throw new AuthError({ code: AuthErrorCode.INVALID_ROLE });
 	}
 
 	async rehydrate(payload=null){
-		if (!authStore.authToken) return true;
-		if (authStore.dateChanged()){
+		if (!this.authStore.authToken) return true;
+		if (this.authStore.dateChanged()){
 			await this.logout();
 			return false;
 		}
@@ -53,7 +51,7 @@ class AuthServiceClient extends BaseClient{
 		}
 	}
 	async login(username, password){
-		await authStore.setTokens(
+		await this.authStore.setTokens(
 			await this.client.login(username, password)
 		);
 		await this.setAuthRefresher();
@@ -61,7 +59,7 @@ class AuthServiceClient extends BaseClient{
 	}
 
 	async setAuthRefresher(){
-		if (!authStore.authRefresher){
+		if (!this.authStore.authRefresher){
 			const cli = this;
 			var authRefresher = window.setInterval(async function(){
 				try{
@@ -70,48 +68,48 @@ class AuthServiceClient extends BaseClient{
 					cli.logout();
 					if (error instanceof AuthError){
 						if(error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
-							dialogSessionExpired();
+							authRouter.dialogSessionExpired();
 						}else{
-							dialogUnknownAuthError(error, error.code);
+							authRouter.dialogUnknownAuthError(error, error.code);
 						}
 					} else if (error instanceof LoginError){
 						if(error.code === LoginErrorCode.REFRESH_TOKEN_EXPIRED){
-							dialogSessionExpired();
+							authRouter.dialogSessionExpired();
 						}else{
-							dialogUnknownAuthError(error, error.code);
+							authRouter.dialogUnknownAuthError(error, error.code);
 						}
 					} else {
-						dialogUnknownError(error);
+						authRouter.dialogUnknownError(error);
 					}
 				}
-			}, 9 * 1000);
-			await authStore.setAuthRefresher(authRefresher);
+			}, this.authRefreshPeriod * 1000);
+			await this.authStore.setAuthRefresher(authRefresher);
 		}
 	}
 
 	async logout(){
-		await authStore.logout();
-		await appStore.setGlobalLogout(true);
+		await this.authStore.logout();
+		await this.appStore.setGlobalLogout(true);
 	}
 
 	async refresh_auth(){
 		this.requireLogin();
-		const newToken = await this.client.refresh_auth(authStore.authToken, authStore.refreshToken);
-		await authStore.setAuthToken(newToken);
+		const newToken = await this.client.refresh_auth(this.authStore.authToken, this.authStore.refreshToken);
+		await this.authStore.setAuthToken(newToken);
 		await this.setAuthRefresher();
 	}
 
 	async get_user(){
 		this.requireLogin();
-		await authStore.setUser(
-			await this.client.get_user(authStore.authToken)
+		await this.authStore.setUser(
+			await this.client.get_user(this.authStore.authToken)
 		);
-		return authStore.user;
+		return this.authStore.user;
 	}
 
 	async hello_admin_utama(){
 		this.requireRole(UserRole.ADMIN_UTAMA);
-		return await this.client.hello_admin_utama(authStore.authToken);
+		return await this.client.hello_admin_utama(this.authStore.authToken);
 	}
 
 	authRefreshGuardAsync(target, name, descriptor) {

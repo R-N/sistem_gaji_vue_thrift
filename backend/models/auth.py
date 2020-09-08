@@ -4,8 +4,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import hashlib
 
-from entities.user import User, UserRole
-from rpc.gen.akun.ttypes import LoginResult, LoginError, LoginErrorCode, AuthError, AuthErrorCode
+from rpc.gen.akun.ttypes import User, UserRole, LoginResult, LoginError, LoginErrorCode, AuthError, AuthErrorCode
 
 load_dotenv()
 

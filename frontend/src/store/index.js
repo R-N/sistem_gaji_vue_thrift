@@ -18,4 +18,4 @@ const store = new Vuex.Store({
 });
 const unregisterModule = (name) => { if(store.name) store.unregisterModule(name) };
 export { store, unregisterModule };
-export default { store, unregisterModule }
+export default store

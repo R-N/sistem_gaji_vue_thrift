@@ -18,14 +18,14 @@
 <script>
 import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
-import { routeRequireLogoutDialog } from '@/router/auth';
+import { authRouter } from '@/router/routers/auth';
 import ImageBackground from '@/components/ImageBackground'
 import LoginForm from '@/components/LoginForm'
 import LoadingOverlay from '@/components/LoadingOverlay';
 
 @Component({
   	name: "LoginView",
-  	//beforeRouteEnter: routeRequireLogoutDialog,
+  	//beforeRouteEnter: authRouter.routeRequireLogoutDialog,
 	components: {
 		ImageBackground,
 		LoginForm,

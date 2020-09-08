@@ -30,7 +30,7 @@ import IdleOverlay from '@/components/IdleOverlay';
 import ServerDownView from '@/views/ServerDownView';
 import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';
-import { dialogRequireLogin, dialogRequireLogout, dialogRequireRole, dialogSessionExpired, dialogUnknownAuthError, dialogUnknownError } from '@/router/auth';
+import { authRouter } from '@/router/routers/auth';
 import { AuthError, AuthErrorCode, LoginError, LoginErrorCode } from "@/rpc/gen/auth_types";
 
 const dialogAuthExpired = () => {
@@ -105,24 +105,24 @@ class App extends BaseView{
 	errorCaptured(error, vm, info) {
 		if (error instanceof LoginError){
 			if (error.code === LoginErrorCode.ALREADY_LOGGED_IN){
-				return dialogRequireLogout();
+				return authRouter.dialogRequireLogout();
 			} else if (error.code === LoginErrorCode.REFRESH_TOKEN_EXPIRED){
-				return dialogSessionExpired();
+				return authRouter.dialogSessionExpired();
 			} else {
-				return dialogUnknownAuthError("LoginError", error.code);
+				return authRouter.dialogUnknownAuthError("LoginError", error.code);
 			}
 		} else if (error instanceof AuthError){
 			if (error.code === AuthErrorCode.INVALID_ROLE){
-				return dialogRequireRole();
+				return authRouter.dialogRequireRole();
 			} else if (error.code === AuthErrorCode.NOT_LOGGED_IN){
-				return dialogRequireLogin();
+				return authRouter.dialogRequireLogin();
 			} else if (error.code === AuthErrorCode.AUTH_TOKEN_EXPIRED){
-				return dialogAuthExpired();
+				return authRouter.dialogAuthExpired();
 			} else {
-				return dialogUnknownAuthError("AuthError", error.code);
+				return authRouter.dialogUnknownAuthError("AuthError", error.code);
 			}
 		} else {
-			dialogUnknownError(error);
+			authRouter.dialogUnknownError(error);
 		}
 	}
 }

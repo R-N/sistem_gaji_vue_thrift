@@ -1,4 +1,4 @@
-from entities.user import User, UserRole
+from rpc.gen.akun.ttypes import User, UserRole
 users = {
     'admin': User('Admin Biasa', UserRole.ADMIN_BIASA),
     'admin_utama': User('Admin Utama', UserRole.ADMIN_UTAMA)
