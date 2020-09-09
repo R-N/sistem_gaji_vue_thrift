@@ -1,5 +1,5 @@
 import createPersistedState from 'vuex-persistedstate';
-import { routerStore, clientStore } from '@/store/stores';
+import { routerStore, clientStore, authStore, appStore, } from '@/store/stores';
 
 const storageKey = 'vuex'
 console.log(routerStore);
@@ -16,8 +16,14 @@ const persistencePlugin = createPersistedState({
 	],
 	rehydrated: async store => {
 		try{ 
-			if(!await clientStore.auth.rehydrate()){
-				routerStore.auth.dialogSessionExpired();
+			if (authStore.isLoggedIn){
+				if (!appStore.serverReachable){
+					clientStore.auth.logout();
+				} else {
+					if(!await clientStore.auth.rehydrate()){
+						routerStore.auth.dialogSessionExpired();
+					}
+				}
 			}
 		}catch(error){
 			routerStore.auth.dialogUnknownError(error);

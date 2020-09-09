@@ -1,6 +1,7 @@
 from rpc.gen.system.backup import TBackupService
 from rpc.gen.akun.auth.ttypes import TUserRole
 from models import get_model
+from flask import request
 
 class TBackupServiceHandler(TBackupService.Iface):
     def __init__(self):
@@ -14,3 +15,7 @@ class TBackupServiceHandler(TBackupService.Iface):
     def fetch_backups(self, auth_token):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
         return self.backup_model.fetch_backups()
+
+    def download_backup(self, auth_token, filename):
+        ip = request.remote_addr
+        return self.backup_model.download_backup(ip, filename)

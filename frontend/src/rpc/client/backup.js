@@ -19,7 +19,7 @@ class TBackupServiceClient extends TBaseClient{
 	}
 	async delete_backup(file_name){
 		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.create_backup(this.authStore.authToken, file_name);
+		return await this.client.delete_backup(this.authStore.authToken, file_name);
 	}
 	async download_backup(file_name){
 		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);

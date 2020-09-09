@@ -22,7 +22,8 @@ if __name__ == "__main__":
     generator.generate_reset()
 
 from server.thrift import init as init_thrift
-from server.backup import init as init_backup
+from server.download import init as init_download
+from server.upload import init as init_upload
 from server.report import init as init_report
 
 db.create_tables()
@@ -31,24 +32,30 @@ DEFAULT_CORS_ORIGINS = os.getenv("CORS_ORIGINS").split(',') or [
     "http://localhost:8080",
     "http://localhost:80"
 ]
+CORS_RESOURCES = [
+    r"/api/*",
+    r"/backend/*",
+    r"/download/*",
+    r"/upload/*",
+    r"/report/*"
+]
 
 backend = Flask("sistem_gaji_backend", template_folder='frontend', static_folder='frontend/static')
 backend.config['SQLALCHEMY_DATABASE_URI'] = db.connect_str
 
 def init(app, cors_origins=None):
     init_thrift(app)
-    init_backup(app)
+    init_download(app)
+    init_upload(app)
     init_report(app)
     cors_origins = cors_origins or DEFAULT_CORS_ORIGINS
     print("CORS origins: " + str(cors_origins))
-    CORS(app, resources={
-        r"/api/*": {
-            "origins": cors_origins
-        },
-        r"/backend": {
-            "origins": cors_origins
-        }
-    })
+    cors_origins_obj = {
+        "origins": cors_origins
+    }
+    cors_resources = {r:cors_origins_obj for r in CORS_RESOURCES}
+    print("CORS resources: " + str(cors_resources))
+    CORS(app, resources=cors_resources)
     return app
 
 SERVER_KEY = os.getenv("SERVER_KEY")

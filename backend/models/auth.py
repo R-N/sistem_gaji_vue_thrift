@@ -2,7 +2,7 @@ import jwt
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from utils.crypto import md5
+from utils.crypto import md5, encode_jwt, decode_jwt
 
 from db import DBSession
 from db.entities import DBUser
@@ -76,31 +76,24 @@ class AuthModel:
     def set_refresh(self, refresh_enc, refresh_dec):
         self.refresh_enc, self.refresh_dec = refresh_enc, refresh_dec
 
-    def encode(self, payload, enc, expiration, now=None):
-        now = now or datetime.utcnow()
-        payload['exp'] = now + expiration
-        return jwt.encode(payload, enc, algorithm='RS256').decode('utf-8')
-
-    def decode(self, token, dec, issuer=None, audience=None):
-        return jwt.decode(token.decode('utf-8') if token is str else token, dec, algorithms='RS256', issuer=issuer, audience=audience)
 
     def encode_auth(self, payload, now=None):
-        return self.encode(payload, self.auth_enc, self.auth_expiration, now=now)
+        return encode_jwt(payload, self.auth_enc, self.auth_expiration, now=now)
 
     def decode_auth(self, token):
         try:
-            return self.decode(token, self.auth_dec, issuer=self.auth_secret)
+            return decode_jwt(token, self.auth_dec, issuer=self.auth_secret)
         except jwt.ExpiredSignatureError:
             raise TAuthError(TAuthErrorCode.AUTH_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
             raise TAuthError(TAuthErrorCode.AUTH_TOKEN_INVALID)
 
     def encode_refresh(self, payload, now=None):
-        return self.encode(payload, self.refresh_enc, self.refresh_expiration, now=now)
+        return encode_jwt(payload, self.refresh_enc, self.refresh_expiration, now=now)
 
     def decode_refresh(self, token, auth_secret_2):
         try:
-            return self.decode(token, self.refresh_dec, issuer=self.refresh_secret, audience=auth_secret_2)
+            return decode_jwt(token, self.refresh_dec, issuer=self.refresh_secret, audience=auth_secret_2)
         except jwt.ExpiredSignatureError:
             raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):

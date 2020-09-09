@@ -27,6 +27,8 @@
 			defaultUseHttps = (flaskUseHttps == '' || flaskRegex.test(flaskUseHttps)) ? defaultUseHttps : JSON.parse(flaskUseHttps.toLowerCase());
 			defaultBackendHost = (flaskBackendHost == '' || flaskRegex.test(flaskBackendHost)) ? defaultBackendHost : flaskBackendHost;
 			defaultBackendPort = (flaskBackendPort == '' || flaskRegex.test(flaskBackendPort)) ? defaultBackendPort : parseInt(flaskBackendPort);
+
+			var defaultBackendUrl = (defaultUseHttps ? "https://" : "http://") + defaultBackendHost + ":" + defaultBackendPort;
 		</script>
 		<div id="app"></div>
 		<!-- built files will be auto injected -->

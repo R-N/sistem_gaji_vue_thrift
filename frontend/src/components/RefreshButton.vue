@@ -16,7 +16,7 @@ class RefreshButton extends Vue {
 	@Prop({ default: true }) large;
 	async refresh(){
 		appStore.setRouterBusy(true);
-		if(!this.globalBusy){
+		if(!appStore.globalBusy){
 			window.location.reload();
 		}else{
 			appStore.setGlobalBusy(false);
