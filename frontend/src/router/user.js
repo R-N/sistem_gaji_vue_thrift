@@ -9,6 +9,7 @@ class RouterUser extends StoreUser{
 	init(stores, router){
 		if (stores) super.init(stores);
 		if (router) this.router = router;
+		console.log(router);
 		return this;
 	}
 }

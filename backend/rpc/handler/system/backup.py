@@ -1,11 +1,11 @@
-from rpc.gen.hello.hello import THelloService
+from rpc.gen.system.backup import TBackupService
 from rpc.gen.akun.auth.ttypes import TUserRole
 from models import get_model
 
-class THelloServiceHandler(THelloService.Iface):
+class TBackupServiceHandler(TBackupService.Iface):
     def __init__(self):
         self.auth_model = get_model('auth')
 
-    def hello_admin_utama(self, auth_token):
+    def create_backup(self, auth_token, name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
-        return "Halo, Admin Utama!"
+        print("create_backup: " + name)

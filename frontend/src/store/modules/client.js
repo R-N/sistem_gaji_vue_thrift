@@ -20,8 +20,10 @@ unregisterModule(name);
 class ClientStore extends VuexModule {
 	auth = null;
 	hello = null;
+	user = null;
+	backup = null;
 
-	@MutationAction({ mutate: ['auth', 'hello'] })
+	@MutationAction({ mutate: ['auth', 'hello', 'user', 'backup'] })
 	async init(payload){
 		return payload;
 	}

@@ -3,7 +3,6 @@ import { TBaseClient } from '@/rpc/client/base';
 import { TUserRole, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from '@/rpc/gen/auth_types';
 import { authRouter } from '@/router/routers/auth';
 
-
 const ERROR_NEED_REFRESH = [
 	TAuthErrorCode.AUTH_TOKEN_INVALID,
 	TAuthErrorCode.AUTH_TOKEN_EXPIRED
@@ -26,6 +25,7 @@ class TAuthServiceClient extends TBaseClient{
 		if (this.authStore.authToken) throw new TLoginError({ code: TLoginErrorCode.ALREADY_LOGGED_IN });
 	}
 	requireRole(role){
+		this.requireLogin();
 		if (!this.authStore.checkRole(role)) throw new TAuthError({ code: TAuthErrorCode.INVALID_ROLE });
 	}
 
@@ -37,7 +37,7 @@ class TAuthServiceClient extends TBaseClient{
 		}
 		try{
 			await this.refresh_auth();
-			await this.get_user();
+			await this.clientStore.user.get_user();
 			await this.setAuthRefresher();
 			return true;
 		}catch(error){
@@ -55,7 +55,7 @@ class TAuthServiceClient extends TBaseClient{
 			await this.client.login(username, password)
 		);
 		await this.setAuthRefresher();
-		return await this.get_user();
+		return await this.clientStore.user.get_user();
 	}
 
 	async setAuthRefresher(){
@@ -97,19 +97,6 @@ class TAuthServiceClient extends TBaseClient{
 		const newToken = await this.client.refresh_auth(this.authStore.authToken, this.authStore.refreshToken);
 		await this.authStore.setAuthToken(newToken);
 		await this.setAuthRefresher();
-	}
-
-	async get_user(){
-		this.requireLogin();
-		await this.authStore.setUser(
-			await this.client.get_user(this.authStore.authToken)
-		);
-		return this.authStore.user;
-	}
-
-	async hello_admin_utama(){
-		this.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.hello_admin_utama(this.authStore.authToken);
 	}
 
 	authRefreshGuardAsync(target, name, descriptor) {

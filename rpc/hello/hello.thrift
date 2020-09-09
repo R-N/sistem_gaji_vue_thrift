@@ -1,7 +1,7 @@
 include "../akun/auth.thrift"
 
-namespace py rpc.gen.hello
-namespace js rpc.gen.hello
+namespace py rpc.gen.hello.hello
+namespace js rpc.gen.hello.hello
 
 service THelloService{
 	string hello_admin_utama(

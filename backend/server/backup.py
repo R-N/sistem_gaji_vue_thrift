@@ -1,0 +1,3 @@
+
+def init(app):
+	pass

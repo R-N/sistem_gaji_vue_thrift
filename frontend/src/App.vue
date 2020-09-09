@@ -19,7 +19,7 @@
 
 <script>
 
-import { authStore, appStore } from "@/store/stores";
+import { authStore, appStore, clientStore } from "@/store/stores";
 import { Component, Watch } from 'vue-property-decorator'
 import { BaseView } from '@/views/BaseView';
 import LoadingOverlay from '@/components/LoadingOverlay';
@@ -107,6 +107,7 @@ class App extends BaseView{
 			if (error.code === TLoginErrorCode.ALREADY_LOGGED_IN){
 				return authRouter.dialogRequireLogout();
 			} else if (error.code === TLoginErrorCode.REFRESH_TOKEN_EXPIRED){
+				clientStore.auth.logout();
 				return authRouter.dialogSessionExpired();
 			} else {
 				return authRouter.dialogUnknownTAuthError("TLoginError", error.code);
@@ -115,10 +116,13 @@ class App extends BaseView{
 			if (error.code === TAuthErrorCode.INVALID_ROLE){
 				return authRouter.dialogRequireRole();
 			} else if (error.code === TAuthErrorCode.NOT_LOGGED_IN){
+				clientStore.auth.logout();
 				return authRouter.dialogRequireLogin();
 			} else if (error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
+				clientStore.auth.logout();
 				return authRouter.dialogAuthExpired();
 			} else {
+				clientStore.auth.logout();
 				return authRouter.dialogUnknownTAuthError("TAuthError", error.code);
 			}
 		} else {

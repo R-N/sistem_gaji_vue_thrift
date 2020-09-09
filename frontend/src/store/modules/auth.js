@@ -7,8 +7,9 @@ import {
 	Module
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
-import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
+import { TUserRole, T_USER_ROLE_DOUBLES, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
 import { dateAsInt } from '@/lib/util';
+
 
 const name = 'auth'
 unregisterModule(name);
@@ -68,7 +69,7 @@ class AuthStore extends VuexModule {
 		return this.user.role;
 	}
 	get checkRole(){
-		return (role) => this.authToken && this.user && (this.user.role === role);
+		return (role) => this.authToken && this.user && (role in T_USER_ROLE_DOUBLES) && T_USER_ROLE_DOUBLES[role].includes(this.user.role);
 	}
 
 

@@ -7,7 +7,8 @@ from utils.crypto import md5
 from db import DBSession
 from db.entities import DBUser
 
-from rpc.gen.akun.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
+from rpc.gen.akun.auth.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
+from rpc.gen.akun.auth.constants import T_USER_ROLE_DOUBLES
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -143,6 +144,6 @@ class AuthModel:
 
     def require_role(self, auth_token, role):
         auth_payload = self.decode_auth(auth_token)
-        if auth_payload['role'] != role:
+        if not (role in T_USER_ROLE_DOUBLES and auth_payload['role'] in T_USER_ROLE_DOUBLES[role]):
             raise TAuthError(TAuthErrorCode.INVALID_ROLE)
         return auth_payload

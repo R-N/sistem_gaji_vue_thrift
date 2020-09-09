@@ -9,8 +9,6 @@ class THelloServiceClient extends TBaseClient{
 		return this;
 	}
 
-	async rehydrate(payload=null){
-	}
 	async hello_admin_utama(){
 		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
 		return await this.client.hello_admin_utama(this.authStore.authToken);
