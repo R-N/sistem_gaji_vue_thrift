@@ -5,17 +5,20 @@ from db import DBSession
 from db.entities import DBUser
 from datetime import date
 from pyexcel_xlsx import save_data as save_to_xlsx
+from os import listdir
+from os.path import isfile, join
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
 BACKUP_TABLES = [DBUser]
+BACKUP_PATH = "backups"
 
 class BackupModel:
     def __init__(self):
         pass
 
     def create_backup(self, name):
-        filename = "%s/%s %s.xlsx" % ("backups", str(date.today()), name)
+        filename = "%s/%s %s.xlsx" % (BACKUP_PATH, str(date.today()), name)
         with DBSession() as session:
             exporter = SQLTableExporter(session)
             for table in BACKUP_TABLES:
@@ -24,3 +27,8 @@ class BackupModel:
             data = get_data(exporter, file_type=DB_SQL)
             #data['users2'] = data['users']
             save_to_xlsx(filename, data)
+
+    def fetch_backups(self):
+        files = [f for f in listdir(BACKUP_PATH) if isfile(join(BACKUP_PATH, f))]
+        return files
+
