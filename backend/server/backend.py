@@ -19,6 +19,7 @@ if __name__ == "__main__":
     generator.generate_refresh()
     generator.generate_download()
     generator.generate_upload()
+    generator.generate_reset()
 
 from server.thrift import init as init_thrift
 from server.backup import init as init_backup

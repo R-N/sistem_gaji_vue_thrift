@@ -143,8 +143,17 @@ certs/auth.enc
 certs/auth.dec
 certs/refresh.enc
 certs/refresh.dec
+certs/download.enc
+certs/download.dec
+certs/upload.enc
+certs/upload.dec
+certs/report.enc
+certs/report.dec
+certs/reset.enc
+certs/reset.dec
 .gitkeep
 !/**/.gitkeep
 
 scratchpad.py
 playground.py
+backup/*

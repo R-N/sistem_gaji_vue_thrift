@@ -203,11 +203,20 @@ def generate_report(enc_file=REPORT_ENC, dec_file=REPORT_DEC):
     key = make_key()
     enc, dec = export_key(key, priv_file=enc_file, pub_file=dec_file)
     return enc, dec
+    
+RESET_ENC = os.getenv("RESET_ENC")
+RESET_DEC = os.getenv("RESET_DEC")
+
+def generate_reset(enc_file=RESET_ENC, dec_file=RESET_DEC):
+    key = make_key()
+    enc, dec = export_key(key, priv_file=enc_file, pub_file=dec_file)
+    return enc, dec
 
 if __name__ == "__main__":
-    generate_server()
+    #generate_server()
     generate_auth()
     generate_refresh()
     generate_download()
     generate_upload()
     generate_report()
+    generate_reset()

@@ -2,6 +2,9 @@ python-dotenv
 psycopg2
 sqlalchemy
 pyexcel
+pyexcel-io
+pyexcel-xls
+pyexcel-xlsx
 bcrypt
 passlib
 PyJWT

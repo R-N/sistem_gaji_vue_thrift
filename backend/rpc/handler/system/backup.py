@@ -5,7 +5,8 @@ from models import get_model
 class TBackupServiceHandler(TBackupService.Iface):
     def __init__(self):
         self.auth_model = get_model('auth')
+        self.backup_model = get_model('backup')
 
     def create_backup(self, auth_token, name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
-        print("create_backup: " + name)
+        self.backup_model.create_backup(name)
