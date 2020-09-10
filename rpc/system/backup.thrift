@@ -1,5 +1,7 @@
 include "../akun/auth.thrift"
 include "../file/file.thrift"
+include "../file/download.thrift"
+include "../file/upload.thrift"
 
 namespace py rpc.gen.system.backup
 namespace js rpc.gen.system.backup
@@ -32,7 +34,8 @@ service TBackupService{
 		2: string file_name
 	) throws (
 		1: auth.TAuthError authError,
-		2: file.TFileError fileError
+		2: file.TFileError fileError,
+		3: download.TDownloadError downloadError
 	);
 
 	string get_upload_token(
@@ -40,6 +43,7 @@ service TBackupService{
 		2: string file_name
 	) throws (
 		1: auth.TAuthError authError,
-		2: file.TFileError fileError
+		2: file.TFileError fileError,
+		3: upload.TUploadError uploadError
 	);
 }

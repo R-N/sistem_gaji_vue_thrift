@@ -11,12 +11,12 @@
 			>
 				<vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions" useCustomSlot @vdropzone-file-added="onFileDropped">
 					<div @click.stop="" class="d-flex flex-column">
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="fetchBackups" :disabled="busy">Fetch Backups</v-btn>
 						<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="createBackup" :disabled="busy">Backup</v-btn>
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="fetchBackups" :disabled="busy">Fetch Backups</v-btn>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="downloadBackup" :disabled="busy">Download Backup</v-btn>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="hello" :disabled="busy">Hello Admin Utama</v-btn>
-				    	<v-file-input ref="myFileInput" label="File input" v-model="file" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></v-file-input>
+				    	<v-file-input ref="myFileInput" label="File input" v-model="file" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" show-size></v-file-input>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="uploadBackup" :disabled="busy">Upload</v-btn>
 				        <h4 class="text-center mb-4" v-if="msg">{{ msg }}</h4>
 			        </div>
