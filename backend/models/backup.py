@@ -11,7 +11,7 @@ from os import listdir
 from os.path import isfile, join
 from pathlib import Path
 from .manager import get_model
-from utils.file import file_exists, file_allowed
+from utils.file import get_file, file_allowed
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -48,14 +48,14 @@ class BackupModel:
         return "%s/%s" % (self.backup_path, file_name)
 
     def create_download_token(self, ip, file_name):
-        if not file_exists(self.backup_path, file_name):
+        if not get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
         return get_model("download").encode(ip, self.model_name, file_name)
 
     def create_upload_token(self, ip, file_name):
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)
-        if file_exists(self.backup_path, file_name):
+        if get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_ALREADY_EXISTS)
         return get_model("upload").encode(ip, self.model_name, file_name)
 
@@ -71,7 +71,12 @@ class BackupModel:
         file_name = payload['name']
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)
-        if file_exists(self.backup_path, file_name):
+        if get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_ALREADY_EXISTS)
         return payload
 
+    def delete_backup(self, file_name):
+        file = get_file(self.backup_path, file_name)
+        if not file:
+            raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
+        file.unlink()

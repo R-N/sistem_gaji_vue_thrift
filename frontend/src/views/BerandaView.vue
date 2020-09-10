@@ -15,6 +15,7 @@
 						<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="createBackup" :disabled="busy">Backup</v-btn>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="downloadBackup" :disabled="busy">Download Backup</v-btn>
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="deleteBackup" :disabled="busy">Delete Backup</v-btn>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="hello" :disabled="busy">Hello Admin Utama</v-btn>
 				    	<v-file-input ref="myFileInput" label="File input" v-model="file" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" show-size></v-file-input>
 				    	<v-btn raised color="primary" class="text-center mx-0" @click="uploadBackup" :disabled="busy">Upload</v-btn>
@@ -124,6 +125,25 @@ class BerandaView extends BaseView {
 			if (!this.backupName) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
 			await clientStore.backup.create_backup(this.backupName);
 			this.msg = "Backup berhasil dibuat!";
+		} catch (error){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
+			}else if (error instanceof TFileError){
+				this.msg = T_FILE_ERROR_STR[error.code];
+			}else{
+				throw error;
+			}
+		} finally {
+			view.busy = false;
+		}
+	}
+	async deleteBackup(){
+		const view = this;
+		view.busy=true;
+		try{
+			if (!this.backupName) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
+			await clientStore.backup.delete_backup(this.backupName);
+			this.msg = "Backup " + this.backupName + " berhasil dihapus!";
 		} catch (error){
 			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
