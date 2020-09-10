@@ -9,19 +9,25 @@
 				justify="center"
 				class="flex-column"
 			>
-				<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
-		    	<v-btn raised color="primary" class="text-center mx-0" @click="createBackup" :loading="busy">Backup</v-btn>
-		    	<v-btn raised color="primary" class="text-center mx-0" @click="fetchBackups" :loading="busy">Fetch Backups</v-btn>
-		    	<v-btn raised color="primary" class="text-center mx-0" @click="downloadBackup" :loading="busy">Download Backup</v-btn>
-		    	<v-btn raised color="primary" class="text-center mx-0" @click="hello" :loading="busy">Hello Admin Utama</v-btn>
-		        <h4 class="text-center mb-4" v-if="msg">{{ msg }}</h4>
+				<vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions" useCustomSlot @vdropzone-file-added="onFileDropped">
+					<div @click.stop="" class="d-flex flex-column">
+						<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="createBackup" :disabled="busy">Backup</v-btn>
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="fetchBackups" :disabled="busy">Fetch Backups</v-btn>
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="downloadBackup" :disabled="busy">Download Backup</v-btn>
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="hello" :disabled="busy">Hello Admin Utama</v-btn>
+				    	<v-file-input ref="myFileInput" label="File input" v-model="file" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></v-file-input>
+				    	<v-btn raised color="primary" class="text-center mx-0" @click="uploadBackup" :disabled="busy">Upload</v-btn>
+				        <h4 class="text-center mb-4" v-if="msg">{{ msg }}</h4>
+			        </div>
+				</vue-dropzone>
 			</v-row>
 		</v-container>
 	</v-main>
 </template>
 
 <script>
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 import { authRouter } from '@/router/routers/auth';
 import { authStore, clientStore, appStore } from "@/store/stores";
@@ -31,19 +37,70 @@ import { router } from "@/router/index";
 import axios from 'axios';
 //import fileDownload from 'js-file-download';
 import FileSaver from 'file-saver';
+//import FileUpload from 'vue-upload-component';
+import vueDropzone from 'vue2-dropzone'
+
 
 @Component({
   	name: "BerandaView",
+  	components: {
+  		vueDropzone
+  	}
 	//beforeRouteEnter: authRouter.routeRequireLoginNow
 })
 class BerandaView extends BaseView {
 	backupName = ''
 	msg = ''
+	file = null
+	fromDrop = false
 
+	get dropzoneOptions() {
+		return {
+			url: defaultBackendUrl + "/upload/",
+			params: this.dropzoneParams,
+			maxFilesize: 1,
+			clickable: false,
+			uploadMultiple: false,
+			autoProcessQueue: false,
+			acceptedFiles: ".xlsx",
+			mimeTypes: ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+		}
+	}
+	dropzoneParams(files, xhr, chunk=null){
+		return {
+			"upload_token": "asdasd"
+		}
+	}
+	onFileDropped(file){
+		this.$refs["myDropzone"].removeAllFiles();
+		/*
+		if(this.file != null){
+			appStore.pushTabDialog({
+				title: "Error",
+				text: "Anda hanya dapat upload 1 file"
+			});
+		}else{*/
+			this.file = file
+			this.fromDrop = true;
+		//}
+	}
+	@Watch("file")
+	onFileChanged(file, old){
+		if(this.fromDrop){
+			this.fromDrop = false;
+			if(file && !file.accepted){
+				this.file = old;
+				appStore.pushTabDialog({
+					title: "Error",
+					text: "Format harus xlsx"
+				});
+			}
+		}
+	}
 	beforeMount(){
 		//if(!routeRequireLoginNow()) return;
 	}
-	
+
 	async hello(){
 		const view = this;
 		view.busy=true;
@@ -99,36 +156,36 @@ class BerandaView extends BaseView {
 		const view = this;
 		view.busy=true;
 		try{
-			if (!this.backupName) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
-			var token = await clientStore.backup.download_backup(this.backupName);
-
-			try{
-				var response = await axios({
-					method: 'post',
-					url: defaultBackendUrl + "/download/",
-					data: {
-						download_token: token
-					},
-					responseType: 'arraybuffer'
-				});
-				let blob = new Blob(
-					[response.data], 
-					{ 
-						type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-					}
-				);
-				FileSaver.saveAs(blob, this.backupName);
-			}catch(error){
-				console.log(error);
-				console.log(error.response);
-			}
+			let blob = await clientStore.backup.download_backup(this.backupName);
+			FileSaver.saveAs(blob, this.backupName);
 		} catch (error){
 			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else if (error instanceof TFileError){
 				this.msg = T_FILE_ERROR_STR[error.code];
 			}else{
-				throw error;
+				console.log(error);
+				console.log(error.response);
+			}
+		} finally {
+			view.busy = false;
+		}
+	}
+	async uploadBackup(){
+		const view = this;
+		view.busy=true;
+		try{
+			let uploadedName = await clientStore.backup.upload_backup(this.file, this.backupName);
+			this.file = null;
+			this.msg = "Berhasil upload " + uploadedName + "!";
+		} catch (error){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
+			}else if (error instanceof TFileError){
+				this.msg = T_FILE_ERROR_STR[error.code];
+			}else{
+				console.log(error);
+				console.log(error.response);
 			}
 		} finally {
 			view.busy = false;

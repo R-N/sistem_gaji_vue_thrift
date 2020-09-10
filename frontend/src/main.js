@@ -2,6 +2,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import 'bootstrap-css-only/css/bootstrap.min.css'
 import 'mdbvue/lib/css/mdb.min.css'
 import '@/assets/css/common.css'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 //import 'paper-css/paper.css'
 import Vue from 'vue'
 

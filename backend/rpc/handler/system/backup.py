@@ -16,6 +16,10 @@ class TBackupServiceHandler(TBackupService.Iface):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
         return self.backup_model.fetch_backups()
 
-    def download_backup(self, auth_token, filename):
+    def get_download_token(self, auth_token, filename):
         ip = request.remote_addr
-        return self.backup_model.download_backup(ip, filename)
+        return self.backup_model.create_download_token(ip, filename)
+
+    def get_upload_token(self, auth_token, filename):
+        ip = request.remote_addr
+        return self.backup_model.create_upload_token(ip, filename)

@@ -1,10 +1,8 @@
-from rpc.gen.file.file.ttypes import TFileError, TFileErrorCode
+from rpc.gen.file.upload.ttypes import TUploadError, TUploadErrorCode
 from datetime import timedelta
 import os
-from os import listdir
-from os.path import isfile, join
-from pathlib import Path
 from utils.crypto import encode_jwt, decode_jwt
+import jwt
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -42,3 +40,24 @@ class UploadModel:
         
     def set_upload(self, upload_enc, upload_dec):
         self.upload_enc, self.upload_dec = upload_enc, upload_dec
+
+    def make_issuer(self, func):
+        return "%s/%s" % (self.upload_secret, func)
+
+    def encode(self, ip, func, file_name):
+        upload_payload = {
+            'name': file_name,
+            'iss': self.make_issuer(func),
+            'aud': ip
+        }
+        ret = encode_jwt(upload_payload, self.upload_enc, self.upload_expiration)
+        return ret
+
+    def decode(self, ip, func, token):
+        try:
+            return decode_jwt(token, self.upload_dec, issuer=self.make_issuer(func), audience=ip)
+        except jwt.ExpiredSignatureError:
+            raise TUploadError(TUploadErrorCode.UPLOAD_TOKEN_EXPIRED)
+        except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
+            raise TUploadError(TUploadErrorCode.UPLOAD_TOKEN_INVALID)
+

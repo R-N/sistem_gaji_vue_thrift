@@ -27,7 +27,7 @@ service TBackupService{
 		2: file.TFileError fileError
 	);
 
-	string download_backup(
+	string get_download_token(
 		1: string auth_token,
 		2: string file_name
 	) throws (
@@ -36,8 +36,10 @@ service TBackupService{
 	);
 
 	string get_upload_token(
-		1: string auth_token
+		1: string auth_token,
+		2: string file_name
 	) throws (
-		1: auth.TAuthError authError
+		1: auth.TAuthError authError,
+		2: file.TFileError fileError
 	);
 }

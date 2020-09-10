@@ -25,7 +25,7 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 
 @Component({
   	name: "LoginView",
-  	//beforeRouteEnter: authRouter.routeRequireLogoutDialog,
+  	beforeRouteEnter: authRouter.routeRequireLogoutDialog,
 	components: {
 		ImageBackground,
 		LoginForm,

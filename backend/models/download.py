@@ -1,10 +1,6 @@
-from rpc.gen.file.file.ttypes import TFileError, TFileErrorCode
 from rpc.gen.file.download.ttypes import TDownloadError, TDownloadErrorCode
 from datetime import timedelta
 import os
-from os import listdir
-from os.path import isfile, join
-from pathlib import Path
 from utils.crypto import encode_jwt, decode_jwt
 import jwt
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
@@ -46,28 +42,20 @@ class DownloadModel:
     def set_download(self, download_enc, download_dec):
         self.download_enc, self.download_dec = download_enc, download_dec
 
+    def make_issuer(self, func):
+        return "%s/%s" % (self.download_secret, func)
 
-    def download(self, ip, file_dir, file_name):
-        file = Path("%s/%s" % (file_dir, file_name))
-        if not file.is_file():
-            raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
+    def encode(self, ip, func, file_name):
         download_payload = {
-            'dir': file_dir,
             'name': file_name,
-            'iss': self.download_secret,
+            'iss': self.make_issuer(func),
             'aud': ip
         }
         return encode_jwt(download_payload, self.download_enc, self.download_expiration)
 
-    def decode(self, ip, token):
+    def decode(self, ip, func, token):
         try:
-            payload = decode_jwt(token, self.download_dec, issuer=self.download_secret, audience=ip)
-            if 'dir' not in payload or 'name' not in payload:
-                raise TDownloadError(TDownloadErrorCode.DOWNLOAD_TOKEN_INVALID)
-            file = Path("%s/%s" % (payload['dir'], payload['name']))
-            if not file.is_file():
-                raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
-            return payload
+            return decode_jwt(token, self.download_dec, issuer=self.make_issuer(func), audience=ip)
         except jwt.ExpiredSignatureError:
             raise TDownloadError(TDownloadErrorCode.DOWNLOAD_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):

@@ -7,7 +7,6 @@ import os
 from dotenv import load_dotenv
 from certs import generator
 
-import server.frontend as frontend
 
 
 import db
@@ -21,9 +20,9 @@ if __name__ == "__main__":
     generator.generate_upload()
     generator.generate_reset()
 
+from server.frontend import init as init_frontend
 from server.thrift import init as init_thrift
-from server.download import init as init_download
-from server.upload import init as init_upload
+from server.backup import init as init_backup
 from server.report import init as init_report
 
 db.create_tables()
@@ -34,6 +33,7 @@ DEFAULT_CORS_ORIGINS = os.getenv("CORS_ORIGINS").split(',') or [
 ]
 CORS_RESOURCES = [
     r"/api/*",
+    r"/backup/*",
     r"/backend/*",
     r"/download/*",
     r"/upload/*",
@@ -45,16 +45,15 @@ backend.config['SQLALCHEMY_DATABASE_URI'] = db.connect_str
 
 def init(app, cors_origins=None):
     init_thrift(app)
-    init_download(app)
-    init_upload(app)
+    init_backup(app)
     init_report(app)
     cors_origins = cors_origins or DEFAULT_CORS_ORIGINS
+    print("CORS resources: " + str(CORS_RESOURCES))
     print("CORS origins: " + str(cors_origins))
     cors_origins_obj = {
         "origins": cors_origins
     }
     cors_resources = {r:cors_origins_obj for r in CORS_RESOURCES}
-    print("CORS resources: " + str(cors_resources))
     CORS(app, resources=cors_resources)
     return app
 
@@ -76,7 +75,7 @@ def serve(app, port=BACKEND_PORT, use_ssl=BACKEND_HTTPS, keyfile=SERVER_KEY, cer
 
 def main():
     init(backend)
-    frontend.init(backend, backend_https=BACKEND_HTTPS, backend_host=BACKEND_HOST, backend_port=BACKEND_PORT)
+    init_frontend(backend, backend_https=BACKEND_HTTPS, backend_host=BACKEND_HOST, backend_port=BACKEND_PORT)
     serve(backend)
 
 if __name__ == "__main__":
