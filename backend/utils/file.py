@@ -2,6 +2,8 @@ from pathlib import Path
 from flask import safe_join
 from werkzeug.exceptions import NotFound
 from rpc.gen.file.file.ttypes import TFileError, TFileErrorCode
+from os.path import getmtime
+from datetime import datetime
 
 def get_file(file_dir, file_name):
     try:
@@ -20,3 +22,6 @@ def get_file(file_dir, file_name):
 def file_allowed(file_name, allowed_extensions):
     #file_name = secure_filename(file_name)
     return '.' in file_name and file_name.rsplit('.', 1)[1].lower() in allowed_extensions
+
+def last_modified(file_path):
+    return datetime.fromtimestamp(getmtime(file_path))

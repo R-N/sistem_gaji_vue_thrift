@@ -1,18 +1,15 @@
 <template>
-    <v-main v-if="!isLoggedIn">
-		<image-background :src="require('@/assets/img/login-background.png')"></image-background>
-		<v-container
-			class="fill-height"
-			fluid
+	<v-container
+		class="fill-height"
+		fluid
+	>
+		<v-row
+			align="center"
+			justify="center"
 		>
-			<v-row
-				align="center"
-				justify="center"
-			>
-				<login-form/>
-			</v-row>
-		</v-container>
-    </v-main>
+			<login-form/>
+		</v-row>
+	</v-container>
 </template>
 
 <script>

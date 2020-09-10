@@ -2,6 +2,7 @@ from rpc.gen.system.backup import TBackupService
 from rpc.gen.akun.auth.ttypes import TUserRole
 from models import get_model
 from flask import request
+from rpc.gen.system.backup.ttypes import TBackupFile
 
 class TBackupServiceHandler(TBackupService.Iface):
     def __init__(self):
@@ -10,11 +11,13 @@ class TBackupServiceHandler(TBackupService.Iface):
 
     def create_backup(self, auth_token, name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
-        self.backup_model.create_backup(name)
+        file_name, last_modified = self.backup_model.create_backup(name)
+        return TBackupFile(file_name, last_modified)
 
     def fetch_backups(self, auth_token):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
-        return self.backup_model.fetch_backups()
+        files = self.backup_model.fetch_backups()
+        return [TBackupFile(file_name, last_modified) for file_name, last_modified in files]
 
     def get_download_token(self, auth_token, file_name):
         ip = request.remote_addr

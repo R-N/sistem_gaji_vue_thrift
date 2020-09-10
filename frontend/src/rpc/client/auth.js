@@ -82,7 +82,7 @@ class TAuthServiceClient extends TBaseClient{
 						authRouter.dialogUnknownError(error);
 					}
 				}
-			}, this.authRefreshPeriod * 1000);
+			}, this.authRefreshPeriod * 60 * 1000);
 			await this.authStore.setAuthRefresher(authRefresher);
 		}
 	}

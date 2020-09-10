@@ -6,14 +6,19 @@ include "../file/upload.thrift"
 namespace py rpc.gen.system.backup
 namespace js rpc.gen.system.backup
 
+struct TBackupFile {
+	1: string file_name,
+	2: string last_modified
+}
+
 service TBackupService{
-	list<string> fetch_backups(
+	list<TBackupFile> fetch_backups(
 		1: string auth_token
 	) throws (
 		1: auth.TAuthError authError
 	);
 
-	void create_backup(
+	TBackupFile create_backup(
 		1: string auth_token,
 		2: string name
 	) throws (

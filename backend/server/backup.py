@@ -3,6 +3,7 @@ import json
 from models import get_model
 from thrift.Thrift import TException
 from utils.request import get_args, json_error, get_file
+from utils.file import last_modified
 
 def download(download_token=''):
     args = {'download_token': download_token}
@@ -12,7 +13,7 @@ def download(download_token=''):
     model = get_model("backup")
     try:
         payload = model.decode_download_token(ip, download_token)
-        return send_from_directory(model.backup_path, filename=payload['name'], as_attachment=True)
+        return send_from_directory(model.backup_path, filename=payload['file_name'], as_attachment=True)
     except TException as err:
         return json_error(err)
 
@@ -25,11 +26,12 @@ def upload(upload_token=''):
     try:
         payload = model.decode_upload_token(ip, upload_token)
         file = get_file(request, "file")
-        file.filename = payload["name"]
+        file.filename = payload["file_name"]
         file.save(safe_join(model.backup_path, file.filename))
         print("Filename: " + file.filename)
         return {
-            'name': file.filename
+            'file_name': file.filename,
+            'last_modified': str(last_modified(safe_join(model.backup_path, file.filename)))
         }
     except TException as err:
         return json_error(err)

@@ -1,19 +1,17 @@
 <template>
-    <v-main>
-		<v-container
-			class="fill-height"
-			fluid
+	<v-container
+		class="fill-height"
+		fluid
+	>
+		<v-row
+			align="center"
+			justify="center"
+			class="flex-column"
 		>
-			<v-row
-				align="center"
-				justify="center"
-				class="flex-column"
-			>
-				<h1>Server is down</h1>
-				<refresh-button icon large/>
-			</v-row>
-		</v-container>
-    </v-main>
+			<h1>Server is down</h1>
+			<refresh-button icon large/>
+		</v-row>
+	</v-container>
 </template>
 
 <script>

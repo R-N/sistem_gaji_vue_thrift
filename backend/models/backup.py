@@ -8,10 +8,10 @@ from db.entities import DBUser
 from datetime import date
 from pyexcel_xlsx import save_data as save_to_xlsx
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, getmtime
 from pathlib import Path
 from .manager import get_model
-from utils.file import get_file, file_allowed
+from utils.file import get_file, file_allowed, last_modified
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -27,9 +27,7 @@ class BackupModel:
 
     def create_backup(self, name):
         file_name = "%s %s.xlsx" % (str(date.today()), name)
-        file_path = self.make_file_path(file_name)
-        file = Path(file_path)
-        if file.exists():
+        if get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_ALREADY_EXISTS)
         with DBSession() as session:
             exporter = SQLTableExporter(session)
@@ -37,11 +35,12 @@ class BackupModel:
                 adapter = SQLTableExportAdapter(table)
                 exporter.append(adapter)
             data = get_data(exporter, file_type=DB_SQL)
-            #data['users2'] = data['users']
-            save_to_xlsx(file_path, data)
+        file_path = join(self.backup_path, file_name)
+        save_to_xlsx(file_path, data)
+        return file_name, str(last_modified(file_path))
 
     def fetch_backups(self):
-        files = [f for f in listdir(self.backup_path) if isfile(join(self.backup_path, f))]
+        files = [(f, str(last_modified(join(self.backup_path, f)))) for f in listdir(self.backup_path) if isfile(join(self.backup_path, f))]
         return files
 
     def make_file_path(self, file_name):
@@ -61,14 +60,14 @@ class BackupModel:
 
     def decode_download_token(self, ip, token):
         payload = get_model("download").decode(ip, self.model_name, token)
-        file_name = payload['name']
-        if not file_exists(self.backup_path, file_name):
+        file_name = payload['file_name']
+        if not get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
         return payload
 
     def decode_upload_token(self, ip, token):
         payload = get_model("upload").decode(ip, self.model_name, token)
-        file_name = payload['name']
+        file_name = payload['file_name']
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)
         if get_file(self.backup_path, file_name):

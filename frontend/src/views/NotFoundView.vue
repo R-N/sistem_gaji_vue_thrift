@@ -1,17 +1,15 @@
 <template>
-    <v-main>
-		<v-container
-			class="fill-height"
-			fluid
+	<v-container
+		class="fill-height"
+		fluid
+	>
+		<v-row
+			align="center"
+			justify="center"
 		>
-			<v-row
-				align="center"
-				justify="center"
-			>
-				<h1>404 Not Found: {{ this.$route.params.pathMatch }}</h1>
-			</v-row>
-		</v-container>
-    </v-main>
+			<h1>404 Not Found: {{ this.$route.params.pathMatch }}</h1>
+		</v-row>
+	</v-container>
 </template>
 
 <script>

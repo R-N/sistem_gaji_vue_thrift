@@ -23,3 +23,7 @@ export function backendUrl(https, host, port){
 	var scheme = https ? "https" : "http";
 	return scheme + "://" + host + ":" + port;
 }
+
+export function replaceArray(arr, anotherArr){
+	return Array.prototype.splice.apply(arr, [0, arr.length].concat(anotherArr));
+}

@@ -46,7 +46,7 @@ class UploadModel:
 
     def encode(self, ip, func, file_name):
         upload_payload = {
-            'name': file_name,
+            'file_name': file_name,
             'iss': self.make_issuer(func),
             'aud': ip
         }

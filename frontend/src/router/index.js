@@ -1,12 +1,14 @@
 import NotFoundView from '@/views/NotFoundView';
 import LoginView from '@/views/LoginView';
 import BerandaView from '@/views/BerandaView';
+import BackupView from '@/views/BackupView';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { appStore } from "@/store/stores";
 
 const routes = [
-	{ path: '/', component: BerandaView, name: "beranda"},
+	{ path: '/', component: BerandaView, name: "beranda" },
+	{ path: '/pengaturan/backup', component: BackupView, name: "backup" },
 	{ path: '/login', component: LoginView, name: "login" },
 	{ path: '*', component: NotFoundView, name: "not-found" }
 ]

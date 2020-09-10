@@ -6,11 +6,41 @@
 			</v-expand-transition>
 		</v-flex>
 		<side-nav-drawer :drawer="drawer" @update:drawer="toggleDrawer" v-if="isLoggedIn"/>
-        <transition name="fade" mode="out-in">
-			<server-down-view v-transition v-if="!serverReachable"/>
-			<login-view v-transition v-else-if="!isLoggedIn"/>
-			<router-view v-transition v-else />
-		</transition>
+		<image-background :src="require('@/assets/img/login-background.png')" v-if="serverReachable && !isLoggedIn"></image-background>
+		<v-main>
+			<vue-page-transition name="overlay-down" class="fill-height">
+				<server-down-view appear v-if="!serverReachable" key="a"/>
+				<login-view appear v-else-if="!isLoggedIn" key="b"/>
+				<v-container appear 
+					class="" 
+					align="start"
+					justify="start"
+					key="c"
+					v-else
+				>
+			        <transition name="fade" mode="out-in">
+						<v-row class="" align="start" justify="start"  v-if="serverReachable && isLoggedIn && breadcrumbs">
+							<v-col align="start" justify="start">
+							    <v-alert
+									color="grey"
+									text
+							    >
+						        	<v-breadcrumbs class="py-0" :items="breadcrumbs" large>
+										<template v-slot:divider>
+											<v-icon>mdi-chevron-right</v-icon>
+										</template>
+						        	</v-breadcrumbs>
+							    </v-alert>
+					        </v-col>
+					    </v-row>
+					</transition>
+						<slide-y-down-transition group>
+							<router-view appear :key="$route.path"/>
+						</slide-y-down-transition>
+	      			<v-spacer></v-spacer>
+				</v-container>
+			</vue-page-transition>
+		</v-main>
 		<idle-overlay :idle-wait="300" :logout-wait="300"/>
 		<loading-overlay/>
 		<dialog-stack :items="tabDialogs" @dialogstackpop="popTabDialog"/>
@@ -22,6 +52,7 @@
 import { authStore, appStore, clientStore } from "@/store/stores";
 import { Component, Watch } from 'vue-property-decorator'
 import { BaseView } from '@/views/BaseView';
+import ImageBackground from '@/components/ImageBackground'
 import LoadingOverlay from '@/components/LoadingOverlay';
 import SideNavDrawer from '@/components/SideNavDrawer';
 import TopNavBar from '@/components/TopNavBar';
@@ -32,6 +63,8 @@ import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';
 import { authRouter } from '@/router/routers/auth';
 import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
+
+import {SlideYDownTransition, CollapseTransition} from 'vue2-transitions'
 
 const dialogAuthExpired = () => {
 	appStore.pushTabDialog({
@@ -45,13 +78,16 @@ const dialogAuthExpired = () => {
 	name: "App",
 	components: {
 		//'login-view': () => import('./views/LoginView.vue'),
+		ImageBackground,
 		LoadingOverlay,
 		SideNavDrawer,
 		TopNavBar,
 		DialogStack,
 		IdleOverlay,
 		ServerDownView,
-		LoginView
+		LoginView,
+		SlideYDownTransition,
+		CollapseTransition
 	}
 })
 class App extends BaseView{
@@ -59,6 +95,9 @@ class App extends BaseView{
 	drawer = false;
 	mounted(){
 		appStore.setTabBusy(false);
+	}
+	get breadcrumbs(){
+		return appStore.breadcrumbs;
 	}
 	get tabDialogs(){
 		return appStore.tabDialogs;

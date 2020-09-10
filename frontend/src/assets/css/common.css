@@ -25,3 +25,12 @@ body, html, .page {
 .bigger-input >>> input, .bigger-input >>> label{
   font-size: 1.2em;
 }
+
+.dz-message{
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.overlay-top{
+  z-index: 10;
+}

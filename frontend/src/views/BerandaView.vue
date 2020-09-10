@@ -1,30 +1,28 @@
 <template>
-	<v-main v-if="isLoggedIn">
-		<v-container
-			class="fill-height"
-			fluid
+	<v-container
+		class="fill-height"
+		fluid
+	>
+		<v-row
+			align="center"
+			justify="center"
+			class="flex-column"
 		>
-			<v-row
-				align="center"
-				justify="center"
-				class="flex-column"
-			>
-				<vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions" useCustomSlot @vdropzone-file-added="onFileDropped">
-					<div @click.stop="" class="d-flex flex-column">
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="fetchBackups" :disabled="busy">Fetch Backups</v-btn>
-						<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="createBackup" :disabled="busy">Backup</v-btn>
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="downloadBackup" :disabled="busy">Download Backup</v-btn>
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="deleteBackup" :disabled="busy">Delete Backup</v-btn>
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="hello" :disabled="busy">Hello Admin Utama</v-btn>
-				    	<v-file-input ref="myFileInput" label="File input" v-model="file" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" show-size></v-file-input>
-				    	<v-btn raised color="primary" class="text-center mx-0" @click="uploadBackup" :disabled="busy">Upload</v-btn>
-				        <h4 class="text-center mb-4" v-if="msg">{{ msg }}</h4>
-			        </div>
-				</vue-dropzone>
-			</v-row>
-		</v-container>
-	</v-main>
+			<vue-dropzone ref="myDropzone" id="dropzone" :options="dropzoneOptions" useCustomSlot @vdropzone-file-added="onFileDropped">
+				<div @click.stop="" class="d-flex flex-column">
+			    	<v-btn raised color="primary" class="text-center mx-0" @click="fetchBackups" :disabled="busy">Fetch Backups</v-btn>
+					<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
+			    	<v-btn raised color="primary" class="text-center mx-0" @click="createBackup" :disabled="busy">Backup</v-btn>
+			    	<v-btn raised color="primary" class="text-center mx-0" @click="downloadBackup" :disabled="busy">Download Backup</v-btn>
+			    	<v-btn raised color="primary" class="text-center mx-0" @click="deleteBackup" :disabled="busy">Delete Backup</v-btn>
+			    	<v-btn raised color="primary" class="text-center mx-0" @click="hello" :disabled="busy">Hello Admin Utama</v-btn>
+			    	<v-file-input ref="myFileInput" label="File input" v-model="file" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" show-size></v-file-input>
+			    	<v-btn raised color="primary" class="text-center mx-0" @click="uploadBackup" :disabled="busy">Upload</v-btn>
+			        <h4 class="text-center mb-4" v-if="msg">{{ msg }}</h4>
+		        </div>
+			</vue-dropzone>
+		</v-row>
+	</v-container>
 </template>
 
 <script>
@@ -100,6 +98,13 @@ class BerandaView extends BaseView {
 	}
 	beforeMount(){
 		//if(!routeRequireLoginNow()) return;
+	}
+	mounted(){
+		appStore.setBreadcrumbs([
+			{ text: "Beranda", disabled: false, href: "#" },
+			{ text: "Beranda", disabled: false, href: "#" },
+			{ text: "Beranda", disabled: false, href: "#" },
+		]);
 	}
 
 	async hello(){

@@ -10,6 +10,9 @@ class BaseView extends WorkingComponent {
 	get isLoggedIn(){
 		return authStore.isLoggedIn;
 	}
+	get userRole(){
+		return authStore.role;
+	}
 }
 
 export { BaseView }

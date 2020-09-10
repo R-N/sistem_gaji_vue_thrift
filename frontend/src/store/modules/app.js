@@ -7,6 +7,7 @@ import {
 	Module
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
+import { replaceArray } from '@/lib/util';
 
 const name = 'app'
 unregisterModule(name);
@@ -27,6 +28,7 @@ class AppStore extends VuexModule {
 	lastUserPresentTime = new Date().getTime();
 	userPresent = true
 	serverReachable = true
+	breadcrumbs = []
 
 	@MutationAction({ mutate: ['serverReachable'] })
 	async setServerReachable(serverReachable){
@@ -62,6 +64,29 @@ class AppStore extends VuexModule {
 	}
 	@Action({ commit: 'tabDialogPush' })
 	pushTabDialog(item) { return item; }
+
+	@Mutation
+	breadcrumbsPop() {
+		this.breadcrumbs.pop();
+	}
+	@Action({ commit: 'breadcrumbsPop' })
+	popBreadcrumbs() { }
+
+	@Mutation
+	breadcrumbsPush(item) {
+		this.breadcrumbs.push(item);
+	}
+	@Action({ commit: 'breadcrumbsPush' })
+	pushBreadcrumbs(item) { return item; }
+
+
+	@Mutation
+	breadcrumbsSet(breadcrumbs) {
+		//replaceArray(this.breadcrumbs, breadcrumbs);
+		this.breadcrumbs = breadcrumbs;
+	}
+	@Action({ commit: 'breadcrumbsSet' })
+	setBreadcrumbs(breadcrumbs) { return breadcrumbs; }
 
 	@MutationAction({ mutate: ['lastUserPresentTime', 'userPresent'] })
 	async ping(){

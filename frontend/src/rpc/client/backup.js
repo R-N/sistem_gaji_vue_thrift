@@ -65,7 +65,7 @@ class TBackupServiceClient extends TBaseClient{
 			headers: {'Content-Type': 'multipart/form-data' },
 			responseType: 'json'
 		});
-		return response.data.name;
+		return response.data;
 	}
 }
 
