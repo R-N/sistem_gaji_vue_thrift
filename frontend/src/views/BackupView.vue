@@ -8,115 +8,74 @@
 			justify="start"
 		>
 			<v-card class="fill-width">
-				<vue-dropzone ref="myTableDropzone" id="dropzone" :options="dropzoneOptions" useCustomSlot @vdropzone-file-added="onTableFileDropped" class="">
-					<v-card-title class="my-0 pb-0"  align="start">
-						<h1>Backup </h1>
-					</v-card-title>
-					<v-card-title class="my-0 pt-0"  align="start">
-						<v-row>
-							<v-col align="start" justify="start">
-		    					<v-btn icon @click.stop="createDialog = true">
-		    						<v-icon size="32">mdi-plus</v-icon>
-		    					</v-btn>
-		    					<v-btn icon @click.stop="uploadDialog = true">
-		    						<v-icon size="32">mdi-upload</v-icon>
-		    					</v-btn>
-		    				</v-col>
-							<v-spacer></v-spacer>
-		    				<v-col  align="start" justify="start">
-								<v-text-field
-									class="pt-0 mt-0"
-									v-model="search"
-									append-icon="mdi-magnify"
-									label="Search"
-									single-line
-									hide-details
-								></v-text-field>
-							</v-col>
-						</v-row>
-					</v-card-title>
-					<v-card-text>
-						<v-data-table
-							class="backup-table"
-							:headers="headers"
-							:items="backups"
-							item-key="file_name"
-							:search="search"
-							:loading="busy"
-						>
-							<template v-slot:item.actions="{ item }">
-		    					<v-btn icon @click.stop="downloadBackup(item)" class="">
-		    						<v-icon size="32" small>mdi-download</v-icon>
-		    					</v-btn>
-		    					<v-btn icon @click.stop="deleteBackup(item)" class="">
-		    						<v-icon size="32" small>mdi-delete</v-icon>
-		    					</v-btn>
-							</template>
-						</v-data-table>
-					</v-card-text>
-				</vue-dropzone>
+				<v-card-title class="my-0 pb-0"  align="start">
+					<h1>Backup </h1>
+				</v-card-title>
+				<v-card-title class="my-0 pt-0"  align="start">
+					<v-row>
+						<v-col align="start" justify="start">
+	    					<v-btn icon @click.stop="createDialog = true">
+	    						<v-icon size="32">mdi-plus</v-icon>
+	    					</v-btn>
+	    					<v-btn icon @click.stop="uploadDialog = true">
+	    						<v-icon size="32">mdi-upload</v-icon>
+	    					</v-btn>
+	    				</v-col>
+						<v-spacer></v-spacer>
+	    				<v-col  align="start" justify="start">
+							<v-text-field
+								class="pt-0 mt-0"
+								v-model="search"
+								append-icon="mdi-magnify"
+								label="Search"
+								single-line
+								hide-details
+							></v-text-field>
+						</v-col>
+					</v-row>
+				</v-card-title>
+				<v-card-text>
+					<v-data-table
+						class="backup-table"
+						:headers="headers"
+						:items="backups"
+						item-key="file_name"
+						:search="search"
+						:loading="busy"
+					>
+						<template v-slot:item.actions="{ item }">
+	    					<v-btn icon @click.stop="downloadBackup(item)" class="">
+	    						<v-icon size="32" small>mdi-download</v-icon>
+	    					</v-btn>
+	    					<v-btn icon @click.stop="prepareDeleteBackup(item)" class="">
+	    						<v-icon size="32" small>mdi-delete</v-icon>
+	    					</v-btn>
+						</template>
+					</v-data-table>
+				</v-card-text>
 			</v-card>
 		</v-col>
-		<v-dialog
-			v-model="uploadDialog"
-			max-width="290"
-		>
-			<v-card>
-				<vue-dropzone ref="myDialogDropzone" id="dropzone" :options="dropzoneOptions" useCustomSlot @vdropzone-file-added="onDialogFileDropped" class="text-left">
-					<v-card-title class="headline">Upload Backup</v-card-title>
-					<v-card-text>
-						<p class="text-left">Pilih file backup (xlsx)</p>
-		    			<v-file-input multiple ref="myFileInput" label="File input" v-model="files" @click.stop="" accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" show-size></v-file-input>
-					</v-card-text>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn
-							color="green darken-1"
-							text
-							@click.stop="uploadDialog = false"
-						>
-							Cancel
-						</v-btn>
-						<v-btn
-							color="green darken-1"
-							text
-							@click.stop="uploadBackup"
-						>
-							Upload
-						</v-btn>
-					</v-card-actions>
-				</vue-dropzone>
-			</v-card>
-		</v-dialog>
-		<v-dialog
-			v-model="createDialog"
-			max-width="290"
-		>
-			<v-card>
-				<v-card-title class="headline">Upload Backup</v-card-title>
-				<v-card-text>
-					<p class="text-left">Masukkan nama backup (tanpa ekstensi)</p>
-					<v-text-field class="bigger-input" label="Backup Name" v-model="backupName" :disabled="busy"/>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer></v-spacer>
-					<v-btn
-						color="green darken-1"
-						text
-						@click.stop="createDialog = false"
-					>
-						Cancel
-					</v-btn>
-					<v-btn
-						color="green darken-1"
-						text
-						@click.stop="createBackup"
-					>
-						Create
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<file-upload-dialog 
+			v-model="uploadDialog" 
+			:on-upload="uploadBackup" 
+			title="Upload Backup"
+			text="Silahkan pilih file backup untuk diupload (xlsx)"
+			label="File backup"
+		/>
+		<simple-input-dialog 
+			v-model="createDialog" 
+			:on-confirm="createBackup"
+			title="Buat Backup"
+			text="Silahkan masukkan nama backup"
+			label="Nama backup" 
+		/>
+		<simple-input-dialog 
+			v-model="deleteDialog" 
+			:on-confirm="onConfirmDelete"
+			title="Hapus Backup"
+			:text="deleteText"
+			no-input="true"
+		/>
 	</v-row>
 </template>
 
@@ -132,25 +91,28 @@ import axios from 'axios';
 //import fileDownload from 'js-file-download';
 import FileSaver from 'file-saver';
 //import FileUpload from 'vue-upload-component';
-import vueDropzone from 'vue2-dropzone'
+import FileUploadDialog from '@/components/FileUploadDialog'
+import SimpleInputDialog from '@/components/SimpleInputDialog'
 
 
 @Component({
   	name: "BackupView",
   	components: {
-  		vueDropzone
+  		FileUploadDialog,
+  		SimpleInputDialog
   	}
 	//beforeRouteEnter: authRouter.routeRequireLoginNow
 })
 class BackupView extends BaseView {
-	file = null
-	files = []
-	fromDrop = false
-	immediateUpload = false;
-	backupName = ''
-	fetchingBackups = true
 	uploadDialog = false;
 	createDialog = false;
+	toDelete = null;
+	get deleteDialog(){
+		return !!this.toDelete;
+	}
+	set deleteDialog(value){
+		if(!value) this.toDelete = null;
+	}
 
 	search = ''
 	headers = [
@@ -160,61 +122,6 @@ class BackupView extends BaseView {
 	]
 	backups = []
 
-	get dropzoneOptions() {
-		return {
-			url: defaultBackendUrl + "/backup/upload/",
-			params: this.dropzoneParams,
-			maxFilesize: 1,
-			clickable: false,
-			uploadMultiple: false,
-			autoProcessQueue: false,
-			acceptedFiles: ".xlsx",
-			mimeTypes: ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-		}
-	}
-	dropzoneParams(files, xhr, chunk=null){
-		return {
-			"upload_token": "asdasd"
-		}
-	}
-	onFileDropped(file){		
-		if(!this.file)
-			this.file = file;
-		else
-			this.files.push(file);
-		this.fromDrop = true;
-	}
-	onTableFileDropped(file){
-		this.$refs["myTableDropzone"].removeFile(file);
-		this.immediateUpload = true;
-		this.onFileDropped(file);
-	}
-	onDialogFileDropped(file){
-		this.$refs["myDialogDropzone"].removeFile(file);
-		this.onFileDropped(file);
-	}
-	@Watch("file")
-	async onFileChanged(file, old){
-		if(this.fromDrop){
-			if(file){
-				if (!file.accepted){
-					if (this.files.length == 0){
-						this.fromDrop = false;
-						this.file = old;
-					}else{
-						this.file = this.files.shift();
-					}
-					appStore.pushTabDialog({
-						title: "Error",
-						text: "Format harus xlsx"
-					});
-				}else if (this.immediateUpload){
-					await this.uploadBackup();
-					this.immediateUpload = false;
-				}
-			}
-		}
-	}
 	async beforeMount(){
 		//if(!routeRequireLoginNow()) return;
 	}
@@ -227,23 +134,44 @@ class BackupView extends BaseView {
 		await this.fetchBackups();
 	}
 
-	async createBackup(){
+	async createBackup(file_name){
 		const view = this;
 		view.busy=true;
 		try{
-			if (!this.backupName) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
-			let created = await clientStore.backup.create_backup(this.backupName);
+			if (!file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
+			let created = await clientStore.backup.create_backup(file_name);
 			this.backupName = '';
-			view.createDialog = false;
+			//view.createDialog = false;
 			this.backups.push(created);
+		} catch (error) {
+			if (error instanceof TFileError){
+				appStore.pushTabDialog({
+					title: "Error",
+					text: T_FILE_ERROR_STR[error.code]
+				});
+			}else{
+				throw error;
+			}
 		} finally {
 			view.busy = false;
 		}
 	}
+	prepareDeleteBackup(item){
+		this.toDelete = item;
+		//this.deleteDialog = true;
+	}
+	get deleteText(){
+		if (!this.toDelete) return '';
+		return "Apa Anda yakin ingin menghapus backup '" + this.toDelete.file_name + "'?";
+	}
+	async onConfirmDelete(){
+		const item = this.toDelete;
+		await this.deleteBackup(item);
+		this.toDelete = null;
+	}
 	async deleteBackup(item){
 		const view = this;
 		view.busy=true;
-
 		try{
 			if (!item.file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
 			await clientStore.backup.delete_backup(item.file_name);
@@ -284,33 +212,9 @@ class BackupView extends BaseView {
 			view.busy = false;
 		}
 	}
-	async uploadBackup(){
-		const view = this;
-		view.busy=true;
-		try{
-			if(!view.file && view.files.length) view.file = view.files.shift();
-			while(view.file || view.files.length){
-				let uploaded = await clientStore.backup.upload_backup(view.file, view.backupName);
-				view.backups.push(uploaded);
-				if (view.files.length){
-					view.file = view.files.shift();
-				}else{
-					view.file = null;
-				}
-			}
-			view.uploadDialog = false;
-		} catch (error) {
-			if (error instanceof TFileError){
-				appStore.pushTabDialog({
-					title: "Error",
-					text: T_FILE_ERROR_STR[error.code]
-				});
-			}else{
-				throw error;
-			}
-		} finally {
-			view.busy = false;
-		}
+	async uploadBackup(file){
+		let uploaded = await clientStore.backup.upload_backup(file);
+		this.backups.push(uploaded);
 	}
 }
 export { BackupView } 

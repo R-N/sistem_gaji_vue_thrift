@@ -1,12 +1,12 @@
 <template>
 	<v-card class="p-4">
-	    <form id="form-login" @submit.prevent="login" class="p-2">
+	    <v-form id="form-login" @submit.prevent="login" class="p-2" :disabled="busy">
 	        <h2 class="text-center">Sistem Gaji</h2>
 	        <h2 class="text-center mb-4">PT. X</h2>
 	    	<v-text-field class="bigger-input" label="Username" v-model="username" :disabled="busy" required/>
 	    	<v-text-field class="bigger-input" label="Password" type="password" v-model="password" :disabled="busy" required/>
 	    	<v-btn raised color="primary" type="submit" class="text-center w-100 mx-0" :disabled="busy || isLoggedIn" :loading="busy">Login</v-btn>
-	    </form>
+	    </v-form>
 	</v-card>
 </template>
 

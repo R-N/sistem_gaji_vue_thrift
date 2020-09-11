@@ -27,3 +27,6 @@ export function backendUrl(https, host, port){
 export function replaceArray(arr, anotherArr){
 	return Array.prototype.splice.apply(arr, [0, arr.length].concat(anotherArr));
 }
+export function emptyArray(arr){
+	return arr.splice(0, arr.length);
+}
