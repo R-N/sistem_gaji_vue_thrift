@@ -157,3 +157,4 @@ certs/reset.dec
 scratchpad.py
 playground.py
 backup/*
+backups/*
