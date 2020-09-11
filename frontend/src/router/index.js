@@ -1,7 +1,7 @@
 import NotFoundView from '@/views/NotFoundView';
 import LoginView from '@/views/LoginView';
 import BerandaView from '@/views/BerandaView';
-import BackupView from '@/views/BackupView';
+import BackupView from '@/views/pengaturan/BackupView';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { appStore } from "@/store/stores";
