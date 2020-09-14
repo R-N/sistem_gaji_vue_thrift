@@ -9,27 +9,27 @@ class AuthRouter extends RouterUser{
 
 	dialogRequireLogin(){
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Anda harus login terlebih dahulu",
-			onDismiss: function(){ router.safePush({ name: "login"}) }
+			//onDismiss: function(){ router.safePush({ name: "login"}) }
 		});
 		return false;
 	}
 	routeRequireLoginNow(to=null, from=null, next=null) {
 		const router = this.router;
-		if (!this.authStore.authToken){
+		if (!this.stores.auth.authToken){
 			if (next) next(false);
-			router.safePush({ name: "login" });
-			return false;
+			//router.safePush({ name: "login" });
+			return this.dialogRequireLogin();
 		}
 		if (next) next();
 		return true;
 	}
 	routeRequireLoginDialog (to=null, from=null, next=null) {
-		if (!this.authStore.authToken){
+		if (!this.stores.auth.authToken){
 			if (next) next(false);
-			return dialogRequireLogin();
+			return this.dialogRequireLogin();
 		}
 		if (next) next();
 		return true;
@@ -38,7 +38,7 @@ class AuthRouter extends RouterUser{
 
 	dialogRequireLogout(){
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Anda sudah login",
 			onDismiss: function(){ router.safePush({ name: "beranda"}) }
@@ -47,18 +47,18 @@ class AuthRouter extends RouterUser{
 	}
 	routeRequireLogoutNow(to=null, from=null, next=null) {
 		const router = this.router;
-		if (this.authStore.authToken){
+		if (this.stores.auth.authToken){
 			if (next) next(false);
 			router.safePush({ name: "beranda" });
-			return false;
+			return this.dialogRequireLogout();
 		}
 		if (next) next();
 		return true;
 	}
 	routeRequireLogoutDialog (to=null, from=null, next=null) {
-		if (this.authStore.authToken){
+		if (this.stores.auth.authToken){
 			if (next) next(false);
-			return dialogRequireLogout();
+			return this.dialogRequireLogout();
 		}
 		if (next) next();
 		return true;
@@ -67,64 +67,70 @@ class AuthRouter extends RouterUser{
 
 	dialogRequireRole(){
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Anda tidak memiliki hak untuk melakukan ini",
 			onDismiss: function(){ router.safePush({ name: "beranda"}) }
 		});
 		return false;
 	}
-	routeRequireRoleNow(to=null, from=null, next=null) {
-		const router = this.router;
-		if (!this.authStore.checkRole(role)){
-			if (next) next(false);
-			router.safePush({ path: "/" });
-			return false;
+	routeRequireRoleNow(role){
+		const obj = this;
+		return function(to=null, from=null, next=null) {
+			const router = obj.router;
+			if (!obj.stores.auth.checkRole(role)){
+				if (next) next(false);
+				router.safePush({ name: "beranda" });
+				return obj.dialogRequireRole();
+			}
+			if (next) next();
+			return true;
 		}
-		if (next) next();
-		return true;
 	}
-	routeRequireRoleDialog(to=null, from=null, next=null) {
-		if (!this.authStore.checkRole(role)){
-			if (next) next(false);
-			return dialogRequireRole();
+	routeRequireRoleDialog(role){
+		const obj = this;
+		return function(to=null, from=null, next=null) {
+			if (!obj.stores.auth.checkRole(role)){
+				if (next) next(false);
+				return obj.dialogRequireRole();
+			}
+			if (next) next();
+			return true;
 		}
-		if (next) next();
-		return true;
 	}
 
 	dialogSessionExpired(){
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Sesi kadaluarsa. Silahkan login ulang.",
-			onDismiss: function(){ router.safePush({ name: "login"}) }
+			//onDismiss: function(){ router.safePush({ name: "login"}) }
 		});
 		return false;
 	}
 
 	dialogIdleLogout() {
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Pemberitahuan",
 			text: "Anda telah diam terlalu lama. Silahkan login kembali.",
-			onDismiss: function(){ router.safePush({ path: "/login"}) }
+			//onDismiss: function(){ router.safePush({ name: "login"}) }
 		});
 		return false;
 	}
 
 	dialogUnknownTAuthError(error, code){
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Sesi invalid (" + error + ":" + code + "). Silahkan login ulang atau laporkan bug.",
-			onDismiss: function(){ router.safePush({ path: "/login"}) }
+			//onDismiss: function(){ router.safePush({ name: "login"}) }
 		});
 		return false;
 	}
 	dialogUnknownError (error){
 		const router = this.router;
-		this.appStore.pushTabDialog({
+		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Error tidak diketahui: " + error,
 			onDismiss: function(){ window.location.reload() }

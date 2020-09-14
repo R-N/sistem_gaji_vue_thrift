@@ -101,9 +101,7 @@ class BerandaView extends BaseView {
 	}
 	mounted(){
 		appStore.setBreadcrumbs([
-			{ text: "Beranda", disabled: false, href: "#" },
-			{ text: "Beranda", disabled: false, href: "#" },
-			{ text: "Beranda", disabled: false, href: "#" },
+			{ text: "Beranda" },
 		]);
 	}
 
@@ -113,7 +111,7 @@ class BerandaView extends BaseView {
 		try{
 			this.msg = await clientStore.hello.hello_admin_utama();
 		} catch (error){
-			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.ROLE_INVALID){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else{
 				console.log(error);
@@ -131,7 +129,7 @@ class BerandaView extends BaseView {
 			await clientStore.backup.create_backup(this.backupName);
 			this.msg = "Backup berhasil dibuat!";
 		} catch (error){
-			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.ROLE_INVALID){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else if (error instanceof TFileError){
 				this.msg = T_FILE_ERROR_STR[error.code];
@@ -150,7 +148,7 @@ class BerandaView extends BaseView {
 			await clientStore.backup.delete_backup(this.backupName);
 			this.msg = "Backup " + this.backupName + " berhasil dihapus!";
 		} catch (error){
-			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.ROLE_INVALID){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else if (error instanceof TFileError){
 				this.msg = T_FILE_ERROR_STR[error.code];
@@ -168,7 +166,7 @@ class BerandaView extends BaseView {
 			var backups = await clientStore.backup.fetch_backups();
 			this.msg = backups.join(", ");
 		} catch (error){
-			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.ROLE_INVALID){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else{
 				throw error;
@@ -184,7 +182,7 @@ class BerandaView extends BaseView {
 			let blob = await clientStore.backup.download_backup(this.backupName);
 			FileSaver.saveAs(blob, this.backupName);
 		} catch (error){
-			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.ROLE_INVALID){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else if (error instanceof TFileError){
 				this.msg = T_FILE_ERROR_STR[error.code];
@@ -204,7 +202,7 @@ class BerandaView extends BaseView {
 			this.file = null;
 			this.msg = "Berhasil upload " + uploadedName + "!";
 		} catch (error){
-			if (error instanceof TAuthError && error.code === TAuthErrorCode.INVALID_ROLE){
+			if (error instanceof TAuthError && error.code === TAuthErrorCode.ROLE_INVALID){
 				this.msg = "Anda bukan " + T_USER_ROLE_STR[TUserRole.ADMIN_UTAMA] + "!";
 			}else if (error instanceof TFileError){
 				this.msg = T_FILE_ERROR_STR[error.code];

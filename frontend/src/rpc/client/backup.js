@@ -13,20 +13,20 @@ class TBackupServiceClient extends TBaseClient{
 	}
 
 	async fetch_backups(){
-		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.fetch_backups(this.authStore.authToken);
+		this.stores.helper.auth.requireRole(TUserRole.ADMIN_UTAMA);
+		return await this.client.fetch_backups(this.stores.auth.authToken);
 	}
 	async create_backup(name){
-		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.create_backup(this.authStore.authToken, name);
+		this.stores.helper.auth.requireRole(TUserRole.ADMIN_UTAMA);
+		return await this.client.create_backup(this.stores.auth.authToken, name);
 	}
 	async delete_backup(file_name){
-		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.delete_backup(this.authStore.authToken, file_name);
+		this.stores.helper.auth.requireRole(TUserRole.ADMIN_UTAMA);
+		return await this.client.delete_backup(this.stores.auth.authToken, file_name);
 	}
 	async get_download_token(file_name){
-		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.get_download_token(this.authStore.authToken, file_name);
+		this.stores.helper.auth.requireRole(TUserRole.ADMIN_UTAMA);
+		return await this.client.get_download_token(this.stores.auth.authToken, file_name);
 	}
 	async download_backup(file_name){
 		if (!file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
@@ -44,8 +44,8 @@ class TBackupServiceClient extends TBaseClient{
 		return blob;
 	}
 	async get_upload_token(file_name){
-		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
-		return await this.client.get_upload_token(this.authStore.authToken, file_name);
+		this.stores.helper.auth.requireRole(TUserRole.ADMIN_UTAMA);
+		return await this.client.get_upload_token(this.stores.auth.authToken, file_name);
 	}
 	async upload_backup(file, file_name=null){
 		if (!file) throw new TUploadError({ code: TUploadErrorCode.FILE_NOT_PROVIDED});
@@ -67,7 +67,11 @@ class TBackupServiceClient extends TBaseClient{
 		});
 		return response.data;
 	}
+	async restore_backup(file, file_name=null){
+	}
 }
 
-export { TBackupServiceClient }
-export default TBackupServiceClient
+const backupClient = new TBackupServiceClient();
+
+export { TBackupServiceClient, backupClient }
+export default backupClient

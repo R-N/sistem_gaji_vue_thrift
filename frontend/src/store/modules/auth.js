@@ -61,6 +61,18 @@ class AuthStore extends VuexModule {
 	async setUser(user){
 		return { user }
 	}
+	@MutationAction({ mutate: ['user'] })
+	async setUserName(name){
+		return { user: { ...this.state.user, name } }
+	}
+	@MutationAction({ mutate: ['user'] })
+	async setUserEmail(email){
+		return { user: { ...this.state.user, email } }
+	}
+	@MutationAction({ mutate: ['user'] })
+	async setUserRole(role){
+		return { user: { ...this.state.user, role } }
+	}
 	get isLoggedIn(){
 		return !!this.authToken;
 	}

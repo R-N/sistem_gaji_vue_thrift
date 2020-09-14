@@ -10,6 +10,9 @@ from rpc.handler.akun.auth import TAuthServiceHandler
 from rpc.gen.akun.user import TUserService
 from rpc.handler.akun.user import TUserServiceHandler
 
+from rpc.gen.akun.akun import TAkunService
+from rpc.handler.akun.akun import TAkunServiceHandler
+
 from rpc.gen.hello.hello import THelloService
 from rpc.handler.hello.hello import THelloServiceHandler
 
@@ -42,6 +45,10 @@ user_server = make_server(TUserService, TUserServiceHandler())
 def akun_user():
     return respond(user_server)
 
+akun_server = make_server(TAkunService, TAkunServiceHandler())
+def akun_akun():
+    return respond(akun_server)
+
 hello_server = make_server(THelloService, THelloServiceHandler())
 def hello_hello():
     return respond(hello_server)
@@ -53,6 +60,7 @@ def system_backup():
 def init(app):
     app.route('/api/akun/auth', methods=['POST'])(akun_auth)
     app.route('/api/akun/user', methods=['POST'])(akun_user)
+    app.route('/api/akun/akun', methods=['POST'])(akun_akun)
     app.route('/api/hello/hello', methods=['POST'])(hello_hello)
     app.route('/api/system/backup', methods=['POST'])(system_backup)
     return app

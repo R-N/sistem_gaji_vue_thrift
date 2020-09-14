@@ -15,40 +15,48 @@ service TBackupService{
 	list<TBackupFile> fetch_backups(
 		1: string auth_token
 	) throws (
-		1: auth.TAuthError authError
+		1: auth.TAuthError auth_error
 	);
 
 	TBackupFile create_backup(
 		1: string auth_token,
 		2: string name
 	) throws (
-		1: auth.TAuthError authError,
-		2: file.TFileError fileError
+		1: auth.TAuthError auth_error,
+		2: file.TFileError file_error
 	);
 
 	void delete_backup(
 		1: string auth_token,
 		2: string file_name
 	) throws (
-		1: auth.TAuthError authError,
-		2: file.TFileError fileError
+		1: auth.TAuthError auth_error,
+		2: file.TFileError file_error
 	);
 
 	string get_download_token(
 		1: string auth_token,
 		2: string file_name
 	) throws (
-		1: auth.TAuthError authError,
-		2: file.TFileError fileError,
-		3: download.TDownloadError downloadError
+		1: auth.TAuthError auth_error,
+		2: file.TFileError file_error,
+		3: download.TDownloadError download_error
 	);
 
 	string get_upload_token(
 		1: string auth_token,
 		2: string file_name
 	) throws (
-		1: auth.TAuthError authError,
-		2: file.TFileError fileError,
-		3: upload.TUploadError uploadError
+		1: auth.TAuthError auth_error,
+		2: file.TFileError file_error,
+		3: upload.TUploadError upload_error
+	);
+
+	void restore_backup(
+		1: string auth_token,
+		2: string file_name
+	) throws (
+		1: auth.TAuthError auth_error,
+		2: file.TFileError file_error
 	);
 }

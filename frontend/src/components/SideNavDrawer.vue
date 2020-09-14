@@ -140,7 +140,7 @@ class SideNavDrawer extends Vue {
 			children: [
 				{ text: 'Variabel' },
 				{ text: 'Backup', to: { name: 'backup' } },
-				{ text: 'Akun' },
+				{ text: 'Akun', to: { name: 'akun' } },
 			],
 		},
 	];

@@ -30,3 +30,15 @@ export function replaceArray(arr, anotherArr){
 export function emptyArray(arr){
 	return arr.splice(0, arr.length);
 }
+export function addEditFields(obj, fields){
+	for(let i = 0; i < fields.length; ++i){
+		obj[fields[i]+"Edit"] = obj[fields[i]];
+	}
+	return obj;
+}
+export function addEditFieldsBulk(arr, fields){
+	for(let i = 0; i < arr.length; ++i){
+		arr[i] = addEditFields(arr[i], fields);
+	}
+	return arr;
+}

@@ -30,3 +30,7 @@ class TBackupServiceHandler(TBackupService.Iface):
     def delete_backup(self, auth_token, file_name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
         return self.backup_model.delete_backup(file_name)
+
+    def restore_backup(self, auth_token, file_name):
+        auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
+        pass

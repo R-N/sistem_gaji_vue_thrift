@@ -32,20 +32,24 @@ struct TLoginResult {
 
 
 enum TLoginErrorCode{
-	USERNAME_KOSONG,
-	PASSWORD_KOSONG,
+	USERNAME_EMPTY,
+	PASSWORD_EMPTY,
 	USERNAME_PASSWORD_SALAH,
 	REFRESH_TOKEN_INVALID,
 	REFRESH_TOKEN_EXPIRED,
-	ALREADY_LOGGED_IN
+	ALREADY_LOGGED_IN,
+	EMAIL_NOT_FOUND,
+	USER_DISABLED
 }
 const map<TLoginErrorCode, string> T_LOGIN_ERROR_STR = {
-	TLoginErrorCode.USERNAME_KOSONG: "Username tidak boleh kosong",
-	TLoginErrorCode.PASSWORD_KOSONG: "Password tidak boleh kosong",
+	TLoginErrorCode.USERNAME_EMPTY: "Username tidak boleh kosong",
+	TLoginErrorCode.PASSWORD_EMPTY: "Password tidak boleh kosong",
 	TLoginErrorCode.USERNAME_PASSWORD_SALAH: "Username atau password salah",
 	TLoginErrorCode.REFRESH_TOKEN_INVALID: "Sesi invalid",
 	TLoginErrorCode.REFRESH_TOKEN_EXPIRED: "Sesi kadaluarsa",
-	TLoginErrorCode.ALREADY_LOGGED_IN: "Anda sudah login"
+	TLoginErrorCode.ALREADY_LOGGED_IN: "Anda sudah login",
+	TLoginErrorCode.EMAIL_NOT_FOUND: "Email tidak ditemukan",
+	TLoginErrorCode.USER_DISABLED: "Akun Anda tidak aktif. Silahkan hubungi admin"
 }
 exception TLoginError{
 	1: TLoginErrorCode code;
@@ -55,14 +59,14 @@ enum TAuthErrorCode{
 	NOT_LOGGED_IN,
 	AUTH_TOKEN_INVALID,
 	AUTH_TOKEN_EXPIRED,
-	INVALID_ROLE,
+	ROLE_INVALID,
 	NO_PERMISSION
 }
 const map<TAuthErrorCode, string> T_AUTH_ERROR_STR = {
 	TAuthErrorCode.NOT_LOGGED_IN: "Username tidak boleh kosong",
 	TAuthErrorCode.AUTH_TOKEN_INVALID: "Sesi invalid",
 	TAuthErrorCode.AUTH_TOKEN_EXPIRED: "Sesi kadaluarsa",
-	TAuthErrorCode.INVALID_ROLE: "Anda tidak berhak melakukan ini",
+	TAuthErrorCode.ROLE_INVALID: "Anda tidak berhak melakukan ini",
 	TAuthErrorCode.NO_PERMISSION: "Anda tidak berhak melakukan ini"
 }
 exception TAuthError{
@@ -75,14 +79,26 @@ service TAuthService
 		1: string username, 
 		2: string password
 	) throws (
-		1: TLoginError loginError
+		1: TLoginError login_error
 	);
 
 	string refresh_auth(
 		1: string auth_token,
 		2: string refresh_token
 	) throws (
-		1: TAuthError authError,
-		2: TLoginError loginError
+		1: TAuthError auth_error,
+		2: TLoginError login_error
+	);
+
+	void reset_password(
+		1: string email
+	) throws (
+		1: TLoginError login_error
+	);
+
+	void send_username(
+		1: string email
+	) throws (
+		1: TLoginError login_error
 	);
 }

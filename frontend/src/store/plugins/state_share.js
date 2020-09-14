@@ -7,6 +7,7 @@ const stateSharePlugin = createMultiTabState({
 		"auth.user",
 		'auth.loginDate',
 		"app.globalBusy",
+		"app.authBusy",
 		"app.lastUserPresentTime",
 		"app.userPresent",
 		"app.globalRefresh",

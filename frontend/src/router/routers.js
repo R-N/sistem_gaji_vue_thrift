@@ -6,9 +6,9 @@ const init = (stores, router) => {
 }
 const initRouters = init;
 
-const forStore = {
+const routers = {
 	auth: authRouter
 }
 
-export { authRouter, init, initRouters, forStore }
-export default { authRouter, init, forStore }
+export { init, initRouters, routers, authRouter }
+export default routers

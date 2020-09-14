@@ -10,11 +10,13 @@ class THelloServiceClient extends TBaseClient{
 	}
 
 	async hello_admin_utama(){
-		this.clientStore.auth.requireRole(TUserRole.ADMIN_UTAMA);
+		this.stores.helper.auth.requireRole(TUserRole.ADMIN_UTAMA);
 		return await this.client.hello_admin_utama(this.authStore.authToken);
 	}
 
 }
 
-export { THelloServiceClient }
-export default THelloServiceClient
+const helloClient = new THelloServiceClient();
+
+export { THelloServiceClient, helloClient }
+export default helloClient

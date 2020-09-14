@@ -8,13 +8,31 @@ class TUserServiceClient extends TBaseClient{
 	}
 
 	async get_user(){
-		this.clientStore.auth.requireLogin();
-		await this.authStore.setUser(
-			await this.client.get_user(this.authStore.authToken)
-		);
-		return this.authStore.user;
+		this.stores.helper.auth.requireLogin();
+		let user = await this.client.get_user(this.stores.auth.authToken)
+		await this.stores.auth.setUser(user);
+		return this.stores.auth.user;
 	}
+
+	async set_email(email){
+		this.stores.helper.auth.requireLogin();
+		await this.client.set_email(this.stores.auth.authToken, email)
+		await this.stores.auth.setUserEmail(email);
+	}
+	async set_password(password){
+		this.stores.helper.auth.requireLogin();
+		let tokens = await this.client.set_password(this.stores.auth.authToken, password);
+		await this.stores.auth.setTokens(tokens);
+	}
+	async set_name(name){
+		this.stores.helper.auth.requireLogin();
+		await this.client.set_name(this.stores.auth.authToken, name)
+		await this.stores.auth.setUserName(name);
+	}
+
 }
 
-export { TUserServiceClient }
-export default TUserServiceClient
+const userClient = new TUserServiceClient();
+
+export { TUserServiceClient, userClient }
+export default userClient

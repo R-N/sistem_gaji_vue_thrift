@@ -1,107 +1,110 @@
 <template>
-	<v-row
-		align="start"
-		justify="start"
-	>
-		<v-col
-			align="start"
-			justify="start"
-		>
-			<v-card class="fill-width">
-				<v-card-title class="my-0 pb-0"  align="start">
-					<h1>Backup </h1>
-				</v-card-title>
-				<v-card-title class="my-0 pt-0"  align="start">
-					<v-row>
-						<v-col align="start" justify="start">
-	    					<v-btn icon @click.stop="createDialog = true">
-	    						<v-icon size="32">mdi-plus</v-icon>
-	    					</v-btn>
-	    					<v-btn icon @click.stop="uploadDialog = true">
-	    						<v-icon size="32">mdi-upload</v-icon>
-	    					</v-btn>
-	    				</v-col>
-						<v-spacer></v-spacer>
-	    				<v-col  align="start" justify="start">
-							<v-text-field
-								class="pt-0 mt-0"
-								v-model="search"
-								append-icon="mdi-magnify"
-								label="Search"
-								single-line
-								hide-details
-							></v-text-field>
-						</v-col>
-					</v-row>
-				</v-card-title>
-				<v-card-text>
-					<v-data-table
-						class="backup-table"
-						:headers="headers"
-						:items="backups"
-						item-key="file_name"
-						:search="search"
-						:loading="busy"
-					>
-						<template v-slot:item.actions="{ item }">
-	    					<v-btn icon @click.stop="downloadBackup(item)" class="">
-	    						<v-icon size="32" small>mdi-download</v-icon>
-	    					</v-btn>
-	    					<v-btn icon @click.stop="prepareDeleteBackup(item)" class="">
-	    						<v-icon size="32" small>mdi-delete</v-icon>
-	    					</v-btn>
+	<main-card title="Backup">
+		<template v-slot:toolbar-left>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">
+					<v-btn icon @click.stop="createDialog = true" v-bind="attrs" v-on="on">
+						<v-icon size="32">mdi-plus</v-icon>
+					</v-btn>
+				</template>
+				<span>Buat</span>
+			</v-tooltip>
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">
+					<v-btn icon @click.stop="uploadDialog = true" v-on="on">
+						<v-icon size="32">mdi-upload</v-icon>
+					</v-btn>
+				</template>
+				<span>Upload</span>
+			</v-tooltip>
+		</template>
+		<template v-slot:toolbar-right>
+			<v-text-field
+				class="pt-0 mt-0"
+				v-model="search"
+				append-icon="mdi-magnify"
+				label="Search"
+				single-line
+				hide-details
+			></v-text-field>
+		</template>
+		<template v-slot:default>
+			<v-data-table
+				class="backup-table"
+				:headers="headers"
+				:items="backups"
+				item-key="file_name"
+				:search="search"
+				:loading="busy"
+			>
+				<template v-slot:item.actions="{ item }">
+					<v-tooltip bottom>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn icon @click.stop="downloadBackup(item)" class="" v-bind="attrs" v-on="on">
+								<v-icon size="32" small>mdi-download</v-icon>
+							</v-btn>
 						</template>
-					</v-data-table>
-				</v-card-text>
-			</v-card>
-		</v-col>
-		<file-upload-dialog 
-			v-model="uploadDialog" 
-			:on-upload="uploadBackup" 
-			title="Upload Backup"
-			text="Silahkan pilih file backup untuk diupload (xlsx)"
-			label="File backup"
-		/>
-		<simple-input-dialog 
-			v-model="createDialog" 
-			:on-confirm="createBackup"
-			title="Buat Backup"
-			text="Silahkan masukkan nama backup"
-			label="Nama backup" 
-		/>
-		<simple-input-dialog 
-			v-model="deleteDialog" 
-			:on-confirm="onConfirmDelete"
-			title="Hapus Backup"
-			:text="deleteText"
-			no-input="true"
-		/>
-	</v-row>
+						<span>Download</span>
+					</v-tooltip>
+					<v-tooltip bottom>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn icon @click.stop="prepareDeleteBackup(item)" class="" v-bind="attrs" v-on="on">
+								<v-icon size="32" small>mdi-delete</v-icon>
+							</v-btn>
+						</template>
+						<span>Hapus</span>
+					</v-tooltip>
+				</template>
+			</v-data-table>
+			<file-upload-dialog 
+				v-model="uploadDialog" 
+				:on-upload="uploadBackup" 
+				title="Upload Backup"
+				text="Silahkan pilih file backup untuk diupload (xlsx)"
+				label="File backup"
+			/>
+			<simple-input-dialog 
+				v-model="createDialog" 
+				:on-confirm="createBackup"
+				title="Buat Backup"
+				text="Silahkan masukkan nama backup"
+				label="Nama backup" 
+			/>
+			<simple-input-dialog 
+				v-model="deleteDialog" 
+				:on-confirm="onConfirmDelete"
+				title="Hapus Backup"
+				:text="deleteText"
+				no-input="true"
+			/>
+		</template>
+	</main-card>
 </template>
 
 <script>
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 import { authRouter } from '@/router/routers/auth';
-import { authStore, clientStore, appStore } from "@/store/stores";
+import stores from "@/store/stores";
 import { TAuthError, TAuthErrorCode, TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/auth_types";
 import { TFileError, TFileErrorCode, T_FILE_ERROR_STR } from "@/rpc/gen/file_types";
 import { router } from "@/router/index";
 import axios from 'axios';
-//import fileDownload from 'js-file-download';
 import FileSaver from 'file-saver';
-//import FileUpload from 'vue-upload-component';
 import FileUploadDialog from '@/components/FileUploadDialog'
 import SimpleInputDialog from '@/components/SimpleInputDialog'
+import MainCard from '@/components/MainCard';
 
 
 @Component({
   	name: "BackupView",
   	components: {
   		FileUploadDialog,
-  		SimpleInputDialog
-  	}
-	//beforeRouteEnter: authRouter.routeRequireLoginNow
+  		SimpleInputDialog,
+  		MainCard
+  	},
+	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_UTAMA)
 })
 class BackupView extends BaseView {
 	uploadDialog = false;
@@ -126,10 +129,10 @@ class BackupView extends BaseView {
 		//if(!routeRequireLoginNow()) return;
 	}
 	async mounted(){
-		appStore.setBreadcrumbs([
-			{ text: "Beranda", disabled: false, href: "#" },
-			{ text: "Beranda", disabled: false, href: "#" },
-			{ text: "Beranda", disabled: false, href: "#" },
+		stores.app.setBreadcrumbs([
+			{ text: "Beranda", disabled: false, to: { name: "beranda" }, exact: true },
+			{ text: "Pengaturan", disabled: true },
+			{ text: "Backup", disabled: true },
 		]);
 		await this.fetchBackups();
 	}
@@ -139,13 +142,13 @@ class BackupView extends BaseView {
 		view.busy=true;
 		try{
 			if (!file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
-			let created = await clientStore.backup.create_backup(file_name);
+			let created = await stores.client.backup.create_backup(file_name);
 			this.backupName = '';
 			//view.createDialog = false;
 			this.backups.push(created);
 		} catch (error) {
 			if (error instanceof TFileError){
-				appStore.pushTabDialog({
+				stores.app.pushTabDialog({
 					title: "Error",
 					text: T_FILE_ERROR_STR[error.code]
 				});
@@ -174,13 +177,13 @@ class BackupView extends BaseView {
 		view.busy=true;
 		try{
 			if (!item.file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
-			await clientStore.backup.delete_backup(item.file_name);
+			await stores.client.backup.delete_backup(item.file_name);
 
 	        const index = this.backups.indexOf(item);
 	        this.backups.splice(index, 1);
 		} catch (error) {
 			if (error instanceof TFileError){
-				appStore.pushTabDialog({
+				stores.app.pushTabDialog({
 					title: "Error",
 					text: T_FILE_ERROR_STR[error.code]
 				});
@@ -194,26 +197,24 @@ class BackupView extends BaseView {
 	async fetchBackups(){
 		const view = this;
 		view.busy = true;
-		view.fetchingBackups = true;
 		try{
-			this.backups = await clientStore.backup.fetch_backups();
+			this.backups = await stores.client.backup.fetch_backups();
 		} finally {
 			view.busy = false;
-			view.fetchingBackups = false;
 		}
 	}
 	async downloadBackup(item){
 		const view = this;
 		view.busy=true;
 		try{
-			let blob = await clientStore.backup.download_backup(item.file_name);
+			let blob = await stores.client.backup.download_backup(item.file_name);
 			FileSaver.saveAs(blob, item.file_name);
 		} finally {
 			view.busy = false;
 		}
 	}
 	async uploadBackup(file){
-		let uploaded = await clientStore.backup.upload_backup(file);
+		let uploaded = await stores.client.backup.upload_backup(file);
 		this.backups.push(uploaded);
 	}
 }

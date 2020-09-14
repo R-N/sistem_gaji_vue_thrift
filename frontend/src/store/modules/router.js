@@ -8,7 +8,7 @@ import {
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
 
-const name = 'rouer'
+const name = 'router'
 unregisterModule(name);
 
 @Module({
@@ -25,7 +25,7 @@ class RouterStore extends VuexModule {
 		return payload;
 	}
 
-	get initClients(){
+	get initRouters(){
 		return (stores, router) => {
 			this.auth.init(stores, router);
 		}

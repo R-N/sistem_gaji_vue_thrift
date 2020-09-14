@@ -23,7 +23,7 @@ body, html, .page {
 }
 
 .bigger-input >>> input, .bigger-input >>> label{
-  font-size: 1.2em;
+  font-size: 1.2rem;
 }
 
 .dz-message{
@@ -33,4 +33,13 @@ body, html, .page {
 
 .overlay-top{
   z-index: 10;
+}
+thead.v-data-table-header tr th {
+  font-size: 1rem !important;
+}
+.v-data-table tbody tr td {
+  font-size: 1rem !important;
+}
+.v-data-footer {
+  font-size: 1rem !important;
 }

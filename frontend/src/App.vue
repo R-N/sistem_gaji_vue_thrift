@@ -6,7 +6,7 @@
 			</v-expand-transition>
 		</v-flex>
 		<side-nav-drawer :drawer="drawer" @update:drawer="toggleDrawer" v-if="isLoggedIn"/>
-		<image-background :src="require('@/assets/img/login-background.png')" v-if="serverReachable && !isLoggedIn"></image-background>
+		<image-background :src="require('@/assets/img/login-background.png')" v-if="showBackground"></image-background>
 		<v-main>
 			<vue-page-transition name="overlay-down" class="fill-height">
 				<server-down-view appear v-if="!serverReachable" key="a"/>
@@ -19,7 +19,7 @@
 					v-else
 				>
 			        <transition name="fade" mode="out-in">
-						<v-row class="" align="start" justify="start"  v-if="serverReachable && isLoggedIn && breadcrumbs">
+						<v-row class="" align="start" justify="start"  v-if="serverReachable && isLoggedIn && breadcrumbs && breadcrumbs.length">
 							<v-col align="start" justify="start">
 							    <v-alert
 									color="grey"
@@ -65,6 +65,7 @@ import { authRouter } from '@/router/routers/auth';
 import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
 
 import {SlideYDownTransition, CollapseTransition} from 'vue2-transitions'
+import appHelper from '@/store/helpers/app';
 
 const dialogAuthExpired = () => {
 	appStore.pushTabDialog({
@@ -95,6 +96,10 @@ class App extends BaseView{
 	drawer = false;
 	mounted(){
 		appStore.setTabBusy(false);
+	}
+	get showBackground(){
+		return this.serverReachable;
+		//return this.serverReachable && !this.isLoggedIn;
 	}
 	get breadcrumbs(){
 		return appStore.breadcrumbs;
@@ -134,7 +139,7 @@ class App extends BaseView{
 	onGlobalLogoutFlagSet(val, oldVal){
 		if(val){
 			appStore.setGlobalLogout(false);
-			this.$router.push({ name: "login" });
+			//this.$router.push({ name: "login" });
 		}
 	}
 
@@ -142,31 +147,7 @@ class App extends BaseView{
 		this.drawer = drawer;
 	}
 	errorCaptured(error, vm, info) {
-		if (error instanceof TLoginError){
-			if (error.code === TLoginErrorCode.ALREADY_LOGGED_IN){
-				return authRouter.dialogRequireLogout();
-			} else if (error.code === TLoginErrorCode.REFRESH_TOKEN_EXPIRED){
-				clientStore.auth.logout();
-				return authRouter.dialogSessionExpired();
-			} else {
-				return authRouter.dialogUnknownTAuthError("TLoginError", error.code);
-			}
-		} else if (error instanceof TAuthError){
-			if (error.code === TAuthErrorCode.INVALID_ROLE){
-				return authRouter.dialogRequireRole();
-			} else if (error.code === TAuthErrorCode.NOT_LOGGED_IN){
-				clientStore.auth.logout();
-				return authRouter.dialogRequireLogin();
-			} else if (error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
-				clientStore.auth.logout();
-				return authRouter.dialogAuthExpired();
-			} else {
-				clientStore.auth.logout();
-				return authRouter.dialogUnknownTAuthError("TAuthError", error.code);
-			}
-		} else {
-			authRouter.dialogUnknownError(error);
-		}
+		return appHelper.handleError(error);
 	}
 }
 export { App }

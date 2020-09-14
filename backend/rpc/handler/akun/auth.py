@@ -12,3 +12,10 @@ class TAuthServiceHandler(TAuthService.Iface):
 
     def refresh_auth(self, auth_token, refresh_token):
         return self.auth_model.refresh_auth(auth_token, refresh_token)
+
+    def reset_password(self, email):
+        pass
+
+    def send_username(self, email):
+        pass
+        

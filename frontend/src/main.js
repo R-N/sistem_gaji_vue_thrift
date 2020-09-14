@@ -29,30 +29,26 @@ Vue.use(VueLazyload, {
 import { setUseHttps, setBackendHost, setBackendPort } from '@/rpc/client/base';
 import { checkBackend, backendUrl } from '@/lib/util';
 import { App } from './App.vue'
-import { store, stores, plugins } from '@/store/final';
+import { store, stores } from '@/store/final';
+import { initStorePlugins } from '@/store/plugins';
 import { router, routers } from '@/router/final';
+import { initRouters } from '@/router/routers';
 
-import { TAuthServiceClient } from '@/rpc/client/auth';
-import { TUserServiceClient } from '@/rpc/client/user';
-import { THelloServiceClient } from '@/rpc/client/hello';
-import { TBackupServiceClient } from '@/rpc/client/backup';
-
-const clients = {
-	auth: new TAuthServiceClient(stores),
-	hello: new THelloServiceClient(stores),
-	user: new TUserServiceClient(stores),
-	backup: new TBackupServiceClient(stores)
-}
+import { clients, initClients } from '@/rpc/clients';
+import { helpers, initHelpers } from '@/store/helpers';
 
 Vue.config.productionTip = false;
 async function main(){
-	await stores.clientStore.init(clients);
+	initClients(stores);
+	await stores.client.init(clients);
 
-	console.log(router);
-	routers.init(stores, router);
-	await stores.routerStore.init(routers.forStore);
+	initRouters(stores, router);
+	await stores.router.init(routers);
 
-	plugins.init(store);
+	initHelpers(stores, router);
+	await stores.helper.init(helpers);
+
+	initStorePlugins(store);
 
 	const serverHost = backendUrl(defaultUseHttps, defaultBackendHost, defaultBackendPort);
 	var serverReachable = false;
@@ -63,7 +59,7 @@ async function main(){
 	}catch(error){
 		console.log("Server unreachable");
 	}
-	stores.appStore.setServerReachable(serverReachable);
+	stores.app.setServerReachable(serverReachable);
 	var app = new Vue({
 		vuetify,
 		store,

@@ -2,6 +2,7 @@
 	<v-dialog
 		v-model="myDialog"
 		max-width="290"
+		:persistent="busy"
 	>
 		<v-card>
 			<v-form @submit.prevent.stop="uploadFile">
@@ -17,6 +18,7 @@
 							color="green darken-1"
 							text
 							@click.stop="close()"
+							:disabled="interactable"
 						>
 							Batal
 						</v-btn>
@@ -24,6 +26,8 @@
 							color="green darken-1"
 							text
 							type="submit"
+							:disabled="interactable"
+							:loading="busy"
 						>
 							Upload
 						</v-btn>
@@ -66,6 +70,10 @@ class FileUploadDialog extends WorkingComponent {
 	files = []
 	fromDrop = false
 	immediateUpload = false;
+
+	get interactable(){
+		return this.busy || !this.dialog;
+	}
 
 	get myDialog(){
 		return this.dialog;

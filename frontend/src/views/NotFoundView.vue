@@ -15,9 +15,18 @@
 <script>
 import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
+import stores from '@/store/stores';
 
 @Component({
-  	name: "NotFoundView"
+  	name: "NotFoundView",
+	beforeRouteLeave: function (to, from, next) {
+		stores.app.setRouteValid(true);
+		next();
+	},
+	beforeRouteEnter: function (to, from, next) {
+		stores.app.setRouteValid(false);
+		next();
+	}
 })
 class NotFoundView extends BaseView {
 

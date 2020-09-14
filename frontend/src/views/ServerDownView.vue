@@ -26,7 +26,6 @@ import RefreshButton from '@/components/RefreshButton';
   	}
 })
 class ServerDownView extends BaseView {
-
 }
 export { ServerDownView } ;
 export default ServerDownView;

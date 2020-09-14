@@ -86,7 +86,8 @@
       "no-duplicate-case": "off",
       "vue/valid-v-on": "off",
       "no-empty": "off",
-      "no-prototype-builtins": "off"
+      "no-prototype-builtins": "off",
+      "vue/no-unused-vars": "off"
     }
   },
   "browserslist": [

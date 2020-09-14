@@ -46,6 +46,9 @@ def WithSession(BaseSession):
         try:
             yield session
         finally:
+            #pass
+            #session.rollback()
+            #session.remove()
             BaseSession.remove()
     return wrapper
 
