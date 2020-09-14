@@ -15,7 +15,7 @@ DB_NAME = os.getenv("DB_NAME")
 
 connect_str = "postgresql+psycopg2://%s:%s@%s:%s/%s"
 connect_str = connect_str % (DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME)
-engine = create_engine(connect_str, echo=True)
+engine = create_engine(connect_str)
 
 DBEntity = declarative_base()
 
@@ -49,6 +49,7 @@ def WithSession(BaseSession):
             #pass
             #session.rollback()
             #session.remove()
+            session.expunge_all()
             BaseSession.remove()
     return wrapper
 

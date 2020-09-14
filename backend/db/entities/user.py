@@ -3,14 +3,15 @@ from sqlalchemy import Column, Integer, String, Sequence, Boolean, orm
 from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 import validators.user as validator
 from sqlalchemy.ext.hybrid import hybrid_property
+import rpc.gen.akun.user.constants as user_constants
 
 class DBUser(DBEntity):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(50), unique=True)
+    username = Column(String(user_constants.USERNAME_LEN_MAX), unique=True)
     password = Column(String(77))
-    name = Column(String(50))
-    email = Column(String(50))
+    name = Column(String(user_constants.NAME_LEN_MAX))
+    email = Column(String(user_constants.EMAIL_LEN_MAX), unique=True)
     role = Column(Integer)
     enabled = Column(Boolean, default=True)
     refresh_secret_2 = Column(String(32), nullable=True, default=None)

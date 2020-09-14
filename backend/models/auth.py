@@ -136,9 +136,9 @@ class AuthModel:
 
     def login(self, username, password):
         if not username:
-            raise TLoginError(TLoginErrorCode.USERNAME_KOSONG)
+            raise TLoginError(TLoginErrorCode.USERNAME_EMPTY)
         if not password:
-            raise TLoginError(TLoginErrorCode.PASSWORD_KOSONG)
+            raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
 
         with DBSession() as session:
             user = session.query(DBUser).filter((DBUser.username == username) | (DBUser.email == username)).scalar()

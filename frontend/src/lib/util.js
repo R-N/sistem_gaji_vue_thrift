@@ -42,3 +42,6 @@ export function addEditFieldsBulk(arr, fields){
 	}
 	return arr;
 }
+export function isInt(value) {
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+}

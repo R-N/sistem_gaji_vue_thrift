@@ -87,7 +87,8 @@
       "vue/valid-v-on": "off",
       "no-empty": "off",
       "no-prototype-builtins": "off",
-      "vue/no-unused-vars": "off"
+      "vue/no-unused-vars": "off",
+      "no-useless-escape": "off"
     }
   },
   "browserslist": [

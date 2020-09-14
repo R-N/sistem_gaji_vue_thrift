@@ -1,6 +1,11 @@
 <template>
 	<div class="d-flex flex-grow-1">
-		<v-form class="flex-grow-1" ref="myForm" @submit.native.prevent.stop="finishEdit">
+		<v-form 
+			class="flex-grow-1" 
+			ref="myForm" 
+			@submit.native.prevent.stop="finishEdit"
+			v-model="valid"
+		>
 			<div class="d-flex align-center justify-space-between">
 				<span class="flex-grow-1">
 					<slot v-if="editing" name="editing">Edit</slot>
@@ -69,6 +74,7 @@ class SyncCheckbox extends WorkingComponent {
 	editing=false;
 	confirmText = '';
 	confirmDialog = false;
+	valid=true;
 
 	async beginEdit(){
 		if(this.onEdit)
@@ -86,6 +92,7 @@ class SyncCheckbox extends WorkingComponent {
 		//this.$refs.myForm.reset();
 	}
 	async finishEdit(){
+		if(!this.valid) return;
 		if(this.changeDetector && !this.changeDetector()){
 			await this.cancelEdit();
 			return;

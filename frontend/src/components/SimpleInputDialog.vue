@@ -5,7 +5,11 @@
 		:persistent="busy"
 	>
 		<v-card>
-			<v-form @submit.prevent.stop="confirm">
+			<v-form 
+				ref="myForm"
+				@submit.prevent.stop="confirm"
+				v-model="valid"
+			>
 				<v-card-title class="headline">{{ title }}</v-card-title>
 				<v-card-text>
 					<p class="text-left">{{ text }}</p>
@@ -15,6 +19,9 @@
 						:label="label" 
 						v-model="input" 
 						:disabled="interactable" 
+						required
+						:rules="rules"
+						:counter="counter"
 					/>
 					<v-text-field 
 						class="bigger-input" 
@@ -25,6 +32,9 @@
 					    :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
 					    @click:append="() => { passwordVisible = !passwordVisible }"
 					    :type="passwordVisible ? 'text' : 'password'"
+						required
+						:rules="rules"
+						:counter="counter"
 					/>
 					<v-text-field 
 						class="bigger-input" 
@@ -33,6 +43,9 @@
 						v-model="inputConfirm" 
 						:disabled="interactable" 
 						type="password"
+						required
+						:counter="counter"
+						:rules="confirmRules"
 					/>
 				</v-card-text>
 				<v-card-actions>
@@ -61,7 +74,7 @@
 </template>
 
 <script>
-import { Component, Prop, Model } from 'vue-property-decorator';
+import { Component, Prop, Model, Watch } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
 import stores from '@/store/stores';
 
@@ -78,13 +91,12 @@ class SimpleInputDialog extends WorkingComponent {
 	@Prop({ default: false }) noInput;
 	@Model('change', { type: Boolean }) dialog;
 	@Prop(Function) onConfirm;
+	@Prop({ default: undefined }) rules;
+	@Prop({ default: undefined }) counter;
+	valid = true;
 	input = ''
 	inputConfirm = ''
 	passwordVisible = false;
-
-	get interactable(){
-		return this.busy || !this.dialog;
-	}
 
 	get myDialog(){
 		return this.dialog;
@@ -98,21 +110,49 @@ class SimpleInputDialog extends WorkingComponent {
 		this.$emit('change', value);
 	}
 
+	@Watch('myDialog', { immediate: false })
+	onDialogChange(val, oldVal){
+		if( this.$refs.myForm){
+			this.$refs.myForm.resetValidation();
+		}
+		this.input = ''
+		this.inputConfirm = ''
+	}
+
+
+	validateConfirm(inputConfirm){
+		if (this.input === inputConfirm) return true;
+		return "Konfirmasi tidak sama";
+	}
+
+	get confirmRules(){
+		return [
+			v => !!v || "Konfirmasi tidak boleh kosong",
+			this.validateConfirm
+		];
+	}
+
+	get interactable(){
+		return this.busy || !this.dialog;
+	}
+
 	close(){
 		this.busy = false;
 		this.myDialog = false;
 	}
 
 	async confirm(){
-		this.busy = true;
+		if(!this.valid){
+			return;
+		}
 		if(!this.noInput && this.password && this.input != this.inputConfirm){
 			stores.app.pushTabDialog({
 				title: "Error",
 				text: "Konfirmasi salah"
 			});
-			this.busy = false;
 			return;
 		}
+		this.busy = true;
 		if(this.onConfirm){
 			if(this.noInput){
 				await this.onConfirm();

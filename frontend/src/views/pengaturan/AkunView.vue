@@ -32,7 +32,13 @@
 						:confirm-text-maker="() => setEmailConfirmText(item)"
 					>
 						<template v-slot:editing>
-							<v-text-field name="email" v-model="item.emailEdit" />
+							<v-text-field 
+								name="email" 
+								v-model="item.emailEdit" 
+								:rules="emailRules"
+								:counter="emailLenMax"
+								type="email"
+							/>
 						</template>
 						<template v-slot:default>
 							<span>{{ item.email }}</span>
@@ -99,7 +105,13 @@
 				:text="setPasswordText"
 				label="Password Baru" 
 				:password="true"
-				type="password"
+				:counter="passwordLenMax"
+				:rules="passwordRules"
+			/>
+			<user-form-dialog
+				v-model="createDialog"
+				@register="user => { akun.push(user) }"
+				:roles="roles"
 			/>
 		</template>
 	</main-card>
@@ -111,7 +123,7 @@ import { BaseView } from '@/views/BaseView';
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/auth_types";
-import { TUserError, TUserErrorCode, T_USER_ERROR_STR } from "@/rpc/gen/user_types";
+import { TUserError, TUserErrorCode, T_USER_ERROR_STR, EMAIL_LEN_MAX, PASSWORD_LEN_MAX } from "@/rpc/gen/user_types";
 import { router } from "@/router/index";
 import SimpleInputDialog from '@/components/SimpleInputDialog'
 import { TAkunQuery } from '@/rpc/gen/akun_types';
@@ -119,7 +131,9 @@ import { TAkunQuery } from '@/rpc/gen/akun_types';
 import MainCard from '@/components/MainCard';
 import SyncCheckbox from '@/components/SyncCheckbox';
 import EditableCell from '@/components/EditableCell';
+import UserFormDialog from '@/components/UserFormDialog';
 import { addEditFieldsBulk } from '@/lib/util';
+import { EMAIL_RULES, PASSWORD_RULES } from '@/lib/validators/user';
 
 @Component({
   	name: "AkunView",
@@ -127,11 +141,13 @@ import { addEditFieldsBulk } from '@/lib/util';
   		SimpleInputDialog,
   		MainCard,
   		SyncCheckbox,
-  		EditableCell
+  		EditableCell,
+  		UserFormDialog
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_AKUN)
 })
 class AkunView extends BaseView {
+	createDialog = false;
 	setPasswordDialog = false;
 	toSetPassword = null;
 	roles = []
@@ -147,9 +163,15 @@ class AkunView extends BaseView {
 	]
 	akun = []
 	selfDisableWarning = " Akun ini adalah akun Anda sendiri. Anda akan logout dan tidak dapat login kembali hingga diaktifkan lagi."
+	emailRules = EMAIL_RULES
+	passwordRules = PASSWORD_RULES
+	emailLenMax = EMAIL_LEN_MAX
+	passwordLenMax = PASSWORD_LEN_MAX
 
 	populateRoles(){
 		for (const key in T_USER_ROLE_STR){
+			if (key == TUserRole.SUPER_ADMIN && stores.auth.user.role != TUserRole.SUPER_ADMIN)
+				continue;
 			let obj = { role: key, text: T_USER_ROLE_STR[key] };
 			this.roles.push(obj);
 			this.rolesDict[key] = obj;

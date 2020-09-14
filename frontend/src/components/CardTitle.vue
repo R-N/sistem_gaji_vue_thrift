@@ -1,11 +1,11 @@
 <template>
 	<v-card-title class="my-0 pb-0" align="start">
 		<v-row>
-			<slot>
-				<v-col align="start" justify="start">
+			<v-col align="start" justify="start">
+				<slot>
 					<h2 class="text-h2">{{ title }}</h2>
-				</v-col>
-			</slot>
+				</slot>
+			</v-col>
 		</v-row>
 	</v-card-title>
 </template>

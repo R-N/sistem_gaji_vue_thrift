@@ -91,5 +91,6 @@ class UserModel:
             )
             session.add(user)
             session.commit()
+            session.refresh(user)
             return user
 

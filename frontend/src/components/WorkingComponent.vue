@@ -13,7 +13,7 @@ class WorkingComponent extends Vue {
 	selfBusy = false
 
 	get busy(){
-		return this.selfBusy || this.parentBusy || appStore.routerBusy || appStore.tabBusy || appStore.globalBusy
+		return this.selfBusy || this.parentBusy || appStore.routerBusy || appStore.tabBusy || appStore.authBusy || appStore.globalBusy
 	}
 
 	set busy(busy){
@@ -26,6 +26,14 @@ class WorkingComponent extends Vue {
 
 	set globalBusy(busy){
 		appStore.setGlobalBusy(busy);
+	}
+
+	get authBusy(){
+		return appStore.authBusy;
+	}
+
+	set authBusy(busy){
+		appStore.setAuthBusy(busy);
 	}
 
 	get tabBusy(){
