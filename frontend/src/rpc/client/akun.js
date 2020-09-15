@@ -20,6 +20,10 @@ class TAkunServiceClient extends TBaseClient{
 	async set_role(user_id, new_role){
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
 		await this.client.set_role(this.stores.auth.authToken, user_id, new_role);
+		if (user_id == this.stores.auth.user.id){
+			//await this.stores.auth.setUserRole(new_role);
+			await this.stores.client.auth.logout();
+		}
 	}
 
 	async set_email(user_id, new_email){
@@ -29,10 +33,16 @@ class TAkunServiceClient extends TBaseClient{
 	async set_password(user_id, new_password){
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
 		await this.client.set_password(this.stores.auth.authToken, user_id, new_password);
+		if (user_id == this.stores.auth.user.id){
+			await this.stores.client.auth.login(this.stores.auth.user.username, new_password);
+		}
 	}
 	async set_enabled(user_id, new_enabled){
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
 		await this.client.set_enabled(this.stores.auth.authToken, user_id, new_enabled);
+		if (user_id == this.stores.auth.user.id && !new_enabled){
+			await this.stores.client.auth.logout();
+		}
 	}
 	
 

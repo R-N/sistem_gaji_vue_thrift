@@ -1,9 +1,14 @@
 <template>
 	<main-card title="Akun">
 		<template v-slot:toolbar-left>
-			<v-btn icon @click.stop="createDialog = true">
-				<v-icon size="32">mdi-plus</v-icon>
-			</v-btn>
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">
+					<v-btn icon @click.stop="createDialog = true" v-bind="attrs" v-on="on">
+						<v-icon size="32">mdi-plus</v-icon>
+					</v-btn>
+				</template>
+				<span>Buat</span>
+			</v-tooltip>
 		</template>
 		<template v-slot:toolbar-right>
 			<v-text-field
@@ -122,7 +127,7 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/auth_types";
+import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/auth_types";
 import { TUserError, TUserErrorCode, T_USER_ERROR_STR, EMAIL_LEN_MAX, PASSWORD_LEN_MAX } from "@/rpc/gen/user_types";
 import { router } from "@/router/index";
 import SimpleInputDialog from '@/components/general/SimpleInputDialog'
@@ -132,7 +137,6 @@ import MainCard from '@/components/general/MainCard';
 import SyncCheckbox from '@/components/general/SyncCheckbox';
 import EditableCell from '@/components/general/EditableCell';
 import UserFormDialog from '@/components/pengaturan/akun/UserFormDialog';
-import { addEditFieldsBulk } from '@/lib/util';
 import { EMAIL_RULES, PASSWORD_RULES } from '@/lib/validators/user';
 
 @Component({
@@ -162,7 +166,10 @@ class AkunView extends BaseView {
 		{ text: 'Aksi', value: 'actions' }
 	]
 	akun = []
-	selfDisableWarning = " Akun ini adalah akun Anda sendiri. Anda akan logout dan tidak dapat login kembali hingga diaktifkan lagi."
+	selfDisableWarning = " Akun ini adalah akun Anda sendiri, sehingga anda akan logout dan tidak dapat login kembali hingga diaktifkan lagi."
+	roleLogoutWarning = " Akun yang diubah role nya harus login ulang."
+	selfRoleLogoutWarning = " Akun ini adalah akun Anda sendiri, sehingga Anda akan logout otomatis."
+	selfRoleDownWarning = " Selain itu, jika Anda bukan Admin Akun maupun Super Admin, Anda tidak bisa mengakses halaman ini."
 	emailRules = EMAIL_RULES
 	passwordRules = PASSWORD_RULES
 	emailLenMax = EMAIL_LEN_MAX
@@ -182,23 +189,6 @@ class AkunView extends BaseView {
 		return T_USER_ROLE_STR[role];
 	}
 
-	toggleUserEnabled(user){
-		user.enabled = !user.enabled;
-	}
-
-
-	get disabledCount(){
-		let count = 0;
-		let i = 0;
-		for(i = 0; i < this.akun.length; ++i){
-			if (!this.akun[i].enabled) ++count;
-		}
-		return count;
-	}
-
-	async beforeMount(){
-		//if(!routeRequireLoginNow()) return;
-	}
 	async mounted(){
 		stores.app.setBreadcrumbs([
 			{ text: "Beranda", to: { name: 'beranda' }, exact: true },
@@ -242,9 +232,16 @@ class AkunView extends BaseView {
 	}
 
 	setRoleConfirmText(user){
+		let warn = this.roleLogoutWarning;
+		if (user.id == stores.auth.user.id){
+			warn += this.selfRoleLogoutWarning;
+			if (!T_USER_ROLE_DOUBLES[TUserRole.ADMIN_AKUN].includes(parseInt(user.roleEdit))){
+				warn += this.selfRoleDownWarning;
+			}
+		}
 		return "Apa Anda yakin ingin mengubah role untuk user '" 
 			+ user.username + "' menjadi '" 
-			+ this.roleText(user.roleEdit) + "'?"
+			+ this.roleText(user.roleEdit) + "'?" + warn;
 	}
 	async setRole(user, role){
 		const view = this;
@@ -253,8 +250,11 @@ class AkunView extends BaseView {
 			if (!(role in  T_USER_ROLE_STR)) throw new TUserError({ code: TUserErrorCode.ROLE_INVALID});
 			await stores.client.akun.set_role(user.id, role);
 			user.role = role;
-			if (user.id == stores.auth.user.id) 
-				await stores.auth.setUserRole(user.role);
+			/*
+			if (user.id == stores.auth.user.id){
+				stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
+			}
+			*/
 		} catch (error) {
 			this.handleError(error);
 		} finally {
@@ -275,9 +275,6 @@ class AkunView extends BaseView {
 		try{
 			await stores.client.akun.set_enabled(user.id, enabled);
 			user.enabled = enabled;
-			if (user.id == stores.auth.user.id){
-				await stores.client.auth.logout();
-			}
 		} catch (error) {
 			this.handleError(error);
 		} finally {
@@ -299,9 +296,6 @@ class AkunView extends BaseView {
 		view.busy=true;
 		try{
 			await stores.client.akun.set_password(user.id, password);
-			if (user.id == stores.auth.user.id){
-				await stores.client.auth.login(stores.auth.user.username, password);
-			}
 		} catch (error) {
 			this.handleError(error);
 		} finally {

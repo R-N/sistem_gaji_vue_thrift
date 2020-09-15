@@ -1,7 +1,6 @@
 <template>
 	<main-card title="Backup">
 		<template v-slot:toolbar-left>
-
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">
 					<v-btn icon @click.stop="createDialog = true" v-bind="attrs" v-on="on">

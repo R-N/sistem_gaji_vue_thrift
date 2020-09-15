@@ -8,7 +8,7 @@
 		>
 			<div class="d-flex align-center justify-space-between">
 				<span class="flex-grow-1">
-					<slot v-if="editing" name="editing">Edit</slot>
+					<slot v-if="readOnlyMode || editing" name="editing" :readonly="readOnlyMode && !editing" :editing="editing">Edit</slot>
 					<slot v-else name="default">Hello</slot>
 				</span>
 				<span  class="flex-grow-0 flex-shrink-0">
@@ -71,6 +71,7 @@ class SyncCheckbox extends WorkingComponent {
 	@Prop(Function) onCancel;
 	@Prop(Function) confirmTextMaker; 
 	@Prop(Function) changeDetector;
+	@Prop({ default: false }) readOnlyMode;
 	editing=false;
 	confirmText = '';
 	confirmDialog = false;
@@ -89,7 +90,7 @@ class SyncCheckbox extends WorkingComponent {
 			await this.onCancel();
 		else
 			this.$emit("cancel");
-		//this.$refs.myForm.reset();
+		this.$refs.myForm.resetValidation();
 	}
 	async finishEdit(){
 		if(!this.valid) return;

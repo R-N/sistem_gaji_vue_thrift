@@ -7,9 +7,9 @@
 			align="start"
 			justify="start"
 		>
-			<v-card class="fill-width">
+			<v-card class="fill-width py-2 px-4">
 				<card-title :title="title" />
-				<card-toolbar>
+				<card-toolbar v-if="!noToolbar">
 					<template v-slot:left>
 						<slot name="toolbar-left"></slot>
     				</template>
@@ -40,6 +40,7 @@ import CardToolbar from '@/components/general/CardToolbar';
 })
 class MainCard extends Vue {
 	@Prop({ default: "Title" }) title;
+	@Prop({ default: false }) noToolbar;
 }
 export { MainCard } 
 export default MainCard

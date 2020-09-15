@@ -139,7 +139,7 @@ class App extends BaseView{
 	onGlobalLogoutFlagSet(val, oldVal){
 		if(val){
 			appStore.setGlobalLogout(false);
-			//this.$router.push({ name: "login" });
+			this.$router.push({ name: "beranda" });
 		}
 	}
 

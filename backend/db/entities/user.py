@@ -59,7 +59,7 @@ class DBUser(DBEntity):
         self.name = name
 
     def set_role(self, role, my_role=None):
-        validator.validate_role(role, my_role=my_role)
+        validator.validate_role(role, old_role=self.role, my_role=my_role)
         self.role = role
         self.set_refresh_secret_2(None)
 

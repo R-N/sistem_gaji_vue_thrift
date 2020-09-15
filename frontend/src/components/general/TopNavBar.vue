@@ -74,7 +74,7 @@
 			</template>
 
 			<v-list>
-				<v-list-item @click="">
+				<v-list-item :to="{ name: 'profil' }">
 					<v-list-item-title>Profil</v-list-item-title>
 				</v-list-item>
 				<v-list-item @click="logout">

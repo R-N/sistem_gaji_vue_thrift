@@ -12,27 +12,33 @@ class AuthRouter extends RouterUser{
 		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Anda harus login terlebih dahulu",
-			//onDismiss: function(){ router.safePush({ name: "login"}) }
+			onDismiss: function(){ router.safePush({ name: "beranda"}) }
 		});
 		return false;
 	}
-	routeRequireLoginNow(to=null, from=null, next=null) {
-		const router = this.router;
-		if (!this.stores.auth.authToken){
-			if (next) next(false);
-			//router.safePush({ name: "login" });
-			return this.dialogRequireLogin();
+	routeRequireLoginNow(){
+		const obj = this;
+		return function(to=null, from=null, next=null) {
+			const router = obj.router;
+			if (!obj.stores.auth.authToken){
+				if (next) next(false);
+				router.safePush({ name: "beranda" });
+				return obj.dialogRequireLogin();
+			}
+			if (next) next();
+			return true;
 		}
-		if (next) next();
-		return true;
 	}
-	routeRequireLoginDialog (to=null, from=null, next=null) {
-		if (!this.stores.auth.authToken){
-			if (next) next(false);
-			return this.dialogRequireLogin();
+	routeRequireLoginDialog(){ 
+		const obj = this;
+		return function(to=null, from=null, next=null) {
+			if (!obj.stores.auth.authToken){
+				if (next) next(false);
+				return obj.dialogRequireLogin();
+			}
+			if (next) next();
+			return true;
 		}
-		if (next) next();
-		return true;
 	}
 
 
@@ -104,7 +110,7 @@ class AuthRouter extends RouterUser{
 		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Sesi kadaluarsa. Silahkan login ulang.",
-			//onDismiss: function(){ router.safePush({ name: "login"}) }
+			onDismiss: function(){ router.safePush({ name: "beranda"}) }
 		});
 		return false;
 	}
@@ -114,7 +120,7 @@ class AuthRouter extends RouterUser{
 		this.stores.app.pushTabDialog({
 			title: "Pemberitahuan",
 			text: "Anda telah diam terlalu lama. Silahkan login kembali.",
-			//onDismiss: function(){ router.safePush({ name: "login"}) }
+			onDismiss: function(){ router.safePush({ name: "beranda"}) }
 		});
 		return false;
 	}
@@ -124,7 +130,7 @@ class AuthRouter extends RouterUser{
 		this.stores.app.pushTabDialog({
 			title: "Error",
 			text: "Sesi invalid (" + error + ":" + code + "). Silahkan login ulang atau laporkan bug.",
-			//onDismiss: function(){ router.safePush({ name: "login"}) }
+			onDismiss: function(){ router.safePush({ name: "beranda"}) }
 		});
 		return false;
 	}
