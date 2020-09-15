@@ -64,10 +64,7 @@
 						size="32px"
 						item
 					>
-						<v-img
-							src="https://cdn.vuetifyjs.com/images/logos/logo.svg"
-							:alt="userName"
-						/>
+						<v-icon size="32px">mdi-account</v-icon>
 					</v-avatar>
 					<span class="ml-2" v-if="userName">{{ userName }}</span>
 				</v-btn>
