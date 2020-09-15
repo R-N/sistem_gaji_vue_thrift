@@ -8,12 +8,12 @@ import rpc.gen.akun.user.constants as user_constants
 class DBUser(DBEntity):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(user_constants.USERNAME_LEN_MAX), unique=True)
-    password = Column(String(77))
-    name = Column(String(user_constants.NAME_LEN_MAX))
-    email = Column(String(user_constants.EMAIL_LEN_MAX), unique=True)
-    role = Column(Integer)
-    enabled = Column(Boolean, default=True)
+    username = Column(String(user_constants.USERNAME_LEN_MAX), unique=True, nullable=False)
+    password = Column(String(77), nullable=False)
+    name = Column(String(user_constants.NAME_LEN_MAX), nullable=False)
+    email = Column(String(user_constants.EMAIL_LEN_MAX), unique=True, nullable=False)
+    role = Column(Integer, nullable=False)
+    enabled = Column(Boolean, default=True, nullable=False)
     refresh_secret_2 = Column(String(32), nullable=True, default=None)
 
     def __init__(
@@ -24,17 +24,16 @@ class DBUser(DBEntity):
         name=None,
         email=None,
         enabled=None,
-        session=None,
         my_role=None
     ):
         if username:
-            self.set_username(username, session=session)
+            self.set_username(username)
         if password:
             self.set_password(password)
         if name:
             self.set_name(name)
         if email:
-            self.set_email(email, session=session)
+            self.set_email(email)
         if role is not None:
             self.set_role(role, my_role=my_role)
         if enabled is not None:
@@ -64,12 +63,12 @@ class DBUser(DBEntity):
         self.role = role
         self.set_refresh_secret_2(None)
 
-    def set_username(self, username, session=None):
-        validator.validate_username(username, session=session)
+    def set_username(self, username):
+        validator.validate_username(username)
         self.username = username
 
-    def set_email(self, email, session=None):
-        validator.validate_email(email, session=session)
+    def set_email(self, email):
+        validator.validate_email(email)
         self.email = email
 
     def set_enabled(self, enabled):

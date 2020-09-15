@@ -1,6 +1,4 @@
-from db import DBSession
-import db.entities as entities
-
+from db.errors import parse_db_error, UniqueError
 from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
 from rpc.gen.akun.auth.ttypes import TUserRole, TAuthError, TAuthErrorCode
 import re 
@@ -25,16 +23,11 @@ def validate_role(role, my_role=None):
     if role == TUserRole.SUPER_ADMIN and (my_role != TUserRole.SUPER_ADMIN or not my_role):
         raise TAuthError(TAuthErrorCode.ROLE_INVALID)
 
-def validate_email(email, session=None):
-    if not session:
-        with DBSession() as session:
-            return validate_email(email, session)
+def validate_email(email):
     if not email:
         raise TUserError(TUserErrorCode.EMAIL_EMPTY)
     if not EMAIL_REGEX.search(email):
         raise TUserError(TUserErrorCode.EMAIL_INVALID)
-    if session.query(entities.DBUser.id).filter(entities.DBUser.email == email).scalar() is not None:
-        raise TUserError(TUserErrorCode.EMAIL_ALREADY_EXISTS)
 
 def validate_password(password):
     if not password:
@@ -46,12 +39,13 @@ def validate_name(name):
     if not name:
         raise TUserError(TUserErrorCode.NAME_EMPTY)
 
-def validate_username(username, session=None):
-    if not session:
-        with DBSession() as session:
-            return validate_username(username, session)
+def validate_username(username):
     if not username:
         raise TUserError(TUserErrorCode.USERNAME_EMPTY)
-    if session.query(entities.DBUser.id).filter(entities.DBUser.username == username).scalar() is not None:
-        raise TUserError(TUserErrorCode.USERNAME_ALREADY_EXISTS)
 
+def parse_error(parsed):
+    if isinstance(parsed, UniqueError):
+        if parsed.column == "email":
+            raise TUserError(TUserErrorCode.EMAIL_ALREADY_EXISTS)
+        if parsed.column == "username":
+            raise TUserError(TUserErrorCode.USERNAME_ALREADY_EXISTS)

@@ -4,6 +4,8 @@ from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
 from rpc.gen.akun.auth.ttypes import TUserRole, TAuthError, TAuthErrorCode
 import re 
 import validators.user as validator
+from sqlalchemy.exc import IntegrityError
+from db.errors import parse_db_error
 
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
@@ -53,7 +55,13 @@ class UserModel:
             user = self._get_user(session, user_id)
             user.set_email(new_email)
             session.add(user)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError as ex:
+                parsed = parse_db_error(ex)
+                if parsed:
+                    validator.parse_error(parsed)
+                raise
 
     def set_password(self, user_id, new_password):
         with DBSession() as session:
@@ -86,11 +94,16 @@ class UserModel:
                 name=form.name,
                 email=form.email,
                 role=form.role,
-                session=session,
                 my_role=my_role
             )
             session.add(user)
-            session.commit()
-            session.refresh(user)
-            return user
+            try:
+                session.commit()
+                session.refresh(user)
+                return user
+            except IntegrityError as ex:
+                parsed = parse_db_error(ex)
+                if parsed:
+                    validator.parse_error(parsed)
+                raise
 
