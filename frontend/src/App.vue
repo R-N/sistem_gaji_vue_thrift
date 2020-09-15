@@ -52,12 +52,12 @@
 import { authStore, appStore, clientStore } from "@/store/stores";
 import { Component, Watch } from 'vue-property-decorator'
 import { BaseView } from '@/views/BaseView';
-import ImageBackground from '@/components/ImageBackground'
-import LoadingOverlay from '@/components/LoadingOverlay';
-import SideNavDrawer from '@/components/SideNavDrawer';
-import TopNavBar from '@/components/TopNavBar';
-import DialogStack from '@/components/DialogStack';
-import IdleOverlay from '@/components/IdleOverlay';
+import ImageBackground from '@/components/general/ImageBackground'
+import LoadingOverlay from '@/components/general/LoadingOverlay';
+import SideNavDrawer from '@/components/general/SideNavDrawer';
+import TopNavBar from '@/components/general/TopNavBar';
+import DialogStack from '@/components/general/DialogStack';
+import IdleOverlay from '@/components/general/IdleOverlay';
 import ServerDownView from '@/views/ServerDownView';
 import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';

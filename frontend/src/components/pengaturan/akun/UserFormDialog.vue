@@ -100,13 +100,13 @@
 <script>
 
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
 import stores from "@/store/stores";
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/auth_types";
 import { TUserError, TUserErrorCode, T_USER_ERROR_STR, USERNAME_LEN_MAX, NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX } from "@/rpc/gen/user_types";
 import { TUserForm } from "@/rpc/gen/akun_types";
 
-import CardTitle from '@/components/CardTitle'
+import CardTitle from '@/components/general/CardTitle'
 import { USERNAME_RULES, PASSWORD_RULES, NAME_RULES, EMAIL_RULES, ROLE_RULES } from '@/lib/validators/user';
 
 @Component({

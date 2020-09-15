@@ -32,11 +32,11 @@
 <script>
 
 import { Component, Prop } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
 import stores from "@/store/stores";
 import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/auth_types';
 import { router } from '@/router/index';
-import CardTitle from '@/components/CardTitle'
+import CardTitle from '@/components/general/CardTitle'
 
 @Component({
 	name: "LoginForm",

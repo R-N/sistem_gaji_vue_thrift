@@ -125,13 +125,13 @@ import stores from "@/store/stores";
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/auth_types";
 import { TUserError, TUserErrorCode, T_USER_ERROR_STR, EMAIL_LEN_MAX, PASSWORD_LEN_MAX } from "@/rpc/gen/user_types";
 import { router } from "@/router/index";
-import SimpleInputDialog from '@/components/SimpleInputDialog'
+import SimpleInputDialog from '@/components/general/SimpleInputDialog'
 import { TAkunQuery } from '@/rpc/gen/akun_types';
 
-import MainCard from '@/components/MainCard';
-import SyncCheckbox from '@/components/SyncCheckbox';
-import EditableCell from '@/components/EditableCell';
-import UserFormDialog from '@/components/UserFormDialog';
+import MainCard from '@/components/general/MainCard';
+import SyncCheckbox from '@/components/general/SyncCheckbox';
+import EditableCell from '@/components/general/EditableCell';
+import UserFormDialog from '@/components/pengaturan/akun/UserFormDialog';
 import { addEditFieldsBulk } from '@/lib/util';
 import { EMAIL_RULES, PASSWORD_RULES } from '@/lib/validators/user';
 

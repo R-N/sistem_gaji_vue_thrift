@@ -17,7 +17,7 @@
 <script>
 import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
-import RefreshButton from '@/components/RefreshButton';
+import RefreshButton from '@/components/general/RefreshButton';
 
 @Component({
   	name: "ServerDownView",

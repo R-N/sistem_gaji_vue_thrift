@@ -19,8 +19,8 @@
 
 <script>
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
-import RefreshButton from '@/components/RefreshButton';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
+import RefreshButton from '@/components/general/RefreshButton';
 import { appStore } from '@/store/modules/app';
 
 @Component({

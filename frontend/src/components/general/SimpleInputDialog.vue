@@ -75,7 +75,7 @@
 
 <script>
 import { Component, Prop, Model, Watch } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
 import stores from '@/store/stores';
 
 @Component({

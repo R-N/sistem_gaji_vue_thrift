@@ -92,9 +92,9 @@ import { TFileError, TFileErrorCode, T_FILE_ERROR_STR } from "@/rpc/gen/file_typ
 import { router } from "@/router/index";
 import axios from 'axios';
 import FileSaver from 'file-saver';
-import FileUploadDialog from '@/components/FileUploadDialog'
-import SimpleInputDialog from '@/components/SimpleInputDialog'
-import MainCard from '@/components/MainCard';
+import FileUploadDialog from '@/components/general/FileUploadDialog'
+import SimpleInputDialog from '@/components/general/SimpleInputDialog'
+import MainCard from '@/components/general/MainCard';
 
 
 @Component({

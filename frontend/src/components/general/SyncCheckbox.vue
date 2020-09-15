@@ -20,7 +20,7 @@
 
 <script>
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import SimpleInputDialog from '@/components/SimpleInputDialog';
+import SimpleInputDialog from '@/components/general/SimpleInputDialog';
 
 @Component({
   	name: "SyncCheckbox",

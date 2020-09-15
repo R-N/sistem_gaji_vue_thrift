@@ -6,10 +6,10 @@ import re
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
-EMAIL_REGEX_STR = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+EMAIL_REGEX_STR = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 EMAIL_REGEX = re.compile(EMAIL_REGEX_STR)
 
-PASSWORD_REGEX_STR = '^(?=\S{8,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])'
+PASSWORD_REGEX_STR = r'^(?=\S{8,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])'
 PASSWORD_REGEX = re.compile(PASSWORD_REGEX_STR)
 
 def _validate_role(role):

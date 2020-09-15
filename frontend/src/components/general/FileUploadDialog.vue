@@ -40,7 +40,7 @@
 
 <script>
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
 import { appStore } from "@/store/stores";
 import { TAuthError, TAuthErrorCode, TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/auth_types";
 import { TFileError, TFileErrorCode, T_FILE_ERROR_STR } from "@/rpc/gen/file_types";

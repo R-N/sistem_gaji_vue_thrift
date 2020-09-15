@@ -12,7 +12,7 @@
 <script>
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { appStore, authStore, clientStore } from '@/store/stores';
-import SharedIdle from '@/components/SharedIdle';
+import SharedIdle from '@/components/general/SharedIdle';
 import { authRouter } from '@/router/routers/auth';
 
 

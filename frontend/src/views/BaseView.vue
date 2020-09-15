@@ -1,6 +1,6 @@
 <script>
 import { Component, Prop } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
 import { authStore } from "@/store/stores";
 
 @Component({

@@ -28,8 +28,8 @@
 
 <script>
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import CardTitle from '@/components/CardTitle';
-import CardToolbar from '@/components/CardToolbar';
+import CardTitle from '@/components/general/CardTitle';
+import CardToolbar from '@/components/general/CardToolbar';
 
 @Component({
   	name: "MainCard",

@@ -16,9 +16,9 @@
 import { Component, Prop } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 import { authRouter } from '@/router/routers/auth';
-import ImageBackground from '@/components/ImageBackground'
-import LoginForm from '@/components/LoginForm'
-import LoadingOverlay from '@/components/LoadingOverlay';
+import ImageBackground from '@/components/general/ImageBackground'
+import LoginForm from '@/components/login/LoginForm'
+import LoadingOverlay from '@/components/general/LoadingOverlay';
 
 @Component({
   	name: "LoginView",
