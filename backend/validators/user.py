@@ -18,9 +18,12 @@ def _validate_role(role):
     if role not in TUserRole._VALUES_TO_NAMES:
         raise TUserError(TUserErrorCode.ROLE_INVALID)
 
-def validate_role(role, old_role=None, my_role=None):
+def validate_changer_role(user_role, changer_role):
+    return (not user_role) or user_role != TUserRole.SUPER_ADMIN or changer_role == TUserRole.SUPER_ADMIN
+
+def validate_role(role, my_role=None):
     _validate_role(role)
-    if (role == TUserRole.SUPER_ADMIN or old_role == TUserRole.SUPER_ADMIN) and (my_role != TUserRole.SUPER_ADMIN or not my_role):
+    if role == TUserRole.SUPER_ADMIN and (my_role != TUserRole.SUPER_ADMIN or not my_role):
         raise TAuthError(TAuthErrorCode.ROLE_INVALID)
 
 def validate_email(email):

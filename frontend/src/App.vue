@@ -9,36 +9,8 @@
 		<image-background :src="require('@/assets/img/login-background.png')" v-if="showBackground"></image-background>
 		<v-main>
 			<vue-page-transition name="overlay-down" class="fill-height">
-				<server-down-view appear v-if="!serverReachable" key="a"/>
-				<login-view appear v-else-if="!isLoggedIn" key="b"/>
-				<v-container appear 
-					class="" 
-					align="start"
-					justify="start"
-					key="c"
-					v-else
-				>
-			        <transition name="fade" mode="out-in">
-						<v-row class="" align="start" justify="start"  v-if="serverReachable && isLoggedIn && breadcrumbs && breadcrumbs.length">
-							<v-col align="start" justify="start">
-							    <v-alert
-									color="grey"
-									text
-							    >
-						        	<v-breadcrumbs class="py-0" :items="breadcrumbs" large>
-										<template v-slot:divider>
-											<v-icon>mdi-chevron-right</v-icon>
-										</template>
-						        	</v-breadcrumbs>
-							    </v-alert>
-					        </v-col>
-					    </v-row>
-					</transition>
-						<slide-y-down-transition group>
-							<router-view appear :key="$route.path"/>
-						</slide-y-down-transition>
-	      			<v-spacer></v-spacer>
-				</v-container>
+				<server-down-view v-if="!serverReachable" key="a"/>
+				<router-view v-else :key="$route.matched[0].path"/>
 			</vue-page-transition>
 		</v-main>
 		<idle-overlay :idle-wait="300" :logout-wait="300"/>
@@ -59,7 +31,6 @@ import TopNavBar from '@/components/general/TopNavBar';
 import DialogStack from '@/components/general/DialogStack';
 import IdleOverlay from '@/components/general/IdleOverlay';
 import ServerDownView from '@/views/ServerDownView';
-import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';
 import { authRouter } from '@/router/routers/auth';
 import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
@@ -86,7 +57,6 @@ const dialogAuthExpired = () => {
 		DialogStack,
 		IdleOverlay,
 		ServerDownView,
-		LoginView,
 		SlideYDownTransition,
 		CollapseTransition
 	}

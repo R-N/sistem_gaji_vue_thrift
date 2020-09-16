@@ -26,12 +26,12 @@ class TAkunServiceHandler(TAkunService.Iface):
 
     def set_email(self, auth_token, user_id, new_email):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        self.user_model.set_email(user_id, new_email)
+        self.user_model.set_email(auth_payload['role'], user_id, new_email)
 
     def set_password(self, auth_token, user_id, new_password):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        self.user_model.set_password(user_id, new_password)
+        self.user_model.set_password(auth_payload['role'], user_id, new_password)
 
     def set_enabled(self, auth_token, user_id, new_enabled):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        self.user_model.set_enabled(user_id, new_enabled)
+        self.user_model.set_enabled(auth_payload['role'], user_id, new_enabled)

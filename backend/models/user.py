@@ -50,7 +50,7 @@ class UserModel:
             session.add(user)
             session.commit()
 
-    def set_email(self, user_id, new_email):
+    def set_email(self, my_role, user_id, new_email):
         with DBSession() as session:
             user = self._get_user(session, user_id)
             user.set_email(new_email)
@@ -63,7 +63,7 @@ class UserModel:
                     validator.parse_error(parsed)
                 raise
 
-    def set_password(self, user_id, new_password):
+    def set_password(self, my_role, user_id, new_password):
         with DBSession() as session:
             user = self._get_user(session, user_id)
             user.set_password(new_password)
@@ -71,14 +71,14 @@ class UserModel:
             session.commit()
             
 
-    def set_enabled(self, user_id, new_enabled):
+    def set_enabled(self, my_role, user_id, new_enabled):
         with DBSession() as session:
             user = self._get_user(session, user_id)
             user.set_enabled(new_enabled)
             session.add(user)
             session.commit()
 
-    def set_name(self, user_id, new_name):
+    def set_name(self, my_role, user_id, new_name):
         with DBSession() as session:
             user = self._get_user(session, user_id)
             user.set_name(new_name)

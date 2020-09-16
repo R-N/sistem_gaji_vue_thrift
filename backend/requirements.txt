@@ -5,6 +5,7 @@ pyexcel
 pyexcel-io
 pyexcel-xls
 pyexcel-xlsx
+emails
 bcrypt
 passlib
 PyJWT

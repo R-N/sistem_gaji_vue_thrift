@@ -1,5 +1,6 @@
 import NotFoundView from '@/views/NotFoundView';
 import LoginView from '@/views/LoginView';
+import MainView from '@/views/MainView';
 import BerandaView from '@/views/BerandaView';
 import BackupView from '@/views/pengaturan/BackupView';
 import AkunView from '@/views/pengaturan/AkunView';
@@ -10,10 +11,14 @@ import { appStore } from "@/store/stores";
 
 const routes = [
 	//{ path: '/login', component: LoginView, name: "login" },
-	{ path: '/', component: BerandaView, name: "beranda" },
-	{ path: '/pengaturan/backup', component: BackupView, name: "backup" },
-	{ path: '/pengaturan/akun', component: AkunView, name: "akun" },
-	{ path: '/profil', component: ProfilView, name: "profil" },
+	{ path: '/', component: MainView, name: "main",
+		children: [
+			{ path: 'pengaturan/backup', component: BackupView, name: "backup" },
+			{ path: 'pengaturan/akun', component: AkunView, name: "akun" },
+			{ path: 'profil', component: ProfilView, name: "profil" },
+			{ path: '', component: BerandaView, name: "beranda" },
+		] 
+	},
 	{ path: '*', component: NotFoundView, name: "not-found" }
 ]
 const router = new VueRouter({

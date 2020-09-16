@@ -31,6 +31,7 @@
 			>
 				<template v-slot:item.email="{ item }">
 					<editable-cell 
+						v-if="mayEdit(item)"
 						@edit="item.emailEdit = item.email"
 						@finish="setEmail(item, item.emailEdit)"
 						:change-detector="() => item.email != item.emailEdit"
@@ -49,9 +50,11 @@
 							<span>{{ item.email }}</span>
 						</template>
 					</editable-cell>
+					<span v-else >{{ item.email }}</span>
 				</template>
 				<template v-slot:item.role="{ item }">
 					<editable-cell 
+						v-if="mayEdit(item)"
 						@edit="item.roleEdit = item.role"
 						@finish="setRole(item, item.roleEdit)"
 						:change-detector="() => item.role != item.roleEdit"
@@ -71,9 +74,13 @@
 							<span>{{ roleText(item.role) }}</span>
 						</template>
 					</editable-cell>
+					<span v-else >{{ item.email }}</span>
 				</template>
 				<template v-slot:item.enabled="{ item }">
-					<v-tooltip bottom>
+					<v-tooltip 
+						v-if="mayEdit(item)"
+						bottom
+					>
 						<template v-slot:activator="{ on, attrs }">
 						    <sync-checkbox 
 						    	:input-value="item.enabled" 
@@ -85,9 +92,18 @@
 						</template>
 						<span>{{ item.enabled ? "Nonaktifkan" : "Aktifkan" }}</span>
 					</v-tooltip>
+				    <v-checkbox 
+				    	v-else
+				    	:input-value="item.enabled" 
+				    	readonly
+				    	disabled
+			    	/>
 				</template>
 				<template v-slot:item.actions="{ item }">
-					<v-tooltip bottom>
+					<v-tooltip 
+						v-if="mayEdit(item)"
+						bottom
+					>
 						<template v-slot:activator="{ on, attrs }">
 							<v-btn 
 								icon 
@@ -187,6 +203,10 @@ class AkunView extends BaseView {
 
 	roleText(role){
 		return T_USER_ROLE_STR[role];
+	}
+
+	mayEdit(user){
+		return user.role != TUserRole.SUPER_ADMIN || stores.auth.user.role == TUserRole.SUPER_ADMIN;
 	}
 
 	async mounted(){
