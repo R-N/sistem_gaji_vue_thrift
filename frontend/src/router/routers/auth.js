@@ -51,23 +51,29 @@ class AuthRouter extends RouterUser{
 		});
 		return false;
 	}
-	routeRequireLogoutNow(to=null, from=null, next=null) {
-		const router = this.router;
-		if (this.stores.auth.authToken){
-			if (next) next(false);
-			router.safePush({ name: "beranda" });
-			return this.dialogRequireLogout();
+	routeRequireLogoutNow(){
+		const obj = this;
+		return function(to=null, from=null, next=null) {
+			const router = obj.router;
+			if (obj.stores.auth.authToken){
+				if (next) next(false);
+				router.safePush({ name: "beranda" });
+				return obj.dialogRequireLogout();
+			}
+			if (next) next();
+			return true;
 		}
-		if (next) next();
-		return true;
 	}
-	routeRequireLogoutDialog (to=null, from=null, next=null) {
-		if (this.stores.auth.authToken){
-			if (next) next(false);
-			return this.dialogRequireLogout();
+	routeRequireLogoutDialog(){
+		const obj = this;
+		return function(to=null, from=null, next=null) {
+			if (obj.stores.auth.authToken){
+				if (next) next(false);
+				return obj.dialogRequireLogout();
+			}
+			if (next) next();
+			return true;
 		}
-		if (next) next();
-		return true;
 	}
 
 

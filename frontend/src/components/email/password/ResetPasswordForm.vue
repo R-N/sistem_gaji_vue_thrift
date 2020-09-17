@@ -1,0 +1,118 @@
+<template>
+    <v-form ref="myForm" v-model="valid" @submit.prevent="reset" class="p-2" :disabled="busy">
+		<card-title>
+	        <h2 class="text-center">Reset Password</h2>
+		</card-title>
+		<v-card-text>
+			<p>Masukkan password baru:</p>
+	    	<v-text-field 
+	    		name="password"
+	    		class="bigger-input" 
+	    		label="Password" 
+	    		v-model="password" 
+	    		:disabled="busy" 
+	    		required
+			    :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+			    @click:append="() => { passwordVisible = !passwordVisible }"
+			    :type="passwordVisible ? 'text' : 'password'"
+	    		:rules="passwordRules"
+	    		:counter="passwordLenMax"
+    		/>
+			<v-text-field 
+				class="bigger-input" 
+				label="Konfirmasi Password"
+				v-model="passwordConfirm" 
+				:disabled="busy" 
+				type="password"
+				required
+				:counter="passwordLenMax"
+				:rules="confirmRules"
+			/>
+	    	<v-btn raised color="primary" type="submit" class="text-center w-100 mx-0" :disabled="busy" :loading="busy">Simpan</v-btn>
+		</v-card-text>
+    </v-form>
+</template>
+
+<script>
+
+import { Component, Prop } from 'vue-property-decorator';
+import { WorkingComponent } from '@/components/general/WorkingComponent';
+import stores from "@/store/stores";
+import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/auth_types';
+import { TUserError, TUserErrorCode, T_USER_ERROR_STR, PASSWORD_LEN_MAX } from "@/rpc/gen/user_types";
+import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/email_types';
+import { router } from '@/router/index';
+import CardTitle from '@/components/general/CardTitle';
+import { PASSWORD_RULES } from '@/lib/validators/user';
+
+@Component({
+	name: "ResetPasswordForm",
+	components: {
+		CardTitle
+	}
+})
+class ResetPasswordForm extends WorkingComponent {
+	@Prop(String) token;
+	valid = true;
+	password = ''
+	passwordConfirm = ''
+	passwordVisible = false;
+	passwordRules = PASSWORD_RULES
+	passwordLenMax = PASSWORD_LEN_MAX
+
+	onError(message){
+		stores.app.pushTabDialog({
+			title: "Error",
+			text: message,
+			onDismiss: function(){ router.safePush({ name: "beranda" }) }
+		});
+	}
+	
+	validateConfirm(passwordConfirm){
+		if (this.password === passwordConfirm) return true;
+		return "Konfirmasi password tidak sama";
+	}
+
+	get confirmRules(){
+		return [
+			v => !!v || "Konfirmasi tidak boleh kosong",
+			this.validateConfirm
+		];
+	}
+
+	async reset(){
+		this.$refs.myForm.validate();
+		if(!this.valid) return;
+		const view = this;
+		view.busy = true;
+		try{
+			await stores.client.email.set_password(view.token, view.password);
+			stores.app.pushTabDialog({
+				title: "Verifikasi Berhasil",
+				text: "Silahkan login.",
+				onDismiss: function(){ router.safePush({ name: "beranda" }) }
+			});
+		} catch (error) {
+			this.handleError(error);
+		} finally {
+			view.busy = false;
+		}
+	}
+	handleError(error){
+		if (error instanceof TLoginError){
+			this.onError(T_LOGIN_ERROR_STR[error.code]);
+		}else if (error instanceof TUserError){
+			this.onError(T_USER_ERROR_STR[error.code]);
+		}else if (error instanceof TEmailError){
+			this.onError(T_EMAIL_ERROR_STR[error.code]);
+		}else{
+			throw error;
+		}
+	}
+}
+export { ResetPasswordForm }
+export default ResetPasswordForm
+</script>
+
+<style scoped>
+</style>

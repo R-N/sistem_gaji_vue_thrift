@@ -12,11 +12,15 @@ EMAIL_REGEX = re.compile(EMAIL_REGEX_STR)
 PASSWORD_REGEX_STR = r'^(?=\S{8,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])'
 PASSWORD_REGEX = re.compile(PASSWORD_REGEX_STR)
 
+USERNAME_REGEX_STR = r'^[a-zA-Z0-9\.\_]+$'
+USERNAME_REGEX = re.compile(USERNAME_REGEX_STR)
+
 def _validate_role(role):
     if role is None:
         raise TUserError(TUserErrorCode.ROLE_EMPTY)
     if role not in TUserRole._VALUES_TO_NAMES:
         raise TUserError(TUserErrorCode.ROLE_INVALID)
+
 
 def validate_changer_role(user_role, changer_role):
     return (not user_role) or user_role != TUserRole.SUPER_ADMIN or changer_role == TUserRole.SUPER_ADMIN
@@ -29,13 +33,13 @@ def validate_role(role, my_role=None):
 def validate_email(email):
     if not email:
         raise TUserError(TUserErrorCode.EMAIL_EMPTY)
-    if not EMAIL_REGEX.search(email):
+    if not EMAIL_REGEX.match(email):
         raise TUserError(TUserErrorCode.EMAIL_INVALID)
 
 def validate_password(password):
     if not password:
         raise TUserError(TUserErrorCode.PASSWORD_EMPTY)
-    if not PASSWORD_REGEX.search(password):
+    if not PASSWORD_REGEX.match(password):
         raise TUserError(TUserErrorCode.PASSWORD_INVALID)
 
 def validate_name(name):
@@ -45,6 +49,8 @@ def validate_name(name):
 def validate_username(username):
     if not username:
         raise TUserError(TUserErrorCode.USERNAME_EMPTY)
+    if not USERNAME_REGEX.match(username):
+        raise TUserError(TUserErrorCode.USERNAME_INVALID)
 
 def parse_error(parsed):
     if isinstance(parsed, UniqueError):

@@ -33,9 +33,11 @@ class TAuthServiceClient extends TBaseClient{
 			await this.stores.app.setAuthBusy(false);
 		}
 	}
-	async reset_password(email){
+	async reset_password(username){
+		await this.client.reset_password(username);
 	}
-	async send_username(email){
+	async resend_verification(username){
+		await this.client.resend_verification(username);
 	}
 }
 

@@ -2,14 +2,16 @@ import jwt
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from utils.crypto import md5, encode_jwt, decode_jwt
+from utils.crypto import md5
 
 from db import DBSession
 from db.entities import DBUser
 
+from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
 from rpc.gen.akun.auth.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
 from rpc.gen.akun.auth.constants import T_USER_ROLE_DOUBLES
 from .manager import get_model
+from .base_key import BaseKeyModel
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -29,72 +31,67 @@ REFRESH_EXPIRATION = timedelta(minutes=int(os.getenv("REFRESH_EXPIRATION_MINUTE"
 class AuthModel:
     def __init__(
         self,
-        auth_enc=None,
-        auth_dec=None,
-        refresh_enc=None,
-        refresh_dec=None,
         auth_secret=AUTH_SECRET,
         refresh_secret=REFRESH_SECRET,
         auth_expiration=AUTH_EXPIRATION,
-        refresh_expiration=REFRESH_EXPIRATION
+        refresh_expiration=REFRESH_EXPIRATION,
+        auth_enc=None,
+        auth_dec=None,
+        refresh_enc=None,
+        refresh_dec=None
     ):
         if (not auth_enc) != (not auth_dec):
             raise Exception("Please provide both auth_enc and auth_dec or neither")
         if (not refresh_enc) != (not refresh_dec):
             raise Exception("Please provide both refresh_enc and refresh_dec or neither")
 
-        if auth_enc and auth_dec:
-            self.set_auth(auth_enc, auth_dec)
-        else:
-            self.read_auth()
-        if refresh_enc and refresh_dec:
-            self.set_refresh(refresh_enc, refresh_dec)
-        else:
-            self.read_refresh()
+        self.auth_key_model = BaseKeyModel(
+            AUTH_ENC_FILE,
+            AUTH_DEC_FILE,
+            secret=auth_secret,
+            expiration=auth_expiration,
+            enc=auth_enc,
+            dec=auth_dec
+        )
+        self.refresh_key_model = BaseKeyModel(
+            REFRESH_ENC_FILE,
+            REFRESH_DEC_FILE,
+            secret=refresh_secret,
+            expiration=refresh_expiration,
+            enc=refresh_enc,
+            dec=refresh_dec
+        )
 
-        self.auth_secret = auth_secret
-        self.refresh_secret = refresh_secret
-        self.auth_expiration = auth_expiration
-        self.refresh_expiration = refresh_expiration
+    @property
+    def auth_secret(self):
+        return self.auth_key_model.secret
 
-    def read_auth(self):
-        with open(AUTH_ENC_FILE, "r") as f:
-            auth_enc = f.read()
-        with open(AUTH_DEC_FILE, "r") as f:
-            auth_dec = f.read()
-        self.set_auth(auth_enc, auth_dec)
-
-    def read_refresh(self):
-        with open(REFRESH_ENC_FILE, "r") as f:
-            refresh_enc = f.read()
-        with open(REFRESH_DEC_FILE, "r") as f:
-            refresh_dec = f.read()
-        self.set_refresh(refresh_enc, refresh_dec)
-
-    def set_auth(self, auth_enc, auth_dec):
-        self.auth_enc, self.auth_dec = auth_enc, auth_dec
-
-    def set_refresh(self, refresh_enc, refresh_dec):
-        self.refresh_enc, self.refresh_dec = refresh_enc, refresh_dec
-
+    @property
+    def refresh_secret(self):
+        return self.refresh_key_model.secret
+    
 
     def encode_auth(self, payload, now=None):
-        return encode_jwt(payload, self.auth_enc, self.auth_expiration, now=now)
+        return self.auth_key_model.encode(payload, now=now)
 
     def decode_auth(self, token):
         try:
-            return decode_jwt(token, self.auth_dec, issuer=self.auth_secret)
+            return self.auth_key_model.decode(token, issuer=self.auth_secret)
         except jwt.ExpiredSignatureError:
             raise TAuthError(TAuthErrorCode.AUTH_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
             raise TAuthError(TAuthErrorCode.AUTH_TOKEN_INVALID)
 
     def encode_refresh(self, payload, now=None):
-        return encode_jwt(payload, self.refresh_enc, self.refresh_expiration, now=now)
+        return self.refresh_key_model.encode(payload, now=now)
 
     def decode_refresh(self, token, auth_secret_2):
         try:
-            return decode_jwt(token, self.refresh_dec, issuer=self.refresh_secret, audience=auth_secret_2)
+            return self.refresh_key_model.decode(
+                token,
+                issuer=self.refresh_secret,
+                audience=auth_secret_2
+            )
         except jwt.ExpiredSignatureError:
             raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_EXPIRED)
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
@@ -140,22 +137,34 @@ class AuthModel:
         if not password:
             raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
 
-        with DBSession() as session:
-            user = session.query(DBUser).filter((DBUser.username == username) | (DBUser.email == username)).scalar()
-            if not (user and user.verify_password(password)):
+        user_model = get_model("user")
+        try:
+            user = user_model.get_user_by_username_email(username)
+        except TUserError as ex:
+            if ex.code == TUserErrorCode.USER_NOT_FOUND:
                 raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
-            if not user.enabled:
-                raise TLoginError(TLoginErrorCode.USER_DISABLED)
+            raise
+        return self._login(user, password)
+
+    def _login(self, user, password):
+        if not password:
+            raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
+        if not user.verified:
+            raise TLoginError(TLoginErrorCode.USER_UNVERIFIED)
+        if not user.verify_password(password):
+            raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
+        if not user.enabled:
+            raise TLoginError(TLoginErrorCode.USER_DISABLED)
 
         return self.make_pair(user=user)
 
     def refresh_auth(self, auth_token, refresh_token):
         auth_payload = self.decode_auth(auth_token)
         refresh_payload = self.decode_refresh(refresh_token, auth_payload['auth_secret_2'])
-        
+
         user_model = get_model("user")
         user = user_model.get_user(auth_payload['user_id'])
-        if not (user and user.enabled and user.refresh_secret_2 and user.refresh_secret_2 == refresh_payload['refresh_secret_2']):
+        if not (user and user.verified and user.enabled and user.refresh_secret_2 and user.refresh_secret_2 == refresh_payload['refresh_secret_2']):
             raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_EXPIRED)
 
         auth_token = self.encode_auth(auth_payload)

@@ -1,8 +1,7 @@
 <template>
-    <v-form v-model="valid" ref="myForm" @submit.prevent="login" class="p-2" :disabled="busy">
+    <v-form ref="myForm" v-model="valid" @submit.prevent="reset" class="p-2" :disabled="busy">
 		<card-title>
-	        <h2 class="text-center">Sistem Gaji</h2>
-	        <h2 class="text-center ">PT. X</h2>
+	        <h2 class="text-center">Reset Password</h2>
 		</card-title>
 		<v-card-text>
 	    	<v-text-field 
@@ -13,18 +12,7 @@
 	    		required
 	    		:rules="[ v => !!v || 'Username/email harus diisi']"
     		/>
-	    	<v-text-field 
-	    		class="bigger-input" 
-	    		label="Password" 
-	    		v-model="password" 
-	    		:disabled="busy" 
-	    		required
-			    :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
-			    @click:append="() => { passwordVisible = !passwordVisible }"
-			    :type="passwordVisible ? 'text' : 'password'"
-	    		:rules="[ v => !!v || 'Password harus diisi']"
-    		/>
-	    	<v-btn raised color="primary" type="submit" class="text-center w-100 mx-0" :disabled="busy || isLoggedIn" :loading="busy">Login</v-btn>
+	    	<v-btn raised color="primary" type="submit" class="text-center w-100 mx-0" :disabled="busy || isLoggedIn" :loading="busy">Reset</v-btn>
 		</v-card-text>
     </v-form>
 </template>
@@ -39,29 +27,26 @@ import { router } from '@/router/index';
 import CardTitle from '@/components/general/CardTitle'
 
 @Component({
-	name: "LoginForm",
+	name: "ForgotPasswordForm",
 	components: {
 		CardTitle
 	}
 })
-class LoginForm extends WorkingComponent {
+class ForgotPasswordForm extends WorkingComponent {
 	valid = true;
 	username = ''
-	password = ''
-	passwordVisible = false;
 
-	get isLoggedIn(){
-		return stores.auth.isLoggedIn;
-	}
-
-	async login(){
+	async reset(){
 		this.$refs.myForm.validate();
 		if(!this.valid) return;
 		const view = this;
 		view.globalBusy = true;
 		try{
-			await stores.client.auth.login(this.username, this.password);
-			await router.safePush({ name: "beranda" });
+			await stores.client.auth.reset_password(this.username);
+			stores.app.pushTabDialog({
+				title: "Periksa Email Anda",
+				text: "Link reset password telah dikirimkan ke alamat email akun Anda, jika username/email yang Anda masukkan benar."
+			});
 		} catch (error) {
 			if (error instanceof TLoginError){
 				stores.app.pushTabDialog({
@@ -75,10 +60,9 @@ class LoginForm extends WorkingComponent {
 			view.globalBusy = false;
 		}
 	}
-
 }
-export { LoginForm }
-export default LoginForm
+export { ForgotPasswordForm }
+export default ForgotPasswordForm
 </script>
 
 <style scoped>

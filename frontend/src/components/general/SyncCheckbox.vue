@@ -1,11 +1,12 @@
 <template>
-	<span>
+	<span class="d-flex text-center justify-center justify-self-center">
 	    <v-checkbox 
 	    	:name="name"
 	    	:input-value="inputValue"
 	    	:value="value"
 	    	@click.prevent.capture="onClick()"
 	    	readonly
+	    	class="text-center justify-center justify-self-center"
 		/>
 		<simple-input-dialog 
 			v-if="confirmTextMaker"

@@ -204,10 +204,10 @@ def generate_report(enc_file=REPORT_ENC, dec_file=REPORT_DEC):
     enc, dec = export_key(key, priv_file=enc_file, pub_file=dec_file)
     return enc, dec
     
-RESET_ENC = os.getenv("RESET_ENC")
-RESET_DEC = os.getenv("RESET_DEC")
+EMAIL_ENC = os.getenv("EMAIL_ENC")
+EMAIL_DEC = os.getenv("EMAIL_DEC")
 
-def generate_reset(enc_file=RESET_ENC, dec_file=RESET_DEC):
+def generate_email(enc_file=EMAIL_ENC, dec_file=EMAIL_DEC):
     key = make_key()
     enc, dec = export_key(key, priv_file=enc_file, pub_file=dec_file)
     return enc, dec
@@ -219,4 +219,4 @@ if __name__ == "__main__":
     generate_download()
     generate_upload()
     generate_report()
-    generate_reset()
+    generate_email()

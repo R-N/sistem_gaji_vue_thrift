@@ -18,7 +18,7 @@ if __name__ == "__main__":
     generator.generate_refresh()
     generator.generate_download()
     generator.generate_upload()
-    generator.generate_reset()
+    generator.generate_email()
 
 from server.frontend import init as init_frontend
 from server.thrift import init as init_thrift

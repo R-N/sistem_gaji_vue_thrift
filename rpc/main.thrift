@@ -1,6 +1,7 @@
 include "akun/auth.thrift"
 include "akun/user.thrift"
 include "akun/akun.thrift"
+include "akun/email.thrift"
 include "hello/hello.thrift"
 include "file/file.thrift"
 include "file/upload.thrift"

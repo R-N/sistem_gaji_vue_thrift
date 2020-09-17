@@ -13,6 +13,7 @@
 						:change-detector="() => name != nameEdit"
 						:confirm-text-maker="setNameConfirmText"
 						read-only-mode="true"
+						:parent-busy="busy"
 					>
 						<template v-slot:editing="{ readonly }">
 							<v-text-field 
@@ -25,6 +26,7 @@
 								label="Nama"
 								:readonly="readonly"
 								required
+								:disabled="busy"
 							/>
 						</template>
 					</editable-cell>
@@ -35,6 +37,7 @@
 						:change-detector="() => email != emailEdit"
 						:confirm-text-maker="setEmailConfirmText"
 						read-only-mode="true"
+						:parent-busy="busy"
 					>
 						<template v-slot:editing="{ readonly }">
 							<v-text-field 
@@ -47,18 +50,33 @@
 								label="Email"
 								:readonly="readonly"
 								required
+								:disabled="busy"
 							/>
 						</template>
 					</editable-cell>
 					<div class="d-flex flex-grow-1">
 						<v-text-field 
 							class="bigger-input"
+							label="Username"
+							readonly
+							:value="username"
+							:disabled="busy"
+						/>
+					</div>
+					<div class="d-flex flex-grow-1">
+						<v-text-field 
+							class="bigger-input"
 							label="Role"
 							readonly
 							:value="roleText"
+							:disabled="busy"
 						/>
 					</div>
-					<v-form ref="passwordForm" @submit.prevent.stop="setPasswordDialog = true">
+					<v-form 
+						ref="passwordForm" 
+						@submit.prevent.stop="setPasswordDialog = true"
+						:disabled="busy"
+					>
 						<collapse-transition>
 							<div class="d-flex flex-column" v-if="passwordEditing">
 									<div class="d-flex flex-grow-1">
@@ -73,6 +91,7 @@
 										    :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
 										    @click:append="() => { passwordVisible = !passwordVisible }"
 										    :type="passwordVisible ? 'text' : 'password'"
+											:disabled="busy"
 										/>
 									</div>
 									<div class="d-flex flex-grow-1">
@@ -84,14 +103,15 @@
 											label="Konfirmasi Password"
 											required
 											type="password"
+											:disabled="busy"
 										/>
 									</div>
 							</div>
 						</collapse-transition>
 						<fade-transition group class="d-flex flex-grow-1 justify-end">
-							<v-btn color="primary" @click="beginPasswordEdit" v-if="!passwordEditing" key="beginPassword">Ubah Password</v-btn>
-							<v-btn class="mr-2" @click="cancelPasswordEdit" v-if="passwordEditing" key="cancelPassword">Batal</v-btn>
-							<v-btn color="primary" type="submit" v-if="passwordEditing" key="savePassword">Simpan</v-btn>
+							<v-btn color="primary" @click="beginPasswordEdit" v-if="!passwordEditing" key="beginPassword" :disabled="busy">Ubah Password</v-btn>
+							<v-btn class="mr-2" @click="cancelPasswordEdit" v-if="passwordEditing" key="cancelPassword" :disabled="busy">Batal</v-btn>
+							<v-btn color="primary" type="submit" v-if="passwordEditing" key="savePassword" :disabled="busy">Simpan</v-btn>
 						</fade-transition>
 					</v-form>
 				</v-col>
@@ -216,7 +236,12 @@ class ProfilView extends BaseView {
 		view.busy=true;
 		try{
 			if (!view.emailEdit) throw new TUserError({ code: TUserErrorCode.EMAIL_EMPTY});
-			await stores.client.user.set_email(view.emailEdit);
+			await stores.client.user.change_email(view.emailEdit);
+			stores.app.pushTabDialog({
+				title: "Periksa Email Anda",
+				text: "Link verifikasi email telah dikirimkan ke email akun Anda. Email baru akan diganti setelah Anda mengkonfirmasi."
+			});
+			this.emailEdit = this.email;
 		} catch (error) {
 			view.handleError(error);
 		} finally {

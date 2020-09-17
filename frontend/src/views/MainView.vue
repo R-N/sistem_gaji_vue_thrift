@@ -24,7 +24,11 @@
 			        </v-col>
 			    </v-row>
 			</transition>
-				<slide-y-down-transition group>
+				<slide-y-down-transition 
+					group
+					:duration="transitionDuration"
+					:delay="transitionDelay"
+				>
 					<router-view appear :key="$route.matched[1].path"/>
 				</slide-y-down-transition>
   			<v-spacer></v-spacer>
@@ -39,19 +43,27 @@ import { Component } from 'vue-property-decorator'
 import { BaseView } from '@/views/BaseView';
 import LoginView from '@/views/LoginView';
 import { router } from '@/router/index';
-import {SlideYDownTransition, CollapseTransition} from 'vue2-transitions'
+import { FadeTransition, SlideYDownTransition, SlideXLeftTransition, CollapseTransition } from 'vue2-transitions'
 
 @Component({
 	name: "MainView",
 	components: {
 		LoginView,
 		SlideYDownTransition,
+		SlideXLeftTransition,
 		CollapseTransition
 	}
 })
 class MainView extends BaseView{
+	transitionDuration = {
+		enter: 300,
+		leave: 300
+	}
+	transitionDelay = {
+		enter: 300,
+		leave: 0
+	}
 
-	drawer = false;
 	mounted(){
 		console.log(this.$route);
 	}

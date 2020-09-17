@@ -5,12 +5,16 @@ import BerandaView from '@/views/BerandaView';
 import BackupView from '@/views/pengaturan/BackupView';
 import AkunView from '@/views/pengaturan/AkunView';
 import ProfilView from '@/views/ProfilView';
+import VerifyEmailView from '@/views/email/VerifyEmailView';
+import ResetPasswordView from '@/views/email/ResetPasswordView';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { appStore } from "@/store/stores";
 
 const routes = [
 	//{ path: '/login', component: LoginView, name: "login" },
+	{ path: '/verifyemail/:token', component: VerifyEmailView, name: "verifyemail" },
+	{ path: '/resetpassword/:token', component: ResetPasswordView, name: "resetpassword" },
 	{ path: '/', component: MainView, name: "main",
 		children: [
 			{ path: 'pengaturan/backup', component: BackupView, name: "backup" },
@@ -38,9 +42,11 @@ router.beforeEach((to, from, next) => {
 Vue.use(VueRouter);
 
 const safeRouterPush = async (route) => {
-	appStore.setRouterBusy(false);
-	if (route.path != router.currentRoute.path && route.name != router.currentRoute.name)
+	await appStore.setRouterBusy(false);
+	if ((!route.path || route.path != router.currentRoute.path)
+		 && (!route.name || route.name != router.currentRoute.name)){
 		return await router.push(route);
+	}
 }
 router.safePush = safeRouterPush;
 

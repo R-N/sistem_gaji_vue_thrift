@@ -31,7 +31,7 @@
 			>
 				<template v-slot:item.email="{ item }">
 					<editable-cell 
-						v-if="mayEdit(item)"
+						v-if="mayEditEmail(item) || isSuperAdmin"
 						@edit="item.emailEdit = item.email"
 						@finish="setEmail(item, item.emailEdit)"
 						:change-detector="() => item.email != item.emailEdit"
@@ -92,16 +92,23 @@
 						</template>
 						<span>{{ item.enabled ? "Nonaktifkan" : "Aktifkan" }}</span>
 					</v-tooltip>
-				    <v-checkbox 
-				    	v-else
-				    	:input-value="item.enabled" 
-				    	readonly
-				    	disabled
-			    	/>
+					<span v-else>
+					    <v-simple-checkbox 
+					    	:value="item.enabled" 
+					    	disabled
+				    	/>
+				    </span>
+				</template>
+				<template v-slot:item.verified="{ item }">
+					<span>
+					    <v-simple-checkbox 
+					    	:value="item.verified" 
+					    	disabled
+				    	/>
+				    </span>
 				</template>
 				<template v-slot:item.actions="{ item }">
 					<v-tooltip 
-						v-if="mayEdit(item)"
 						bottom
 					>
 						<template v-slot:activator="{ on, attrs }">
@@ -120,6 +127,7 @@
 				</template>
 			</v-data-table>
 			<simple-input-dialog 
+				v-if="isSuperAdmin"
 				v-model="setPasswordDialog" 
 				:on-confirm="setPassword"
 				title="Ubah Password"
@@ -173,14 +181,6 @@ class AkunView extends BaseView {
 	roles = []
 	rolesDict = {}
 	search = ''
-	headers = [
-		{ text: 'Username', value: 'username' },
-		{ text: 'Nama', value: 'name' },
-		{ text: 'Email', value: 'email' },
-		{ text: 'Role', value: 'role' },
-		{ text: 'Aktif', value: 'enabled' },
-		{ text: 'Aksi', value: 'actions' }
-	]
 	akun = []
 	selfDisableWarning = " Akun ini adalah akun Anda sendiri, sehingga anda akan logout dan tidak dapat login kembali hingga diaktifkan lagi."
 	roleLogoutWarning = " Akun yang diubah role nya harus login ulang."
@@ -190,6 +190,21 @@ class AkunView extends BaseView {
 	passwordRules = PASSWORD_RULES
 	emailLenMax = EMAIL_LEN_MAX
 	passwordLenMax = PASSWORD_LEN_MAX
+
+	get headers(){
+		let headers = [
+			{ text: 'Username', value: 'username' },
+			{ text: 'Nama', value: 'name' },
+			{ text: 'Email', value: 'email' },
+			{ text: 'Role', value: 'role' },
+			{ text: 'Aktif', value: 'enabled', align: 'center' },
+			{ text: 'Terverifikasi', value: 'verified', align: 'center' }
+		]
+		if (this.isSuperAdmin){
+			headers.push({ text: 'Aksi', value: 'actions' })
+		}
+		return headers
+	}
 
 	populateRoles(){
 		for (const key in T_USER_ROLE_STR){
@@ -205,9 +220,18 @@ class AkunView extends BaseView {
 		return T_USER_ROLE_STR[role];
 	}
 
-	mayEdit(user){
-		return user.role != TUserRole.SUPER_ADMIN || stores.auth.user.role == TUserRole.SUPER_ADMIN;
+	get isSuperAdmin(){
+		return stores.auth.user.role == TUserRole.SUPER_ADMIN;
 	}
+
+	mayEdit(user){
+		return user.role != TUserRole.SUPER_ADMIN || this.isSuperAdmin;
+	}
+
+	mayEditEmail(user){
+		return this.mayEdit(user) && !user.verified;
+	}
+
 
 	async mounted(){
 		stores.app.setBreadcrumbs([

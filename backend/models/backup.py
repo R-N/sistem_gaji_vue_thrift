@@ -49,24 +49,24 @@ class BackupModel:
     def create_download_token(self, ip, file_name):
         if not get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
-        return get_model("download").encode(ip, self.model_name, file_name)
-
+        return get_model("download").encode(self.model_name, ip, {'file_name': file_name})
+        
     def create_upload_token(self, ip, file_name):
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)
         if get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_ALREADY_EXISTS)
-        return get_model("upload").encode(ip, self.model_name, file_name)
+        return get_model("upload").encode(self.model_name, ip, {'file_name': file_name})
 
     def decode_download_token(self, ip, token):
-        payload = get_model("download").decode(ip, self.model_name, token)
+        payload = get_model("download").decode(self.model_name, ip, token)
         file_name = payload['file_name']
         if not get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
         return payload
 
     def decode_upload_token(self, ip, token):
-        payload = get_model("upload").decode(ip, self.model_name, token)
+        payload = get_model("upload").decode(self.model_name, ip, token)
         file_name = payload['file_name']
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)

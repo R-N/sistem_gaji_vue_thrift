@@ -14,10 +14,10 @@ class TUserServiceClient extends TBaseClient{
 		return this.stores.auth.user;
 	}
 
-	async set_email(email){
+	async change_email(email){
 		this.stores.helper.auth.requireLogin();
-		await this.client.set_email(this.stores.auth.authToken, email)
-		await this.stores.auth.setUserEmail(email);
+		await this.client.change_email(this.stores.auth.authToken, email)
+		//await this.stores.auth.setUserEmail(email);
 	}
 	async set_password(password){
 		this.stores.helper.auth.requireLogin();

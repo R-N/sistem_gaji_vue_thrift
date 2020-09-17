@@ -12,10 +12,12 @@ import { isInt } from '@/lib/util'
 
 export const EMAIL_REGEX = /^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$/
 export const PASSWORD_REGEX = /^(?=\S{8,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])/
+export const USERNAME_REGEX = /^[a-zA-Z0-9\.\_]+$/
 
 export const USERNAME_RULES = [
 	v => !!v || T_USER_ERROR_STR[TUserErrorCode.USERNAME_EMPTY],
-	v => v.length <= USERNAME_LEN_MAX || T_USER_ERROR_STR[TUserErrorCode.USERNAME_TOO_LONG]
+	v => v.length <= USERNAME_LEN_MAX || T_USER_ERROR_STR[TUserErrorCode.USERNAME_TOO_LONG],
+	v => USERNAME_REGEX.test(v) || T_USER_ERROR_STR[TUserErrorCode.USERNAME_INVALID]
 ]
 export const NAME_RULES = [
 	v => !!v || T_USER_ERROR_STR[TUserErrorCode.NAME_EMPTY],

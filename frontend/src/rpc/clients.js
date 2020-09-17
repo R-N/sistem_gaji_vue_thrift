@@ -3,13 +3,15 @@ import authClient from '@/rpc/client/auth';
 import helloClient from '@/rpc/client/hello';
 import userClient from '@/rpc/client/user';
 import backupClient from '@/rpc/client/backup';
+import emailClient from '@/rpc/client/email';
 
 const clients = {
 	akun: akunClient,
 	auth: authClient,
 	hello: helloClient,
 	user: userClient,
-	backup: backupClient
+	backup: backupClient,
+	email: emailClient
 }
 
 const init = (stores) => {
@@ -25,6 +27,7 @@ export {
 	authClient, 
 	helloClient, 
 	userClient,
-	backupClient
+	backupClient,
+	emailClient
 };
 export default clients

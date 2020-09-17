@@ -23,18 +23,13 @@ class ClientStore extends VuexModule {
 	hello = null;
 	user = null;
 	backup = null;
+	email = null;
 
-	@MutationAction({ mutate: ['akun', 'auth', 'hello', 'user', 'backup'] })
+	@MutationAction({ mutate: ['akun', 'auth', 'hello', 'user', 'backup', 'email'] })
 	async init(payload){
 		return payload;
 	}
 
-	get initClients(){
-		return (stores) => {
-			this.auth.init(stores);
-			this.hello.init(stores);
-		}
-	}
 }
 const clientStore = getModule(ClientStore);
 

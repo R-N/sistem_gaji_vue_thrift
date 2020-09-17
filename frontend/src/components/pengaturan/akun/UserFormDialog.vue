@@ -40,6 +40,7 @@
 						:counter="emailLenMax"
 		    		/>
 					<v-select
+			    		class="bigger-input" 
 						name="role"
 						:items="roles"
 						item-value="role"
@@ -49,6 +50,7 @@
 						:return-object="true"
 					></v-select>
 			    	<v-text-field 
+			    		v-if="false"
 			    		name="password"
 			    		class="bigger-input" 
 			    		label="Password" 
@@ -62,6 +64,7 @@
 			    		:counter="passwordLenMax"
 		    		/>
 					<v-text-field 
+			    		v-if="false"
 						class="bigger-input" 
 						label="Konfirmasi Password"
 						v-model="passwordConfirm" 
@@ -202,13 +205,14 @@ class UserFormDialog extends WorkingComponent {
 	}
 
 	async register(){
+		this.$refs.myForm.validate();
 		if(!this.valid) return;
 		const view = this;
 		view.busy = true;
 		let form = new TUserForm({
 			username: this.username,
 			name: this.name,
-			password: this.password,
+			//password: this.password,
 			email: this.email,
 			role: this.role.role
 		});

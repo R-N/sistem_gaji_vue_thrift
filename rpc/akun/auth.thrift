@@ -35,21 +35,29 @@ enum TLoginErrorCode{
 	USERNAME_EMPTY,
 	PASSWORD_EMPTY,
 	USERNAME_PASSWORD_SALAH,
+	PASSWORD_SALAH,
 	REFRESH_TOKEN_INVALID,
 	REFRESH_TOKEN_EXPIRED,
 	ALREADY_LOGGED_IN,
 	EMAIL_NOT_FOUND,
-	USER_DISABLED
+	USER_DISABLED,
+	USER_UNVERIFIED,
+	USER_ALREADY_VERIFIED,
+	USER_NOT_FOUND
 }
 const map<TLoginErrorCode, string> T_LOGIN_ERROR_STR = {
 	TLoginErrorCode.USERNAME_EMPTY: "Username tidak boleh kosong",
 	TLoginErrorCode.PASSWORD_EMPTY: "Password tidak boleh kosong",
 	TLoginErrorCode.USERNAME_PASSWORD_SALAH: "Username atau password salah",
+	TLoginErrorCode.PASSWORD_SALAH: "Password salah",
 	TLoginErrorCode.REFRESH_TOKEN_INVALID: "Sesi invalid",
 	TLoginErrorCode.REFRESH_TOKEN_EXPIRED: "Sesi kadaluarsa",
 	TLoginErrorCode.ALREADY_LOGGED_IN: "Anda sudah login",
 	TLoginErrorCode.EMAIL_NOT_FOUND: "Email tidak ditemukan",
-	TLoginErrorCode.USER_DISABLED: "Akun Anda tidak aktif. Silahkan hubungi admin"
+	TLoginErrorCode.USER_DISABLED: "Akun Anda tidak aktif. Silahkan hubungi admin",
+	TLoginErrorCode.USER_UNVERIFIED: "Akun Anda belum terverifikasi. Silahkan cek email Anda",
+	TLoginErrorCode.USER_ALREADY_VERIFIED: "Akun Anda telah terverifikasi",
+	TLoginErrorCode.USER_NOT_FOUND: "User tidak ditemukan"
 }
 exception TLoginError{
 	1: TLoginErrorCode code;
@@ -73,8 +81,7 @@ exception TAuthError{
 	1: TAuthErrorCode code;
 }
 
-service TAuthService
-{
+service TAuthService{
 	TLoginResult login(
 		1: string username, 
 		2: string password
@@ -91,13 +98,13 @@ service TAuthService
 	);
 
 	void reset_password(
-		1: string email
+		1: string username
 	) throws (
 		1: TLoginError login_error
 	);
 
-	void send_username(
-		1: string email
+	void resend_verification(
+		1: string username
 	) throws (
 		1: TLoginError login_error
 	);

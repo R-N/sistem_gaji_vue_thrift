@@ -6,7 +6,7 @@ namespace js rpc.gen.akun.akun
 
 struct TUserForm{
 	1: string username;
-	2: string password;
+	2: optional string password;
 	3: string name;
 	4: string email;
 	5: auth.TUserRole role;
@@ -16,8 +16,9 @@ struct TUserForm{
 struct TAkunQuery{
 	1: optional i32 limit;
 	2: optional i32 offset;
-	3: optional bool enabled;
-	4: optional auth.TUserRole role;
+	3: optional bool verified;
+	4: optional bool enabled;
+	5: optional auth.TUserRole role;
 }
 
 service TAkunService{
