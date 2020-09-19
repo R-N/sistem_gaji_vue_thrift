@@ -28,7 +28,7 @@ import {
 import { authStore, appStore, clientStore } from "@/store/stores";
 import { router } from '@/router/index';
 import { authRouter } from '@/router/routers/auth';
-import appHelper from '@/store/helpers/app';
+import errorHelper from '@/store/helpers/error';
 
 import { Component, Watch } from 'vue-property-decorator'
 import { BaseView } from '@/views/BaseView';
@@ -123,7 +123,7 @@ class App extends BaseView{
 		this.drawer = drawer;
 	}
 	errorCaptured(error, vm, info) {
-		return appHelper.handleGlobalError(error);
+		return errorHelper.handleUncaughtError(error);
 	}
 }
 export { App }

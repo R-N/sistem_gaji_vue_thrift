@@ -19,8 +19,9 @@ unregisterModule(name);
 })
 class HelperStore extends VuexModule {
 	auth = null;
+	error = null;
 
-	@MutationAction({ mutate: ['auth'] })
+	@MutationAction({ mutate: ['auth', 'error'] })
 	async init(payload){
 		return payload;
 	}

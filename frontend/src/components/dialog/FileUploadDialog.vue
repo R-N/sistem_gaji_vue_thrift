@@ -39,13 +39,12 @@
 </template>
 
 <script>
-import { appStore } from "@/store/stores";
+import stores from "@/store/stores";
 import vueDropzone from 'vue2-dropzone'
 
-import { TAuthError, TAuthErrorCode } from "@/rpc/gen/user.auth.errors_types";
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { TFileError, TFileErrorCode, T_FILE_ERROR_STR } from "@/rpc/gen/file.file.errors_types";
-import { TUploadError, TUploadErrorCode, T_UPLOAD_ERROR_STR } from "@/rpc/gen/file.upload.errors_types";
+import { TUploadError } from "@/rpc/gen/file.upload.errors_types";
 
 import { emptyArray } from '@/lib/util';
 
@@ -135,10 +134,7 @@ class FileUploadDialog extends WorkingComponent {
 					}else{
 						this.file = this.files.shift();
 					}
-					appStore.pushTabDialog({
-						title: "Error",
-						text: "Format harus xlsx"
-					});
+					stores.app.showError(T_FILE_ERROR_STR[TFileErrorCode.FILE_INVALID]);
 				}else if (this.immediateUpload){
 					await this.uploadFile();
 					this.immediateUpload = false;
@@ -165,19 +161,8 @@ class FileUploadDialog extends WorkingComponent {
 		} catch (error) {
 			comp.files.unshift(comp.file);
 			comp.file = null;
-			if (error instanceof TFileError){
-				appStore.pushTabDialog({
-					title: "Error",
-					text: T_FILE_ERROR_STR[error.code]
-				});
-			} else if (error instanceof TUploadError){
-				appStore.pushTabDialog({
-					title: "Error",
-					text: T_UPLOAD_ERROR_STR[error.code]
-				});
-			}else{
-				throw error;
-			}
+			if (stores.helper.error.showFilteredError(error, [TFileError, TUploadError])) return;
+			throw error;
 		} finally {
 			if (comp.postUpload) comp.postUpload();
 			comp.busy = false;

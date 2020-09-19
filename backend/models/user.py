@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode
 from rpc.gen.user.user.types.ttypes import TUserRole
-from rpc.gen.user.email.errors.ttypes import TEmailError, TEmailErrorCode
+from rpc.gen.user.email.errors.ttypes import TUserEmailError, TUserEmailErrorCode
 
 import db
 from db.entities import DBUser
@@ -106,7 +106,7 @@ class UserModel:
 
     def verify_email(self, user, email_secret_2, email, password):
         if user.email_secret_2 != email_secret_2:
-            raise TEmailError(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
+            raise TUserEmailError(TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
         if user.has_password:
             raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
 
@@ -117,7 +117,7 @@ class UserModel:
 
     def change_email(self, user, email_secret_2, email, password):
         if user.email_secret_2 != email_secret_2:
-            raise TEmailError(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
+            raise TUserEmailError(TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
         if not user.verified:
             raise TUserError(TUserErrorCode.USER_UNVERIFIED)
         if not user.verify_password(password):
@@ -129,7 +129,7 @@ class UserModel:
 
     def reset_password(self, user, email_secret_2, password):
         if user.email_secret_2 != email_secret_2:
-            raise TEmailError(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
+            raise TUserEmailError(TUserEmailErrorCode.RESET_PASSWORD_TOKEN_EXPIRED)
         if not user.verified:
             raise TUserError(TUserErrorCode.USER_UNVERIFIED)
 

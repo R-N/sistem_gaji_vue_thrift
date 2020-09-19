@@ -2,7 +2,7 @@ from flask import request
 from sqlalchemy.exc import DBAPIError
 
 from rpc.gen.user.email.services import TUserEmailService
-from rpc.gen.user.email.errors.ttypes import TEmailError, TEmailErrorCode
+from rpc.gen.user.email.errors.ttypes import TUserEmailError, TUserEmailErrorCode
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 
 from models import models
@@ -18,7 +18,7 @@ class TUserEmailServiceHandler(TUserEmailService.Iface):
         email_payload = self.email_model.decode_verify(ip, email_token)
         db_user = self.user_model.get_user_by_id(email_payload['user_id'])
         if db_user.email_secret_2 != email_payload['email_secret_2']:
-            raise TEmailError(TEmailErrorCode.EMAIL_TOKEN_EXPIRED)
+            raise TUserEmailError(TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
         return db_user.has_password
 
     def verify_email(self, verify_token, password):

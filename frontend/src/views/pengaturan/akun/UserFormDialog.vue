@@ -101,9 +101,11 @@
 </template>
 
 <script>
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
-	TUserError, TUserErrorCode, T_USER_ERROR_STR, 
+	TUserError, 
 	USERNAME_LEN_MAX, NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
 } from "@/rpc/gen/user.user.errors_types";
 import { TUserRegistrationForm } from "@/rpc/gen/user.management.structs_types";
@@ -222,22 +224,15 @@ class UserFormDialog extends WorkingComponent {
 		});
 		try{
 			let user = await stores.client.user.management.register_akun(form);
-			this.$emit("register", user);
-			this.close();
+			view.$emit("register", user);
+			view.close();
 		} catch (error) {
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TUserError, TEmailError, TUserEmailError]
+			)) return;
+			throw error;
 		} finally {
 			view.busy = false;
-		}
-	}
-	handleError(error){
-		if (error instanceof TUserError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_USER_ERROR_STR[error.code]
-			});
-		}else{
-			throw error;
 		}
 	}
 }

@@ -18,8 +18,9 @@
 </template>
 
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
-import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 
 import stores from "@/store/stores";
 import { router } from '@/router/index';
@@ -51,18 +52,12 @@ class ResendVerificationForm extends WorkingComponent {
 				text: "Link verifikasi email telah dikirimkan ke email akun Anda, jika username/email yang Anda masukkan benar."
 			});
 		} catch (error) {
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TLoginError, TEmailError, TUserEmailError]
+			)) return;
+			throw error;
 		} finally {
 			view.globalBusy = false;
-		}
-	}
-	handleError(error){
-		if (error instanceof TLoginError){
-			stores.app.showError(T_LOGIN_ERROR_STR[error.code]);
-		}else if (error instanceof TEmailError){
-			stores.app.showError(T_EMAIL_ERROR_STR[error.code]);
-		}else{
-			throw error;
 		}
 	}
 }

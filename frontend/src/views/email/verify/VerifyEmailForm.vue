@@ -34,9 +34,10 @@
 </template>
 
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
-import { TUserError, TUserErrorCode, T_USER_ERROR_STR, PASSWORD_LEN_MAX } from "@/rpc/gen/user.user.errors_types";
-import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserError } from "@/rpc/gen/user.user.errors_types";
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 
 import stores from "@/store/stores";
 import { router } from '@/router/index';
@@ -82,34 +83,17 @@ class VerifyEmailForm extends WorkingComponent {
 		try{
 			await stores.client.user.email.verify_email(view.token, view.password);
 			stores.app.pushTabDialog({
-				title: "Verifikasi Berhasil",
-				text: "Silahkan login.",
+				title: "Berhasil",
+				text: "Verifikasi email berhasil. Silahkan login.",
 				onDismiss: function(){ router.safePush({ name: "beranda" }) }
 			});
 		} catch (error) {
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TLoginError, TUserError, TEmailError, TUserEmailError]
+			)) return;
+			throw error;
 		} finally {
 			view.busy = false;
-		}
-	}
-	handleError(error){
-		if (error instanceof TLoginError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_LOGIN_ERROR_STR[error.code]
-			});
-		}else if (error instanceof TUserError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_USER_ERROR_STR[error.code]
-			});
-		}else if (error instanceof TEmailError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_EMAIL_ERROR_STR[error.code]
-			});
-		}else{
-			throw error;
 		}
 	}
 }

@@ -23,9 +23,10 @@
 </template>
 
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
-import { TUserError, TUserErrorCode, T_USER_ERROR_STR } from "@/rpc/gen/user.user.errors_types";
-import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserError } from "@/rpc/gen/user.user.errors_types";
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 
 import stores from "@/store/stores";
 import { router } from '@/router/index';
@@ -47,13 +48,6 @@ class ChangeEmailForm extends WorkingComponent {
 	password = ''
 	passwordVisible = false;
 
-	onError(message){
-		stores.app.pushTabDialog({
-			title: "Error",
-			text: message,
-			onDismiss: function(){ router.safePush({ name: "beranda" }) }
-		});
-	}
 	async verify(){
 		this.$refs.myForm.validate();
 		if(!this.valid) return;
@@ -62,25 +56,17 @@ class ChangeEmailForm extends WorkingComponent {
 		try{
 			await stores.client.user.email.change_email(view.token, view.password);
 			stores.app.pushTabDialog({
-				title: "Verifikasi Berhasil",
+				title: "Berhasil",
 				text: "Email Anda telah berhasil diubah.",
 				onDismiss: function(){ router.safePush({ name: "beranda" }) }
 			});
 		} catch (error) {
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TLoginError, TUserError, TEmailError, TUserEmailError]
+			)) return;
+			throw error;
 		} finally {
 			view.busy = false;
-		}
-	}
-	handleError(error){
-		if (error instanceof TLoginError){
-			this.onError(T_LOGIN_ERROR_STR[error.code]);
-		}else if (error instanceof TUserError){
-			this.onError(T_USER_ERROR_STR[error.code]);
-		}else if (error instanceof TEmailError){
-			this.onError(T_EMAIL_ERROR_STR[error.code]);
-		}else{
-			throw error;
 		}
 	}
 }

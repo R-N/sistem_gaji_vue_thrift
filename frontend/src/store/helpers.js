@@ -1,9 +1,9 @@
 import { authHelper } from '@/store/helpers/auth';
-import { appHelper } from '@/store/helpers/app';
+import { errorHelper } from '@/store/helpers/error';
 
 const helpers = {
 	auth: authHelper,
-	app: appHelper
+	error: errorHelper
 }
 
 const init = (stores) => {

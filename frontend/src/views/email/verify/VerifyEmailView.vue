@@ -7,9 +7,10 @@
 	</center-layout>
 </template>
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
-import { TUserError, TUserErrorCode, T_USER_ERROR_STR } from "@/rpc/gen/user.user.errors_types";
-import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserError } from "@/rpc/gen/user.user.errors_types";
+import { TUserEmailError, T_USER_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
@@ -48,7 +49,10 @@ class VerifyEmailView extends BaseView {
 
 	async mounted(){
 		if (!this.token){
-			this.onInvalidToken(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID);
+			stores.helper.error.showError(
+				T_USER_EMAIL_ERROR_STR[TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID], 
+				"beranda"
+			);
 			return;
 		}
 		this.busy = true;
@@ -64,40 +68,27 @@ class VerifyEmailView extends BaseView {
 			if (error instanceof TEmailError){
 				if (error.code == TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID
 					|| error.code == TEmailErrorCode.EMAIL_TOKEN_INVALID){
-					this.onInvalidToken(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID);
+					stores.helper.error.showError(
+						T_EMAIL_ERROR_CODE_STR[TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID]
+					);
 					return;
 				}else if (error.code == TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED
 					|| error.code == TEmailErrorCode.EMAIL_TOKEN_EXPIRED){
-					this.onInvalidToken(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED);
+					stores.helper.error.showError(
+						T_EMAIL_ERROR_CODE_STR[TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED]
+					);
 					return;
 				}
 			}
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TLoginError, TUserError, TEmailError, TUserEmailError]
+			)) return;
+			throw error;
 		} finally {
 			view.busy = false;
 		}
 	}
 
-	handleError(error){
-		if (error instanceof TLoginError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_LOGIN_ERROR_STR[error.code]
-			});
-		}else if (error instanceof TUserError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_USER_ERROR_STR[error.code]
-			});
-		}else if (error instanceof TEmailError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_EMAIL_ERROR_STR[error.code]
-			});
-		}else{
-			throw error;
-		}
-	}
 
 }
 export { VerifyEmailView }

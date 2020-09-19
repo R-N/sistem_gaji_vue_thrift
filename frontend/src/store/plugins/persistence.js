@@ -1,6 +1,6 @@
 import createPersistedState from 'vuex-persistedstate';
 import stores from '@/store/stores';
-import appHelper from '@/store/helpers/app';
+import errorHelper from '@/store/helpers/error';
 
 const storageKey = 'vuex'
 
@@ -25,7 +25,7 @@ const persistencePlugin = createPersistedState({
 				}
 			}
 		}catch(error){
-			appHelper.handleGlobalError(error);
+			errorHelper.handleUncaughtError(error);
 		}
 	}
 })

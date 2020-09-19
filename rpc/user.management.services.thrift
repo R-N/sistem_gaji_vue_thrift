@@ -4,6 +4,7 @@ include "user.user.errors.thrift"
 include "user.user.structs.thrift"
 include "user.management.structs.thrift"
 include "user.email.errors.thrift"
+include "email.errors.thrift"
 
 namespace py user.management.services
 namespace js user.management.services
@@ -22,7 +23,8 @@ service TUserManagementService{
 	) throws (
 		1: user.auth.errors.TAuthError auth_error,
 		2: user.user.errors.TUserError user_error,
-		3: user.email.errors.TEmailError email_error
+		3: email.errors.TEmailError email_error,
+		4: user.email.errors.TUserEmailError user_email_error
 	);
 
 	void set_role(

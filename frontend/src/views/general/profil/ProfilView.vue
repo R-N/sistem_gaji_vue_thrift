@@ -147,12 +147,13 @@
 <script>
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
-	TUserError, TUserErrorCode, T_USER_ERROR_STR, 
+	TUserError, 
 	NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
 } from "@/rpc/gen/user.user.errors_types";
-import { 
-	TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR
-} from "@/rpc/gen/user.auth.errors_types";
+
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 
 import stores from "@/store/stores";
 import { router } from "@/router/index";
@@ -264,7 +265,6 @@ class ProfilView extends BaseView {
 		const view = this;
 		view.busy=true;
 		try{
-			if (!view.emailEdit) throw new TUserError({ code: TUserErrorCode.EMAIL_EMPTY});
 			await stores.client.user.profile.change_email(view.emailEdit);
 			stores.app.pushTabDialog({
 				title: "Periksa Email Anda",
@@ -272,7 +272,7 @@ class ProfilView extends BaseView {
 			});
 			this.emailEdit = this.email;
 		} catch (error) {
-			view.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -286,10 +286,9 @@ class ProfilView extends BaseView {
 		const view = this;
 		view.busy=true;
 		try{
-			if (!view.nameEdit) throw new TUserError({ code: TUserErrorCode.NAME_EMPTY});
 			await stores.client.user.profile.set_name(view.nameEdit);
 		} catch (error) {
-			view.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -302,30 +301,22 @@ class ProfilView extends BaseView {
 		view.busy=true;
 		try{
 			await stores.client.user.profile.set_password(
-				this.passwordOld,
-				this.passwordEdit
+				view.passwordOld,
+				view.passwordEdit
 			);
-			this.cancelPasswordEdit();
+			view.cancelPasswordEdit();
 		} catch (error) {
-			this.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
 	}
-	handleError(error){
-		if (error instanceof TUserError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_USER_ERROR_STR[error.code]
-			});
-		}else if (error instanceof TLoginError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_LOGIN_ERROR_STR[error.code]
-			});
-		}else{
-			throw error;
-		}
+
+	showError(error){
+		if (stores.helper.error.showFilteredError(error, 
+			[TLoginError, TUserError, TEmailError, TUserEmailError]
+		)) return;
+		throw error;
 	}
 }
 export { ProfilView } 

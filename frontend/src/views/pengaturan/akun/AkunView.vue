@@ -162,9 +162,11 @@
 </template>
 
 <script>
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
-	TUserError, TUserErrorCode, T_USER_ERROR_STR, 
+	TUserError, 
 	EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
 } from "@/rpc/gen/user.user.errors_types";
 import { TUserQuery } from '@/rpc/gen/user.management.structs_types';
@@ -271,6 +273,8 @@ class AkunView extends BaseView {
 			let akun = await stores.client.user.management.fetch_akun(query);
 			//this.akun = addEditFieldsBulk(akun, ["email", "role"]);
 			this.akun = akun;
+		} catch(error){
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -284,14 +288,13 @@ class AkunView extends BaseView {
 		const view = this;
 		view.busy=true;
 		try{
-			if (!email) throw new TUserError({ code: TUserErrorCode.EMAIL_EMPTY});
 			await stores.client.user.management.set_email(user.id, email);
 			user.email = email;
 			user.verified = false;
 			if (user.id == stores.auth.user.id) 
 				await stores.auth.setUserEmail(user.email);
 		} catch (error) {
-			this.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -322,7 +325,7 @@ class AkunView extends BaseView {
 			}
 			*/
 		} catch (error) {
-			this.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -342,7 +345,7 @@ class AkunView extends BaseView {
 			await stores.client.user.management.set_enabled(user.id, enabled);
 			user.enabled = enabled;
 		} catch (error) {
-			this.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -363,20 +366,16 @@ class AkunView extends BaseView {
 		try{
 			await stores.client.user.management.set_password(user.id, password);
 		} catch (error) {
-			this.handleError(error);
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
 	}
-	handleError(error){
-		if (error instanceof TUserError){
-			stores.app.pushTabDialog({
-				title: "Error",
-				text: T_USER_ERROR_STR[error.code]
-			});
-		}else{
-			throw error;
-		}
+	showError(error){
+		if (stores.helper.error.showFilteredError(error, 
+			[TUserError, TEmailError, TUserEmailError]
+		)) return;
+		throw error;
 	}
 }
 export { AkunView } 

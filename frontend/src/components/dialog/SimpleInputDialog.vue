@@ -143,6 +143,7 @@ class SimpleInputDialog extends WorkingComponent {
 	}
 
 	async confirm(){
+		this.$refs.myForm.validate();
 		if(!this.valid){
 			return;
 		}

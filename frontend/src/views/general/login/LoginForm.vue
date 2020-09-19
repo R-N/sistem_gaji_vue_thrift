@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
 
 import stores from "@/store/stores";
 import { router } from '@/router/index';
@@ -65,16 +65,12 @@ class LoginForm extends WorkingComponent {
 			await stores.client.user.auth.login(this.username, this.password);
 			await router.safePush({ name: "beranda" });
 		} catch (error) {
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TLoginError]
+			)) return;
+			throw error;
 		} finally {
 			view.globalBusy = false;
-		}
-	}
-	handleError(error){
-		if (error instanceof TLoginError){
-			stores.app.showError(T_LOGIN_ERROR_STR[error.code]);
-		}else{
-			throw error;
 		}
 	}
 

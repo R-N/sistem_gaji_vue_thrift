@@ -5,7 +5,7 @@ from emails.template import JinjaTemplate as Template
 from datetime import timedelta, datetime
 import jwt
 
-from rpc.gen.user.email.errors.ttypes import TEmailError, TEmailErrorCode
+from rpc.gen.email.errors.ttypes import TEmailError, TEmailErrorCode
 
 from utils.crypto import md5
 

@@ -95,7 +95,8 @@
 				:on-confirm="createBackup"
 				title="Buat Backup"
 				text="Silahkan masukkan nama backup"
-				label="Nama backup" 
+				label="Nama backup"
+				:rules="[ v => !!v || 'Nama backup harus diisi']"
 			/>
 			<simple-input-dialog 
 				v-model="deleteDialog" 
@@ -112,10 +113,10 @@
 import axios from 'axios';
 import FileSaver from 'file-saver';
 
-import { TAuthError, TAuthErrorCode } from "@/rpc/gen/user.auth.errors_types";
 import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
-import { TFileError, TFileErrorCode, T_FILE_ERROR_STR } from "@/rpc/gen/file.file.errors_types";
-
+import { TFileError } from '@/rpc/gen/file.file.errors_types';
+import { TUploadError } from '@/rpc/gen/file.upload.errors_types';
+import { TDownloadError } from '@/rpc/gen/file.download.errors_types';
 
 import stores from "@/store/stores";
 import { router } from "@/router/index";
@@ -173,20 +174,12 @@ class BackupView extends BaseView {
 		const view = this;
 		view.busy=true;
 		try{
-			if (!file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
 			let created = await stores.client.system.backup.create_backup(file_name);
-			this.backupName = '';
+			view.backupName = '';
 			//view.createDialog = false;
-			this.backups.push(created);
-		} catch (error) {
-			if (error instanceof TFileError){
-				stores.app.pushTabDialog({
-					title: "Error",
-					text: T_FILE_ERROR_STR[error.code]
-				});
-			}else{
-				throw error;
-			}
+			view.backups.push(created);
+		} catch(error){
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -211,17 +204,10 @@ class BackupView extends BaseView {
 			if (!item.file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
 			await stores.client.system.backup.delete_backup(item.file_name);
 
-	        const index = this.backups.indexOf(item);
-	        this.backups.splice(index, 1);
-		} catch (error) {
-			if (error instanceof TFileError){
-				stores.app.pushTabDialog({
-					title: "Error",
-					text: T_FILE_ERROR_STR[error.code]
-				});
-			}else{
-				throw error;
-			}
+	        const index = view.backups.indexOf(item);
+	        view.backups.splice(index, 1);
+		} catch(error){
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -230,7 +216,9 @@ class BackupView extends BaseView {
 		const view = this;
 		view.busy = true;
 		try{
-			this.backups = await stores.client.system.backup.fetch_backups();
+			view.backups = await stores.client.system.backup.fetch_backups();
+		} catch(error){
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
@@ -241,13 +229,29 @@ class BackupView extends BaseView {
 		try{
 			let blob = await stores.client.system.backup.download_backup(item.file_name);
 			FileSaver.saveAs(blob, item.file_name);
+		} catch(error){
+			view.showError(error);
 		} finally {
 			view.busy = false;
 		}
 	}
 	async uploadBackup(file){
-		let uploaded = await stores.client.system.backup.upload_backup(file);
-		this.backups.push(uploaded);
+		const view = this;
+		view.busy = true;
+		try{
+			let uploaded = await stores.client.system.backup.upload_backup(file);
+			this.backups.push(uploaded);
+		} catch(error){
+			view.showError(error);
+		} finally {
+			view.busy = false;
+		}
+	}
+	showError(error){
+		if (stores.helper.error.showFilteredError(error, 
+			[TFileError, TUploadError, TDownloadError]
+		)) return;
+		throw error;
 	}
 }
 export { BackupView } 

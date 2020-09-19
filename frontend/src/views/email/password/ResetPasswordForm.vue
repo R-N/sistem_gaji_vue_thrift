@@ -34,9 +34,10 @@
 </template>
 
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
-import { TUserError, TUserErrorCode, T_USER_ERROR_STR, PASSWORD_LEN_MAX } from "@/rpc/gen/user.user.errors_types";
-import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserError, PASSWORD_LEN_MAX } from "@/rpc/gen/user.user.errors_types";
+import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
+import { TEmailError } from '@/rpc/gen/email.errors_types';
 
 import stores from "@/store/stores";
 import { router } from '@/router/index';
@@ -61,14 +62,6 @@ class ResetPasswordForm extends WorkingComponent {
 	passwordVisible = false;
 	passwordRules = PASSWORD_RULES
 	passwordLenMax = PASSWORD_LEN_MAX
-
-	onError(message){
-		stores.app.pushTabDialog({
-			title: "Error",
-			text: message,
-			onDismiss: function(){ router.safePush({ name: "beranda" }) }
-		});
-	}
 	
 	validateConfirm(passwordConfirm){
 		if (this.password === passwordConfirm) return true;
@@ -90,25 +83,17 @@ class ResetPasswordForm extends WorkingComponent {
 		try{
 			await stores.client.user.email.set_password(view.token, view.password);
 			stores.app.pushTabDialog({
-				title: "Reset Password Berhasil",
-				text: "Silahkan login.",
+				title: "Berhasil",
+				text: "Reset Password Berhasil. Silahkan login.",
 				onDismiss: function(){ router.safePush({ name: "beranda" }) }
 			});
 		} catch (error) {
-			this.handleError(error);
+			if (stores.helper.error.showFilteredError(error, 
+				[TLoginError, TUserError, TEmailError, TUserEmailError]
+			)) return;
+			throw error;
 		} finally {
 			view.busy = false;
-		}
-	}
-	handleError(error){
-		if (error instanceof TLoginError){
-			this.onError(T_LOGIN_ERROR_STR[error.code]);
-		}else if (error instanceof TUserError){
-			this.onError(T_USER_ERROR_STR[error.code]);
-		}else if (error instanceof TEmailError){
-			this.onError(T_EMAIL_ERROR_STR[error.code]);
-		}else{
-			throw error;
 		}
 	}
 }

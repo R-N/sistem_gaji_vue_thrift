@@ -2,7 +2,8 @@ import os
 from dotenv import load_dotenv
 from emails.template import JinjaTemplate as Template
 
-from rpc.gen.user.email.errors.ttypes import TEmailError, TEmailErrorCode
+from rpc.gen.email.errors.ttypes import TEmailError, TEmailErrorCode
+from rpc.gen.user.email.errors.ttypes import TUserEmailError, TUserEmailErrorCode
 
 from .manager import basic_models
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
@@ -130,9 +131,9 @@ class EmailModel:
             return self.basic.decode(self.func_verify, ip, token)
         except TEmailError as ex:
             if ex.code == TEmailErrorCode.EMAIL_TOKEN_EXPIRED:
-                raise TEmailError(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
+                raise TUserEmailError(TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
             if ex.code == TEmailErrorCode.EMAIL_TOKEN_INVALID:
-                raise TEmailError(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID)
+                raise TUserEmailError(TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID)
             raise
 
     def decode_password(self, ip, token):
@@ -140,9 +141,9 @@ class EmailModel:
             return self.basic.decode(self.func_password, ip, token)
         except TEmailError as ex:
             if ex.code == TEmailErrorCode.EMAIL_TOKEN_EXPIRED:
-                raise TEmailError(TEmailErrorCode.RESET_PASSWORD_TOKEN_EXPIRED)
+                raise TUserEmailError(TUserEmailErrorCode.RESET_PASSWORD_TOKEN_EXPIRED)
             if ex.code == TEmailErrorCode.EMAIL_TOKEN_INVALID:
-                raise TEmailError(TEmailErrorCode.RESET_PASSWORD_TOKEN_INVALID)
+                raise TUserEmailError(TUserEmailErrorCode.RESET_PASSWORD_TOKEN_INVALID)
             raise
 
     def send_welcome_email(self, user, html=MESSAGE_NEW_ACCOUNT):

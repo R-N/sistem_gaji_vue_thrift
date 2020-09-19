@@ -1,32 +1,22 @@
 namespace js user.email.errors
 namespace py user.email.errors
 
-enum TEmailErrorCode{
-	EMAIL_TOKEN_INVALID,
-	EMAIL_TOKEN_EXPIRED,
+enum TUserEmailErrorCode{
 	RESET_PASSWORD_TOKEN_INVALID,
 	RESET_PASSWORD_TOKEN_EXPIRED,
 	EMAIL_VERIFICATION_TOKEN_INVALID,
 	EMAIL_VERIFICATION_TOKEN_EXPIRED,
 	EMAIL_CHANGE_TOKEN_INVALID,
-	EMAIL_CHANGE_TOKEN_EXPIRED,
-	EMAIL_INVALID,
-	EMAIL_NOT_FOUND,
-	EMAIL_NOT_SENT
+	EMAIL_CHANGE_TOKEN_EXPIRED
 }
-const map<TEmailErrorCode, string> T_EMAIL_ERROR_STR = {
-	TEmailErrorCode.EMAIL_TOKEN_INVALID: "Email token invalid",
-	TEmailErrorCode.EMAIL_TOKEN_EXPIRED: "Email token kadaluarsa",
-	TEmailErrorCode.RESET_PASSWORD_TOKEN_INVALID: "Token reset password invalid",
-	TEmailErrorCode.RESET_PASSWORD_TOKEN_EXPIRED: "Token reset password kadaluarsa",
-	TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID: "Token verifikasi email invalid",
-	TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED: "Token verifikasi email kadaluarsa",
-	TEmailErrorCode.EMAIL_CHANGE_TOKEN_INVALID: "Token ganti email invalid",
-	TEmailErrorCode.EMAIL_CHANGE_TOKEN_EXPIRED: "Token ganti email kadaluarsa",
-	TEmailErrorCode.EMAIL_INVALID: "Email invalid",
-	TEmailErrorCode.EMAIL_NOT_FOUND: "Email tidak ditemukan",
-	TEmailErrorCode.EMAIL_NOT_SENT: "Gagal mengirim email"
+const map<TUserEmailErrorCode, string> T_USER_EMAIL_ERROR_STR = {
+	TUserEmailErrorCode.RESET_PASSWORD_TOKEN_INVALID: "Token reset password invalid",
+	TUserEmailErrorCode.RESET_PASSWORD_TOKEN_EXPIRED: "Token reset password kadaluarsa",
+	TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID: "Token verifikasi email invalid",
+	TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED: "Token verifikasi email kadaluarsa",
+	TUserEmailErrorCode.EMAIL_CHANGE_TOKEN_INVALID: "Token ganti email invalid",
+	TUserEmailErrorCode.EMAIL_CHANGE_TOKEN_EXPIRED: "Token ganti email kadaluarsa"
 }
-exception TEmailError{
-	1: TEmailErrorCode code;
+exception TUserEmailError{
+	1: TUserEmailErrorCode code;
 }

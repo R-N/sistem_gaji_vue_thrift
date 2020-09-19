@@ -6,9 +6,8 @@
 	</center-layout>
 </template>
 <script>
-import { TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR } from '@/rpc/gen/user.auth.errors_types';
-import { TUserError, TUserErrorCode, T_USER_ERROR_STR } from "@/rpc/gen/user.user.errors_types";
-import { TEmailError, TEmailErrorCode, T_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
+
+import { TUserEmailErrorCode, T_USER_EMAIL_ERROR_STR } from '@/rpc/gen/user.email.errors_types';
 
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
@@ -21,50 +20,33 @@ import ResetPasswordForm from '@/views/email/password/ResetPasswordForm';
 import CenterLayout from '@/components/layout/CenterLayout';
 
 @Component({
-  	name: "VerifyEmailView",
+  	name: "ResetPasswordView",
   	//beforeRouteEnter: authRouter.routeRequireLogoutNow(),
 	components: {
 		CenterLayout,
 		ResetPasswordForm
 	}
 })
-class VerifyEmailView extends BaseView {
+class ResetPasswordView extends BaseView {
 
 	get token(){
 		return this.$route.params.token;
 	}
 
-	onError(message){
-		stores.app.pushTabDialog({
-			title: "Error",
-			text: message,
-			onDismiss: function(){ router.safePush({ name: "beranda" }) }
-		});
-	}
-
 	async mounted(){
 		if (!this.token){
-			this.onInvalidToken(TEmailErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID);
+			stores.helper.error.showError(
+				T_USER_EMAIL_ERROR_STR[TUserEmailErrorCode.RESET_PASSWORD_TOKEN_INVALID], 
+				"beranda"
+			);
 			return;
 		}
 	}
 
 
-	handleError(error){
-		if (error instanceof TLoginError){
-			this.onError(T_LOGIN_ERROR_STR[error.code]);
-		}else if (error instanceof TUserError){
-			this.onError(T_USER_ERROR_STR[error.code]);
-		}else if (error instanceof TEmailError){
-			this.onError(T_EMAIL_ERROR_STR[error.code]);
-		}else{
-			throw error;
-		}
-	}
-
 }
-export { VerifyEmailView }
-export default VerifyEmailView
+export { ResetPasswordView }
+export default ResetPasswordView
 </script>
 
 <style scoped>
