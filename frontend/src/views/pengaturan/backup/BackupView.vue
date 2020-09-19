@@ -3,7 +3,13 @@
 		<template v-slot:toolbar-left>
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">
-					<v-btn icon @click.stop="createDialog = true" v-bind="attrs" v-on="on">
+					<v-btn 
+						icon 
+						@click.stop="createDialog = true" 
+						v-bind="attrs" 
+						v-on="on"
+						:disabled="busy"
+					>
 						<v-icon size="32">mdi-plus</v-icon>
 					</v-btn>
 				</template>
@@ -11,7 +17,13 @@
 			</v-tooltip>
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">
-					<v-btn icon @click.stop="uploadDialog = true" v-on="on">
+					<v-btn 
+						icon 
+						@click.stop="uploadDialog = true" 
+						v-bind="attrs" 
+						v-on="on"
+						:disabled="busy"
+					>
 						<v-icon size="32">mdi-upload</v-icon>
 					</v-btn>
 				</template>
@@ -26,6 +38,7 @@
 				label="Search"
 				single-line
 				hide-details
+				:disabled="busy"
 			></v-text-field>
 		</template>
 		<template v-slot:default>
@@ -40,7 +53,14 @@
 				<template v-slot:item.actions="{ item }">
 					<v-tooltip bottom>
 						<template v-slot:activator="{ on, attrs }">
-							<v-btn icon @click.stop="downloadBackup(item)" class="" v-bind="attrs" v-on="on">
+							<v-btn 
+								icon 
+								@click.stop="downloadBackup(item)" 
+								class="" 
+								v-bind="attrs" 
+								v-on="on"
+								:disabled="busy"
+							>
 								<v-icon size="32" small>mdi-download</v-icon>
 							</v-btn>
 						</template>
@@ -48,7 +68,14 @@
 					</v-tooltip>
 					<v-tooltip bottom>
 						<template v-slot:activator="{ on, attrs }">
-							<v-btn icon @click.stop="prepareDeleteBackup(item)" class="" v-bind="attrs" v-on="on">
+							<v-btn 
+								icon 
+								@click.stop="prepareDeleteBackup(item)" 
+								class="" 
+								v-bind="attrs" 
+								v-on="on"
+								:disabled="busy"
+							>
 								<v-icon size="32" small>mdi-delete</v-icon>
 							</v-btn>
 						</template>

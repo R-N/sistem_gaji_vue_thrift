@@ -7,6 +7,7 @@
 	    	@click.prevent.capture="onClick()"
 	    	readonly
 	    	class="text-center justify-center justify-self-center"
+	    	:disabled="disabled"
 		/>
 		<simple-input-dialog 
 			v-if="confirmTextMaker"
@@ -35,6 +36,7 @@ class SyncCheckbox extends Vue {
 	@Prop(String) value;
 	@Prop({ default: false }) inputValue;
 	@Prop(Function) confirmTextMaker; 
+	@Prop({ default: false }) disabled;
 	confirmText = '';
 	confirmDialog = false;
 

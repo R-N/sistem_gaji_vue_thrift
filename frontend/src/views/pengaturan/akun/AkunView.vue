@@ -3,7 +3,13 @@
 		<template v-slot:toolbar-left>
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">
-					<v-btn icon @click.stop="createDialog = true" v-bind="attrs" v-on="on">
+					<v-btn 
+						icon 
+						@click.stop="createDialog = true" 
+						v-bind="attrs" 
+						v-on="on"
+						:disabled="busy"
+					>
 						<v-icon size="32">mdi-plus</v-icon>
 					</v-btn>
 				</template>
@@ -18,6 +24,7 @@
 				label="Search"
 				single-line
 				hide-details
+				:disabled="busy"
 			></v-text-field>
 		</template>
 		<template v-slot:default>
@@ -36,6 +43,7 @@
 						@finish="setEmail(item, item.emailEdit)"
 						:change-detector="() => item.email != item.emailEdit"
 						:confirm-text-maker="() => setEmailConfirmText(item)"
+						:parent-busy="busy"
 					>
 						<template v-slot:editing>
 							<v-text-field 
@@ -44,6 +52,7 @@
 								:rules="emailRules"
 								:counter="emailLenMax"
 								type="email"
+								:disabled="busy"
 							/>
 						</template>
 						<template v-slot:default>
@@ -59,6 +68,7 @@
 						@finish="setRole(item, item.roleEdit)"
 						:change-detector="() => item.role != item.roleEdit"
 						:confirm-text-maker="() => setRoleConfirmText(item)"
+						:parent-busy="busy"
 					>
 						<template v-slot:editing>
 							<v-select
@@ -68,6 +78,7 @@
 								item-text="text"
 								:value="rolesDict[item.role]"
 								@change="value => item.roleEdit = value"
+								:disabled="busy"
 							></v-select>
 						</template>
 						<template v-slot:default>
@@ -88,6 +99,7 @@
 						    	:confirm-text-maker="() => setEnabledConfirmText(item)"
 						    	readonly
 						    	v-bind="attrs" v-on="on"
+								:disabled="busy"
 					    	/>
 						</template>
 						<span>{{ item.enabled ? "Nonaktifkan" : "Aktifkan" }}</span>
@@ -118,6 +130,7 @@
 								class=""
 								v-bind="attrs"
 								v-on="on"
+								:disabled="busy"
 							>
 								<v-icon size="32" small>mdi-key-variant</v-icon>
 							</v-btn>
@@ -136,11 +149,13 @@
 				:password="true"
 				:counter="passwordLenMax"
 				:rules="passwordRules"
+				:disabled="busy"
 			/>
 			<user-form-dialog
 				v-model="createDialog"
 				@register="user => { akun.push(user) }"
 				:roles="roles"
+				:parent-busy="busy"
 			/>
 		</template>
 	</main-card>

@@ -5,6 +5,7 @@
 			ref="myForm" 
 			@submit.native.prevent.stop="finishEdit"
 			v-model="valid"
+			:disabled="busy"
 		>
 			<div class="d-flex align-center justify-space-between">
 				<span class="flex-grow-1">
@@ -15,7 +16,13 @@
 					<span v-if="editing">
 						<v-tooltip bottom key="submit">
 							<template v-slot:activator="{ on, attrs }">
-								<v-btn icon type="submit"  v-bind="attrs" v-on="on">
+								<v-btn 
+									icon 
+									type="submit"  
+									v-bind="attrs" 
+									v-on="on"
+									:disabled="busy"
+								>
 									<v-icon size="32" small>mdi-check</v-icon>
 								</v-btn>
 							</template>
@@ -23,7 +30,13 @@
 						</v-tooltip>
 						<v-tooltip bottom key="cancel">
 							<template v-slot:activator="{ on, attrs }">
-								<v-btn icon @click.stop="cancelEdit();" v-bind="attrs" v-on="on">
+								<v-btn 
+									icon 
+									@click.stop="cancelEdit();" 
+									v-bind="attrs" 
+									v-on="on"
+									:disabled="busy"
+								>
 									<v-icon size="32" small>mdi-cancel</v-icon>
 								</v-btn>
 							</template>
@@ -33,7 +46,13 @@
 					<span v-else>
 						<v-tooltip bottom key="edit">
 							<template v-slot:activator="{ on, attrs }">
-								<v-btn icon @click.stop="beginEdit();" v-bind="attrs" v-on="on">
+								<v-btn 
+									icon 
+									@click.stop="beginEdit();" 
+									v-bind="attrs" 
+									v-on="on"
+									:disabled="busy"
+								>
 									<v-icon size="32" small>mdi-pencil</v-icon>
 								</v-btn>
 							</template>
