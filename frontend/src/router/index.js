@@ -1,15 +1,20 @@
-import NotFoundView from '@/views/NotFoundView';
-import LoginView from '@/views/LoginView';
-import MainView from '@/views/MainView';
-import BerandaView from '@/views/BerandaView';
-import BackupView from '@/views/pengaturan/BackupView';
-import AkunView from '@/views/pengaturan/AkunView';
-import ProfilView from '@/views/ProfilView';
-import VerifyEmailView from '@/views/email/VerifyEmailView';
-import ResetPasswordView from '@/views/email/ResetPasswordView';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
 import { appStore } from "@/store/stores";
+
+import MainView from '@/views/MainView';
+
+import NotFoundView from '@/views/general/not_found/NotFoundView';
+import LoginView from '@/views/general/login/LoginView';
+
+import BerandaView from '@/views/general/beranda/BerandaView';
+import ProfilView from '@/views/general/profil/ProfilView';
+
+import BackupView from '@/views/pengaturan/backup/BackupView';
+import AkunView from '@/views/pengaturan/akun/AkunView';
+import VerifyEmailView from '@/views/email/verify/VerifyEmailView';
+import ResetPasswordView from '@/views/email/password/ResetPasswordView';
 
 const routes = [
 	//{ path: '/login', component: LoginView, name: "login" },

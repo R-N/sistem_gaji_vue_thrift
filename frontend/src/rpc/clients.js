@@ -1,33 +1,43 @@
-import akunClient from '@/rpc/client/akun';
-import authClient from '@/rpc/client/auth';
-import helloClient from '@/rpc/client/hello';
-import userClient from '@/rpc/client/user';
-import backupClient from '@/rpc/client/backup';
-import emailClient from '@/rpc/client/email';
+import userAuthClient from '@/rpc/client/user/auth';
+import userEmailClient from '@/rpc/client/user/email';
+import userManagementClient from '@/rpc/client/user/management';
+import userProfileClient from '@/rpc/client/user/profile';
+import userRecoveryClient from '@/rpc/client/user/recovery';
+
+import helloHelloClient from '@/rpc/client/hello/hello';
+
+import systemBackupClient from '@/rpc/client/system/backup';
+
 
 const clients = {
-	akun: akunClient,
-	auth: authClient,
-	hello: helloClient,
-	user: userClient,
-	backup: backupClient,
-	email: emailClient
+	user: {
+		auth: userAuthClient,
+		email: userEmailClient,
+		management: userManagementClient,
+		profile: userProfileClient,
+		recovery: userRecoveryClient
+	},
+	hello: {
+		hello: helloHelloClient
+	},
+	system: {
+		backup: systemBackupClient
+	}
 }
 
 const init = (stores) => {
 	Object.keys(clients).forEach(function(key) {
-		clients[key].init(stores);
+		let namespace = clients[key]
+		Object.keys(namespace).forEach(function(key2) {
+			namespace[key2].init(stores);
+		});
 	});
 }
 const initClients = init;
 
 export {
-	clients, init, initClients,
-	akunClient,
-	authClient, 
-	helloClient, 
-	userClient,
-	backupClient,
-	emailClient
+	clients, 
+	init, 
+	initClients
 };
 export default clients

@@ -4,23 +4,26 @@ from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
 from thrift.transport import TTransport
 
-from rpc.gen.akun.auth import TAuthService
-from rpc.handler.akun.auth import TAuthServiceHandler
+from rpc.gen.user.auth.services import TUserAuthService
+from rpc.handler.user.auth import TUserAuthServiceHandler
 
-from rpc.gen.akun.user import TUserService
-from rpc.handler.akun.user import TUserServiceHandler
+from rpc.gen.user.recovery.services import TUserRecoveryService
+from rpc.handler.user.recovery import TUserRecoveryServiceHandler
 
-from rpc.gen.akun.akun import TAkunService
-from rpc.handler.akun.akun import TAkunServiceHandler
+from rpc.gen.user.profile.services import TUserProfileService
+from rpc.handler.user.profile import TUserProfileServiceHandler
 
-from rpc.gen.akun.email import TEmailService
-from rpc.handler.akun.email import TEmailServiceHandler
+from rpc.gen.user.management.services import TUserManagementService
+from rpc.handler.user.management import TUserManagementServiceHandler
 
-from rpc.gen.hello.hello import THelloService
+from rpc.gen.user.email.services import TUserEmailService
+from rpc.handler.user.email import TUserEmailServiceHandler
+
+from rpc.gen.hello.hello.services import THelloService
 from rpc.handler.hello.hello import THelloServiceHandler
 
-from rpc.gen.system.backup import TBackupService
-from rpc.handler.system.backup import TBackupServiceHandler
+from rpc.gen.system.backup.services import TSystemBackupService
+from rpc.handler.system.backup import TSystemBackupServiceHandler
 
 def make_server(service_class, foo_handler):
     foo_processor = service_class.Processor(foo_handler)
@@ -40,35 +43,40 @@ def respond(foo_server):
     foo_server.processor.process(iprot, oprot)
     return make_response(otrans.getvalue())
 
-auth_server = make_server(TAuthService, TAuthServiceHandler())
-def akun_auth():
-    return respond(auth_server)
+user_auth_server = make_server(TUserAuthService, TUserAuthServiceHandler())
+def user_auth():
+    return respond(user_auth_server)
 
-user_server = make_server(TUserService, TUserServiceHandler())
-def akun_user():
-    return respond(user_server)
+user_recovery_server = make_server(TUserRecoveryService, TUserRecoveryServiceHandler())
+def user_recovery():
+    return respond(user_recovery_server)
 
-akun_server = make_server(TAkunService, TAkunServiceHandler())
-def akun_akun():
-    return respond(akun_server)
+user_profile_server = make_server(TUserProfileService, TUserProfileServiceHandler())
+def user_profile():
+    return respond(user_profile_server)
 
-email_server = make_server(TEmailService, TEmailServiceHandler())
-def akun_email():
-    return respond(email_server)
+user_management_server = make_server(TUserManagementService, TUserManagementServiceHandler())
+def user_management():
+    return respond(user_management_server)
 
-hello_server = make_server(THelloService, THelloServiceHandler())
+user_email_server = make_server(TUserEmailService, TUserEmailServiceHandler())
+def user_email():
+    return respond(user_email_server)
+
+hello_hello_server = make_server(THelloService, THelloServiceHandler())
 def hello_hello():
-    return respond(hello_server)
+    return respond(hello_hello_server)
 
-backup_server = make_server(TBackupService, TBackupServiceHandler())
+system_backup_server = make_server(TSystemBackupService, TSystemBackupServiceHandler())
 def system_backup():
-    return respond(backup_server)
+    return respond(system_backup_server)
 
 def init(app):
-    app.route('/api/akun/auth', methods=['POST'])(akun_auth)
-    app.route('/api/akun/user', methods=['POST'])(akun_user)
-    app.route('/api/akun/akun', methods=['POST'])(akun_akun)
-    app.route('/api/akun/email', methods=['POST'])(akun_email)
+    app.route('/api/user/auth', methods=['POST'])(user_auth)
+    app.route('/api/user/recovery', methods=['POST'])(user_recovery)
+    app.route('/api/user/profile', methods=['POST'])(user_profile)
+    app.route('/api/user/management', methods=['POST'])(user_management)
+    app.route('/api/user/email', methods=['POST'])(user_email)
     app.route('/api/hello/hello', methods=['POST'])(hello_hello)
     app.route('/api/system/backup', methods=['POST'])(system_backup)
     return app

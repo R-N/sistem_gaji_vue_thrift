@@ -25,7 +25,7 @@ const persistencePlugin = createPersistedState({
 				}
 			}
 		}catch(error){
-			appHelper.handleError(error);
+			appHelper.handleGlobalError(error);
 		}
 	}
 })

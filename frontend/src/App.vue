@@ -20,23 +20,29 @@
 </template>
 
 <script>
+import { 
+	TAuthError, TAuthErrorCode, 
+	TLoginError, TLoginErrorCode 
+} from "@/rpc/gen/user.auth.errors_types";
 
 import { authStore, appStore, clientStore } from "@/store/stores";
-import { Component, Watch } from 'vue-property-decorator'
-import { BaseView } from '@/views/BaseView';
-import ImageBackground from '@/components/general/ImageBackground'
-import LoadingOverlay from '@/components/general/LoadingOverlay';
-import SideNavDrawer from '@/components/general/SideNavDrawer';
-import TopNavBar from '@/components/general/TopNavBar';
-import DialogStack from '@/components/general/DialogStack';
-import IdleOverlay from '@/components/general/IdleOverlay';
-import ServerDownView from '@/views/ServerDownView';
 import { router } from '@/router/index';
 import { authRouter } from '@/router/routers/auth';
-import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
+import appHelper from '@/store/helpers/app';
+
+import { Component, Watch } from 'vue-property-decorator'
+import { BaseView } from '@/views/BaseView';
 
 import {SlideYDownTransition, CollapseTransition} from 'vue2-transitions'
-import appHelper from '@/store/helpers/app';
+import ImageBackground from '@/components/general/ImageBackground'
+import LoadingOverlay from '@/components/overlay/LoadingOverlay';
+import SideNavDrawer from '@/components/main/SideNavDrawer';
+import TopNavBar from '@/components/main/TopNavBar';
+import DialogStack from '@/components/dialog/DialogStack';
+import IdleOverlay from '@/components/overlay/IdleOverlay';
+
+import ServerDownView from '@/views/general/server_down/ServerDownView';
+
 
 const dialogAuthExpired = () => {
 	appStore.pushTabDialog({
@@ -109,7 +115,7 @@ class App extends BaseView{
 	onGlobalLogoutFlagSet(val, oldVal){
 		if(val){
 			appStore.setGlobalLogout(false);
-			this.$router.push({ name: "beranda" });
+			router.safePush({ name: "beranda" });
 		}
 	}
 
@@ -117,7 +123,7 @@ class App extends BaseView{
 		this.drawer = drawer;
 	}
 	errorCaptured(error, vm, info) {
-		return appHelper.handleError(error);
+		return appHelper.handleGlobalError(error);
 	}
 }
 export { App }

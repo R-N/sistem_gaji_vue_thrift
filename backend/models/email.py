@@ -4,9 +4,12 @@ import emails
 from emails.template import JinjaTemplate as Template
 from datetime import timedelta, datetime
 import jwt
-from .general_key import GeneralKeyModel
-from rpc.gen.akun.email.ttypes import TEmailError, TEmailErrorCode
+
+from rpc.gen.user.email.errors.ttypes import TEmailError, TEmailErrorCode
+
 from utils.crypto import md5
+
+from .general_key import GeneralKeyModel
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -142,7 +145,9 @@ class EmailModel(GeneralKeyModel):
         )
 
     def send_email(self, email, recepient, render={}):
-        return email.send(to=recepient, smtp=self.smtp, render=render)
+        r = email.send(to=recepient, smtp=self.smtp, render=render)
+        if r.status_code != 250:
+            raise TEmailError(TEmailErrorCode.EMAIL_NOT_SENT)
 
 
     def decode(self, func, ip, token):
@@ -199,10 +204,7 @@ class EmailModel(GeneralKeyModel):
             'base_url': BASE_URL,
             'token': token
         }
-        r = self.send_email(msg, email, render=data)
-        if r.status_code != 250:
-            raise Exception(str(r))
-        return r
+        return self.send_email(msg, email, render=data)
 
     def send_welcome_email(self, user, html=MESSAGE_NEW_ACCOUNT):
         html = Template(html)
@@ -211,10 +213,7 @@ class EmailModel(GeneralKeyModel):
             'name': user.name,
             'base_url': BASE_URL
         }
-        r = self.send_email(msg, user.email, render=data)
-        if r.status_code != 250:
-            raise Exception(str(r))
-        return r
+        return self.send_email(msg, user.email, render=data)
 
 
     def send_change_email(self, session, ip, user, email, html=MESSAGE_VERIFY_CHANGE_EMAIL):
@@ -243,13 +242,9 @@ class EmailModel(GeneralKeyModel):
             'old_email': old_email,
             'new_email': user.email
         }
-        r = self.send_email(msg, old_email, render=data)
-        if r.status_code != 250:
-            raise Exception(str(r))
-        r = self.send_email(msg, user.email, render=data)
-        if r.status_code != 250:
-            raise Exception(str(r))
-        return r
+        r1 = self.send_email(msg, old_email, render=data)
+        r2 = self.send_email(msg, user.email, render=data)
+        return r1, r2
 
     def send_reset_password(self, session, ip, user, html=MESSAGE_RESET_PASSWORD):
         email_secret_2 = self.make_secret(session, user, self.func_password)

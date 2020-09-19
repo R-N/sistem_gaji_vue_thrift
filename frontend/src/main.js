@@ -4,17 +4,11 @@ import 'mdbvue/lib/css/mdb.min.css'
 import '@/assets/css/common.css'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 import 'vue2-animate/dist/vue2-animate.min.css'
-//import 'paper-css/paper.css'
-import Vue from 'vue'
 
+import Vue from 'vue'
 import vuetify from './plugins/vuetify';
-/*
-import vueg from 'vueg';
-Vue.use(vueg, router);
-*/
 
 import VuePageTransition from 'vue-page-transition'
-
 Vue.use(VuePageTransition)
 
 import VueLazyload from 'vue-lazyload'
@@ -26,16 +20,20 @@ Vue.use(VueLazyload, {
 })
 // TODO: add loading & error placeholder... maybe
 
-import { setUseHttps, setBackendHost, setBackendPort } from '@/rpc/client/base';
 import { checkBackend, backendUrl } from '@/lib/util';
-import { App } from './App.vue'
-import { store, stores } from '@/store/final';
-import { initStorePlugins } from '@/store/plugins';
-import { router, routers } from '@/router/final';
-import { initRouters } from '@/router/routers';
 
+import { initStorePlugins } from '@/store/plugins';
+import { store, stores } from '@/store/final';
+
+import { initRouters } from '@/router/routers';
+import { router, routers } from '@/router/final';
+
+import { setUseHttps, setBackendHost, setBackendPort } from '@/rpc/client/base';
 import { clients, initClients } from '@/rpc/clients';
+
 import { helpers, initHelpers } from '@/store/helpers';
+
+import { App } from './App.vue'
 
 Vue.config.productionTip = false;
 async function main(){

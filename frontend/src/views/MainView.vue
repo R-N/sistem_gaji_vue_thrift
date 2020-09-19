@@ -37,13 +37,14 @@
 </template>
 
 <script>
-
 import { authStore, appStore, clientStore } from "@/store/stores";
+import { router } from '@/router/index';
+
 import { Component } from 'vue-property-decorator'
 import { BaseView } from '@/views/BaseView';
-import LoginView from '@/views/LoginView';
-import { router } from '@/router/index';
+
 import { FadeTransition, SlideYDownTransition, SlideXLeftTransition, CollapseTransition } from 'vue2-transitions'
+import LoginView from '@/views/general/login/LoginView';
 
 @Component({
 	name: "MainView",

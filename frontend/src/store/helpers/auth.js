@@ -1,4 +1,9 @@
-import { TUserRole, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from '@/rpc/gen/auth_types';
+import { 
+	TAuthError, TAuthErrorCode, 
+	TLoginError, TLoginErrorCode 
+} from '@/rpc/gen/user.auth.errors_types';
+import { TUserRole } from '@/rpc/gen/user.user.types_types';
+
 import { authRouter } from '@/router/routers/auth';
 import { StoreUser } from '@/store/user';
 
@@ -30,18 +35,18 @@ class AuthHelper extends StoreUser{
 	async rehydrate(payload=null){
 		if (!this.stores.auth.authToken) return true;
 		if (this.stores.auth.dateChanged()){
-			await this.stores.client.auth.logout();
+			await this.stores.client.user.auth.logout();
 			return false;
 		}
 		try{
-			await this.stores.client.auth.refresh_auth();
-			await this.stores.client.user.get_user();
+			await this.stores.client.user.auth.refresh_auth();
+			await this.stores.client.user.profile.get_user();
 			await this.setAuthRefresher();
 			return true;
 		}catch(error){
 			if ((error instanceof TAuthError && ERROR_NEED_REFRESH.includes(error.code))
 				|| (error instanceof TLoginError && ERROR_NEED_LOGIN.includes(error.code))){
-				await this.stores.client.auth.logout();
+				await this.stores.client.user.auth.logout();
 				throw new TLoginError({ code: TLoginErrorCode.REFRESH_TOKEN_EXPIRED });
 			}else{
 				throw error;
@@ -51,7 +56,7 @@ class AuthHelper extends StoreUser{
 
 	async setAuthRefresher(){
 		if (!this.stores.auth.authRefresher){
-			const cli = this.stores.client.auth;
+			const cli = this.stores.client.user.auth;
 			var authRefresher = window.setInterval(async function(){
 				try{
 					await cli.refresh_auth();
@@ -79,7 +84,7 @@ class AuthHelper extends StoreUser{
 	}
 	authRefreshGuard(target, name, descriptor) {
 		const func = descriptor.value;
-		const cli = this.stores.client.auth;
+		const cli = this.stores.client.user.auth;
 		descriptor.value = async function(...args) {
 			cli.requireLogin();
 			try{

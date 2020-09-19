@@ -2,8 +2,9 @@
 	<div></div>
 </template>
 <script>
-import { Vue, Component, Prop, PropSync, Watch } from 'vue-property-decorator';
 import { appStore } from '@/store/stores';
+
+import { Vue, Component, Prop, PropSync, Watch } from 'vue-property-decorator';
 
 @Component({
 	name: "SharedIdle",

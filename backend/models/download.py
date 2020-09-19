@@ -1,8 +1,10 @@
-from rpc.gen.file.download.ttypes import TDownloadError, TDownloadErrorCode
 from datetime import timedelta
 import os
 import jwt
 from dotenv import load_dotenv
+
+from rpc.gen.file.download.errors.ttypes import TDownloadError, TDownloadErrorCode
+
 from .general_key import GeneralKeyModel
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS

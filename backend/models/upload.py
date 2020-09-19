@@ -1,9 +1,10 @@
-from rpc.gen.file.upload.ttypes import TUploadError, TUploadErrorCode
 from datetime import timedelta
 import os
-from utils.crypto import encode_jwt, decode_jwt
 import jwt
 from dotenv import load_dotenv
+
+from rpc.gen.file.upload.errors.ttypes import TUploadError, TUploadErrorCode
+
 from .general_key import GeneralKeyModel
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS

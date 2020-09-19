@@ -1,10 +1,12 @@
-from rpc.gen.system.backup import TBackupService
-from rpc.gen.akun.auth.ttypes import TUserRole
-from models import get_model
 from flask import request
-from rpc.gen.system.backup.ttypes import TBackupFile
 
-class TBackupServiceHandler(TBackupService.Iface):
+from rpc.gen.system.backup.services import TSystemBackupService
+from rpc.gen.user.user.types.ttypes import TUserRole
+from rpc.gen.system.backup.structs.ttypes import TBackupFile
+
+from models import get_model
+
+class TSystemBackupServiceHandler(TSystemBackupService.Iface):
     def __init__(self):
         self.auth_model = get_model('auth')
         self.backup_model = get_model('backup')

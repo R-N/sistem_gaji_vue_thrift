@@ -1,4 +1,7 @@
-import { TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
+import { 
+	TAuthError, TAuthErrorCode, 
+	TLoginError, TLoginErrorCode 
+} from "@/rpc/gen/user.auth.errors_types";
 import { RouterUser } from '@/router/user';
 
 class AuthRouter extends RouterUser{

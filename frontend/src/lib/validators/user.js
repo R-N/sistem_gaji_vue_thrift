@@ -4,9 +4,9 @@ import {
 	PASSWORD_LEN_MIN,
 	PASSWORD_LEN_MAX,
 	NAME_LEN_MAX,
-	EMAIL_LEN_MAX,
-} from '@/rpc/gen/user_types';
-import { T_USER_ROLE_STR } from '@/rpc/gen/auth_types';
+	EMAIL_LEN_MAX
+} from '@/rpc/gen/user.user.errors_types';
+import { T_USER_ROLE_STR } from '@/rpc/gen/user.user.types_types';
 import { isInt } from '@/lib/util'
 
 

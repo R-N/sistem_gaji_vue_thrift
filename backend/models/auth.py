@@ -4,12 +4,13 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from utils.crypto import md5
 
+from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
+from rpc.gen.user.auth.errors.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
+from rpc.gen.user.user.types.constants import T_USER_ROLE_DOUBLES
+
 from db import DBSession
 from db.entities import DBUser
 
-from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
-from rpc.gen.akun.auth.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
-from rpc.gen.akun.auth.constants import T_USER_ROLE_DOUBLES
 from .manager import get_model
 from .base_key import BaseKeyModel
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS

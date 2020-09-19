@@ -1,7 +1,8 @@
 from flask import request, jsonify, send_from_directory, safe_join, abort
 import json
-from models import get_model
 from thrift.Thrift import TException
+
+from models import get_model
 from utils.request import get_args, json_error, get_file
 from utils.file import last_modified
 

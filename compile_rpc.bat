@@ -7,5 +7,5 @@ del /s /q %BACKEND_RPC%\*
 FOR /D %%p IN (%FRONTEND_RPC%\*) DO rmdir "%%p" /s /q
 del /s /q %FRONTEND_RPC%\*
 
-thrift -r -out %BACKEND% --gen py %RPC%\main.thrift
-thrift -r -out %FRONTEND_RPC% --gen js:node %RPC%\main.thrift
+for %%f in (%RPC%\*) do thrift -r -out %BACKEND_RPC% --gen py:package_prefix=rpc.gen. %%f
+for %%f in (%RPC%\*) do thrift -r -out %FRONTEND_RPC% --gen js:node,with_ns %%f

@@ -1,5 +1,7 @@
 from flask import jsonify
-from rpc.gen.file.upload.ttypes import TUploadError, TUploadErrorCode
+
+from rpc.gen.file.upload.errors.ttypes import TUploadError, TUploadErrorCode
+
 from utils.file import file_allowed
 
 def get_args(request, args, json=None):

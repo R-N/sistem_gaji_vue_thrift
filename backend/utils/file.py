@@ -1,9 +1,10 @@
 from pathlib import Path
 from flask import safe_join
 from werkzeug.exceptions import NotFound
-from rpc.gen.file.file.ttypes import TFileError, TFileErrorCode
 from os.path import getmtime
 from datetime import datetime
+
+from rpc.gen.file.file.errors.ttypes import TFileError, TFileErrorCode
 
 def get_file(file_dir, file_name):
     try:

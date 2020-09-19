@@ -1,11 +1,13 @@
-from db import DBEntity
+from db.index import DBEntity
 from sqlalchemy import Column, Integer, String, Sequence, Boolean, orm
-from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 import validators.user as validator
 from sqlalchemy.ext.hybrid import hybrid_property
-from rpc.gen.akun.auth.ttypes import TUserRole
-import rpc.gen.akun.user.constants as user_constants
-from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
+
+from rpc.gen.user.user.types.ttypes import TUserRole
+import rpc.gen.user.user.errors.constants as user_constants
+from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
+
+from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 
 class DBUser(DBEntity):
     __tablename__ = 'users'
@@ -93,7 +95,7 @@ class DBUser(DBEntity):
         self.status = status
 
     def set_verified(self, verified=True):
-        if self.verified:
+        if self.verified and verified:
             raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
         self.verified = verified
         self.set_email_secret_2(None)

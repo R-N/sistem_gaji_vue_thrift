@@ -74,7 +74,16 @@ class AppStore extends VuexModule {
 		this.tabDialogs.push(item);
 	}
 	@Action({ commit: 'tabDialogPush' })
-	pushTabDialog(item) { return item; }
+	pushTabDialog(dialog) { return dialog; }
+
+	@Action({ commit: 'tabDialogPush' })
+	showError(message) { 
+		return {
+			title: "Error",
+			text: message
+		}; 
+	}
+
 
 	@Mutation
 	breadcrumbsPop() {

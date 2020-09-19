@@ -1,7 +1,10 @@
-from db.errors import parse_db_error, UniqueError
-from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
-from rpc.gen.akun.auth.ttypes import TUserRole, TAuthError, TAuthErrorCode
 import re 
+
+from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
+from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
+from rpc.gen.user.user.types.ttypes import TUserRole
+
+from db.errors import parse_db_error, UniqueError
   
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS

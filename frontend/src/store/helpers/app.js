@@ -1,35 +1,41 @@
-import { TUserRole, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from '@/rpc/gen/auth_types';
+import { 
+	TAuthError, TAuthErrorCode, 
+	TLoginError, TLoginErrorCode 
+} from '@/rpc/gen/user.auth.errors_types';
+import { TUserRole } from '@/rpc/gen/user.user.types_types';
+
 import { authRouter } from '@/router/routers/auth';
+import { router } from '@/router/index';
 import { StoreUser } from '@/store/user';
 
 class AppHelper extends StoreUser{
 	constructor(stores=null){
 		super(stores);
 	}
-	handleError(error){
+	handleGlobalError(error){
 		if (error instanceof TLoginError){
 			if (error.code === TLoginErrorCode.ALREADY_LOGGED_IN){
 				return authRouter.dialogRequireLogout();
 			} else if (error.code === TLoginErrorCode.REFRESH_TOKEN_EXPIRED){
-				this.stores.client.auth.logout();
+				this.stores.client.user.auth.logout();
 				return authRouter.dialogSessionExpired();
 			} else {
 				console.log(error);
-				this.stores.client.auth.logout();
+				this.stores.client.user.auth.logout();
 				return authRouter.dialogUnknownTAuthError("TLoginError", error.code);
 			}
 		} else if (error instanceof TAuthError){
 			if (error.code === TAuthErrorCode.ROLE_INVALID){
 				return authRouter.dialogRequireRole();
 			} else if (error.code === TAuthErrorCode.NOT_LOGGED_IN){
-				this.stores.client.auth.logout();
+				this.stores.client.user.auth.logout();
 				return authRouter.dialogRequireLogin();
 			} else if (error.code === TAuthErrorCode.AUTH_TOKEN_EXPIRED){
-				this.stores.client.auth.logout();
+				this.stores.client.user.auth.logout();
 				return authRouter.dialogAuthExpired();
 			} else {
 				console.log(error);
-				this.stores.client.auth.logout();
+				this.stores.client.user.auth.logout();
 				return authRouter.dialogUnknownTAuthError("TAuthError", error.code);
 			}
 		} else {

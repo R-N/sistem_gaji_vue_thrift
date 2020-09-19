@@ -1,5 +1,6 @@
-from rpc.gen.hello.hello import THelloService
-from rpc.gen.akun.auth.ttypes import TUserRole
+from rpc.gen.hello.hello.services import THelloService
+from rpc.gen.user.user.types.ttypes import TUserRole
+
 from models import get_model
 
 class THelloServiceHandler(THelloService.Iface):

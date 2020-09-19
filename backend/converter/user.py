@@ -1,6 +1,6 @@
 
 from db.entities import DBUser
-from rpc.gen.akun.user.ttypes import TUser
+from rpc.gen.user.user.structs.ttypes import TUser
 
 def DBUser_TUser(db_user):
 	return TUser(

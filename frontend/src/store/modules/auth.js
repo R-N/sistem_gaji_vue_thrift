@@ -7,7 +7,12 @@ import {
 	Module
 } from "vuex-module-decorators";
 import { store, unregisterModule } from "@/store/index";
-import { TUserRole, T_USER_ROLE_DOUBLES, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode } from "@/rpc/gen/auth_types";
+import { 
+	TAuthError, TAuthErrorCode, 
+	TLoginError, TLoginErrorCode 
+} from '@/rpc/gen/user.auth.errors_types';
+import { TUserRole, T_USER_ROLE_DOUBLES } from '@/rpc/gen/user.user.types_types';
+
 import { dateAsInt } from '@/lib/util';
 
 

@@ -1,20 +1,23 @@
-from db import DBSession
-from db.entities import DBUser
-from rpc.gen.akun.user.ttypes import TUserError, TUserErrorCode
-from rpc.gen.akun.auth.ttypes import TUserRole, TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode
 import re 
-import validators.user as validator
 from sqlalchemy.exc import IntegrityError
-from db.errors import parse_db_error
-from .manager import get_model
 from datetime import datetime
-from models.email import Template
-from rpc.gen.akun.email.ttypes import TEmailError, TEmailErrorCode
 import os
 from time import sleep
 import random
-
 from dotenv import load_dotenv
+
+from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
+from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode
+from rpc.gen.user.user.types.ttypes import TUserRole
+from rpc.gen.user.email.errors.ttypes import TEmailError, TEmailErrorCode
+
+from db import DBSession
+from db.entities import DBUser
+from db.errors import parse_db_error
+import validators.user as validator
+
+from .manager import get_model
+from models.email import Template
 
 load_dotenv()
 
@@ -85,7 +88,9 @@ class UserModel:
             if user.verified and my_role != TUserRole.SUPER_ADMIN:
                 raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
             user.set_email(new_email, my_role=my_role)
+            print("Done set email")
             user.set_verified(False)
+            print("Done set verified")
             session.add(user)
             self.commit(session)
 
