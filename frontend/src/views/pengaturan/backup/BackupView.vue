@@ -96,7 +96,7 @@
 				title="Buat Backup"
 				text="Silahkan masukkan nama backup"
 				label="Nama backup"
-				:rules="[ v => !!v || 'Nama backup harus diisi']"
+				:rules="fileNameRules"
 			/>
 			<simple-input-dialog 
 				v-model="deleteDialog" 
@@ -121,6 +121,7 @@ import { TDownloadError } from '@/rpc/gen/file.download.errors_types';
 import stores from "@/store/stores";
 import { router } from "@/router/index";
 import { authRouter } from '@/router/routers/auth';
+import { FILE_NAME_RULES } from '@/lib/validators/file';
 
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
@@ -157,6 +158,7 @@ class BackupView extends BaseView {
         { text: 'Actions', value: 'actions', sortable: false },
 	]
 	backups = []
+	fileNameRules = FILE_NAME_RULES
 
 	async beforeMount(){
 		//if(!routeRequireLoginNow()) return;
