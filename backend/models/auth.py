@@ -4,15 +4,12 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from utils.crypto import md5
 
-from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 from rpc.gen.user.auth.errors.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
 from rpc.gen.user.user.types.constants import T_USER_ROLE_DOUBLES
 
-from db import DBSession
-from db.entities import DBUser
+import db
 
-from .manager import get_model
-from .base_key import BaseKeyModel
+from .basic.base_key import BaseKeyModel
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -98,16 +95,15 @@ class AuthModel:
         except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.DecodeError):
             raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_INVALID)
 
-    def make_pair(self, auth_payload=None, now=None, user=None):
-        if not (auth_payload or user):
-            raise Exception("Please provide payload or user")
+    def make_pair(self, user, now=None, auth_payload=None):
         if not auth_payload:
-            auth_payload = {
-                'user_id': user.id,
-                'role': user.role
-            }
-        auth_payload['iss'] = self.auth_secret
-
+            auth_payload = {}
+        auth_payload.update({
+            'user_id': user.id,
+            'role': user.role,
+            'iss': self.auth_secret
+        })
+        
         now = now or datetime.utcnow()
         user_id = auth_payload['user_id']
         user_id_str = str(user_id)
@@ -117,11 +113,10 @@ class AuthModel:
         auth_token = self.encode_auth(auth_payload, now=now)
 
         refresh_secret_2 = md5(user_id_str + 'urefresh' + now_ts + self.refresh_secret)
-        user_model = get_model("user")
-        with DBSession() as session:
-            user = user_model._get_user(session, user_id)
-            user.set_refresh_secret_2(refresh_secret_2)
-            session.commit()
+
+        user.set_refresh_secret_2(refresh_secret_2)
+        db.session.add(user)
+        #db.commit()
 
         refresh_payload = {
             'iss': self.refresh_secret,
@@ -131,23 +126,7 @@ class AuthModel:
         refresh_token = self.encode_refresh(refresh_payload, now=now)
         return auth_token, refresh_token
 
-
-    def login(self, username, password):
-        if not username:
-            raise TLoginError(TLoginErrorCode.USERNAME_EMPTY)
-        if not password:
-            raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
-
-        user_model = get_model("user")
-        try:
-            user = user_model.get_user_by_username_email(username)
-        except TUserError as ex:
-            if ex.code == TUserErrorCode.USER_NOT_FOUND:
-                raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
-            raise
-        return self._login(user, password)
-
-    def _login(self, user, password):
+    def login(self, user, password):
         if not password:
             raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
         if not user.verified:
@@ -157,14 +136,11 @@ class AuthModel:
         if not user.enabled:
             raise TLoginError(TLoginErrorCode.USER_DISABLED)
 
-        return self.make_pair(user=user)
+        return self.make_pair(user)
 
-    def refresh_auth(self, auth_token, refresh_token):
-        auth_payload = self.decode_auth(auth_token)
+    def refresh_auth(self, user, auth_payload, refresh_token):
         refresh_payload = self.decode_refresh(refresh_token, auth_payload['auth_secret_2'])
 
-        user_model = get_model("user")
-        user = user_model.get_user(auth_payload['user_id'])
         if not (user and user.verified and user.enabled and user.refresh_secret_2 and user.refresh_secret_2 == refresh_payload['refresh_secret_2']):
             raise TLoginError(TLoginErrorCode.REFRESH_TOKEN_EXPIRED)
 

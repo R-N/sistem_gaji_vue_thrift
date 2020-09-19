@@ -43,10 +43,14 @@ CORS_RESOURCES = [
 backend = Flask("sistem_gaji_backend", template_folder='frontend', static_folder='frontend/static')
 backend.config['SQLALCHEMY_DATABASE_URI'] = db.connect_str
 
+def teardown_request(error=None):
+    db.session.remove()
+
 def init(app, cors_origins=None):
     init_thrift(app)
     init_backup(app)
     init_report(app)
+    app.teardown_request(teardown_request)
     cors_origins = cors_origins or DEFAULT_CORS_ORIGINS
     print("CORS resources: " + str(CORS_RESOURCES))
     print("CORS origins: " + str(cors_origins))

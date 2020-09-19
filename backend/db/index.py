@@ -38,7 +38,7 @@ if IS_FLASK_APP:
 else:
     BaseSession = Session()
 
-
+'''
 def WithSession(BaseSession):
     @contextmanager
     def wrapper():
@@ -46,14 +46,14 @@ def WithSession(BaseSession):
         try:
             yield session
         finally:
-            #pass
-            #session.rollback()
-            #session.remove()
             session.expunge_all()
             BaseSession.remove()
     return wrapper
+'''
 
-DBSession = WithSession(BaseSession)
+#DBSession = WithSession(BaseSession)
+DBSession = BaseSession
+db_session = DBSession
 DBEntity.query = BaseSession.query_property()
 
 def create_tables():

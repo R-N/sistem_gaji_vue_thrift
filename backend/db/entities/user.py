@@ -31,22 +31,22 @@ class DBUser(DBEntity):
         email=None,
         enabled=None,
         verified=None,
-        my_role=None
+        changer_role=None
     ):
         if role is not None:
-            self.set_role(role, my_role=my_role)
+            self.set_role(role, changer_role=changer_role)
         if verified is not None:
             self.set_verified(verified)
         if enabled is not None:
             self.set_enabled(enabled)
         if username:
-            self.set_username(username, my_role=my_role)
+            self.set_username(username, changer_role=changer_role)
         if password:
-            self.set_password(password, my_role=my_role)
+            self.set_password(password, changer_role=changer_role)
         if name:
-            self.set_name(name, my_role=my_role)
+            self.set_name(name, changer_role=changer_role)
         if email:
-            self.set_email(email, my_role=my_role)
+            self.set_email(email, changer_role=changer_role)
 
     @orm.reconstructor
     def init_on_load(self):
@@ -55,8 +55,8 @@ class DBUser(DBEntity):
     def __repr__(self):
         return "<User(id=%r, username=%r, name=%r, email=%r, role=%r, enabled=%r)>" % (self.id, self.username, self.name, self.email, self.role, self.enabled)
 
-    def set_password(self, password, my_role=None):
-        validator.validate_changer_role(self.role, my_role)
+    def set_password(self, password, changer_role=None):
+        validator.validate_changer_role(changer_role, self.role)
         validator.validate_password(password)
         self.password = hash_bcrypt_sha256(password)
         self.set_refresh_secret_2(None)
@@ -69,29 +69,36 @@ class DBUser(DBEntity):
     def verify_password(self, password):
         return verify_bcrypt_sha256(self.password, password)
 
-    def set_name(self, name, my_role=None):
-        validator.validate_changer_role(self.role, my_role)
+    def require_verified(self, verified):
+        return validator.require_verified(self, verified)
+
+    def require_has_password(self, has_password):
+        return validator.require_verified(self, has_password)
+
+    def set_name(self, name, changer_role=None):
+        validator.validate_changer_role(changer_role, self.role)
         validator.validate_name(name)
         self.name = name
 
-    def set_role(self, role, my_role=None):
-        validator.validate_changer_role(self.role, my_role)
-        validator.validate_role(role, my_role=my_role)
+    def set_role(self, role, changer_role=None):
+        validator.validate_changer_role(changer_role, self.role)
+        validator.validate_role(role, changer_role=changer_role)
         self.role = role
         self.set_refresh_secret_2(None)
 
-    def set_username(self, username, my_role=None):
-        validator.validate_changer_role(self.role, my_role)
+    def set_username(self, username, changer_role=None):
+        validator.validate_changer_role(changer_role, self.role)
         validator.validate_username(username)
         self.username = username
 
-    def set_email(self, email, my_role=None):
-        validator.validate_changer_role(self.role, my_role)
+    def set_email(self, email, changer_role=None):
+        validator.validate_changer_role(changer_role, self.role)
         validator.validate_email(email)
         self.email = email
+        self.set_verified(False)
         self.set_email_secret_2(None)
 
-    def set_status(self, status, my_role=None):
+    def set_status(self, status, changer_role=None):
         self.status = status
 
     def set_verified(self, verified=True):
@@ -101,8 +108,8 @@ class DBUser(DBEntity):
         self.set_email_secret_2(None)
         self.set_refresh_secret_2(None)
 
-    def set_enabled(self, enabled, my_role=None):
-        validator.validate_changer_role(self.role, my_role)
+    def set_enabled(self, enabled, changer_role=None):
+        validator.validate_changer_role(changer_role, self.role)
         self.enabled = enabled
         self.set_refresh_secret_2(None)
 

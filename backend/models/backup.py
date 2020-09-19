@@ -10,11 +10,11 @@ from pathlib import Path
 from rpc.gen.file.file.errors.ttypes import TFileError, TFileErrorCode
 from rpc.gen.file.upload.errors.ttypes import TUploadError, TUploadErrorCode
 
-from db import DBSession
+import db
 from db.entities import DBUser
 from utils.file import get_file, file_allowed, last_modified
 
-from .manager import get_model
+from .manager import basic_models
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
@@ -32,12 +32,13 @@ class BackupModel:
         file_name = "%s %s.xlsx" % (str(date.today()), name)
         if get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_ALREADY_EXISTS)
-        with DBSession() as session:
-            exporter = SQLTableExporter(session)
-            for table in BACKUP_TABLES:
-                adapter = SQLTableExportAdapter(table)
-                exporter.append(adapter)
-            data = get_data(exporter, file_type=DB_SQL)
+
+        exporter = SQLTableExporter(db.session)
+        for table in BACKUP_TABLES:
+            adapter = SQLTableExportAdapter(table)
+            exporter.append(adapter)
+        data = get_data(exporter, file_type=DB_SQL)
+        
         file_path = join(self.backup_path, file_name)
         save_to_xlsx(file_path, data)
         return file_name, str(last_modified(file_path))
@@ -52,24 +53,32 @@ class BackupModel:
     def create_download_token(self, ip, file_name):
         if not get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
-        return get_model("download").encode(self.model_name, ip, {'file_name': file_name})
-        
+        return basic_models["download"].encode(
+            self.model_name,
+            ip,
+            {'file_name': file_name}
+        )
+
     def create_upload_token(self, ip, file_name):
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)
         if get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_ALREADY_EXISTS)
-        return get_model("upload").encode(self.model_name, ip, {'file_name': file_name})
+        return basic_models["upload"].encode(
+            self.model_name,
+            ip,
+            {'file_name': file_name}
+        )
 
     def decode_download_token(self, ip, token):
-        payload = get_model("download").decode(self.model_name, ip, token)
+        payload = basic_models["download"].decode(self.model_name, ip, token)
         file_name = payload['file_name']
         if not get_file(self.backup_path, file_name):
             raise TFileError(TFileErrorCode.FILE_NOT_FOUND)
         return payload
 
     def decode_upload_token(self, ip, token):
-        payload = get_model("upload").decode(self.model_name, ip, token)
+        payload = basic_models["upload"].decode(self.model_name, ip, token)
         file_name = payload['file_name']
         if not file_allowed(file_name, self.allowed_extensions):
             raise TUploadError(TUploadErrorCode.FILE_INVALID)

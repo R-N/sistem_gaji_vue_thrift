@@ -25,12 +25,12 @@ def _validate_role(role):
         raise TUserError(TUserErrorCode.ROLE_INVALID)
 
 
-def validate_changer_role(user_role, changer_role):
+def validate_changer_role(changer_role, user_role):
     return (not user_role) or user_role != TUserRole.SUPER_ADMIN or changer_role == TUserRole.SUPER_ADMIN
 
-def validate_role(role, my_role=None):
+def validate_role(role, changer_role=None):
     _validate_role(role)
-    if role == TUserRole.SUPER_ADMIN and (my_role != TUserRole.SUPER_ADMIN or not my_role):
+    if role == TUserRole.SUPER_ADMIN and (changer_role != TUserRole.SUPER_ADMIN or not changer_role):
         raise TAuthError(TAuthErrorCode.ROLE_INVALID)
 
 def validate_email(email):
@@ -61,3 +61,15 @@ def parse_error(parsed):
             raise TUserError(TUserErrorCode.EMAIL_ALREADY_EXISTS)
         if parsed.column == "username":
             raise TUserError(TUserErrorCode.USERNAME_ALREADY_EXISTS)
+
+def require_verified(user, verified):
+    if verified and not user.verified:
+        raise TUserError(TUserErrorCode.USER_UNVERIFIED)
+    if not verified and user.verified:
+        raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
+
+def require_has_password(user, has_password):
+    if has_password and not user.has_password:
+        raise TUserError(TUserErrorCode.USER_UNVERIFIED)
+    if not has_password and user.has_password:
+        raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)

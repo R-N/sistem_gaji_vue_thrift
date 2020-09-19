@@ -1,13 +1,14 @@
 from rpc.gen.user.management.services import TUserManagementService
 from rpc.gen.user.user.types.ttypes import TUserRole
 
-from models import get_model
+from models import models
 from converter.user import DBUser_TUser
 
 class TUserManagementServiceHandler(TUserManagementService.Iface):
     def __init__(self):
-        self.auth_model = get_model('auth')
-        self.user_model = get_model('user')
+        self.auth_model = models['auth']
+        self.user_model = models['user']
+        self.email_model = models['email']
 
     def fetch_akun(self, auth_token, query):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
@@ -17,21 +18,31 @@ class TUserManagementServiceHandler(TUserManagementService.Iface):
     def register_akun(self, auth_token, form):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_user = self.user_model.register_user(auth_payload['role'], form)
+        self.email_model.send_welcome_email(db_user)
+        self.user_model.commit()
         return DBUser_TUser(db_user)
 
     def set_role(self, auth_token, user_id, new_role):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        self.user_model.set_role(auth_payload['role'], user_id, new_role)
+        db_user = self.user_model.get_user_by_id(user_id)
+        self.user_model.set_role(auth_payload['role'], db_user, new_role)
+        self.user_model.commit()
 
 
     def set_email(self, auth_token, user_id, new_email):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        self.user_model.set_email(auth_payload['role'], user_id, new_email)
+        db_user = self.user_model.get_user_by_id(user_id)
+        self.user_model.set_email(auth_payload['role'], db_user, new_email)
+        self.user_model.commit()
 
     def set_password(self, auth_token, user_id, new_password):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.SUPER_ADMIN)
-        self.user_model.set_password(auth_payload['role'], user_id, new_password)
+        db_user = self.user_model.get_user_by_id(user_id)
+        self.user_model.set_password(auth_payload['role'], db_user, new_password)
+        self.user_model.commit()
 
     def set_enabled(self, auth_token, user_id, new_enabled):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        self.user_model.set_enabled(auth_payload['role'], user_id, new_enabled)
+        db_user = self.user_model.get_user_by_id(user_id)
+        self.user_model.set_enabled(auth_payload['role'], db_user, new_enabled)
+        self.user_model.commit()

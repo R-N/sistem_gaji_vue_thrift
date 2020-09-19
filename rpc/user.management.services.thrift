@@ -3,6 +3,7 @@ include "user.user.types.thrift"
 include "user.user.errors.thrift"
 include "user.user.structs.thrift"
 include "user.management.structs.thrift"
+include "user.email.errors.thrift"
 
 namespace py user.management.services
 namespace js user.management.services
@@ -20,7 +21,8 @@ service TUserManagementService{
 		2: user.management.structs.TUserRegistrationForm form
 	) throws (
 		1: user.auth.errors.TAuthError auth_error,
-		2: user.user.errors.TUserError user_error
+		2: user.user.errors.TUserError user_error,
+		3: user.email.errors.TEmailError email_error
 	);
 
 	void set_role(

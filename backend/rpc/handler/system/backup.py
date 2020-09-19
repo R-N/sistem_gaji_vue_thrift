@@ -4,12 +4,12 @@ from rpc.gen.system.backup.services import TSystemBackupService
 from rpc.gen.user.user.types.ttypes import TUserRole
 from rpc.gen.system.backup.structs.ttypes import TBackupFile
 
-from models import get_model
+from models import models
 
 class TSystemBackupServiceHandler(TSystemBackupService.Iface):
     def __init__(self):
-        self.auth_model = get_model('auth')
-        self.backup_model = get_model('backup')
+        self.auth_model = models['auth']
+        self.backup_model = models['backup']
 
     def create_backup(self, auth_token, name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
