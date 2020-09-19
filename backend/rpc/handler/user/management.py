@@ -18,7 +18,7 @@ class TUserManagementServiceHandler(TUserManagementService.Iface):
     def register_akun(self, auth_token, form):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_user = self.user_model.register_user(auth_payload['role'], form)
-        self.email_model.send_welcome_email(db_user)
+        self.email_model.send_welcome(db_user)
         self.user_model.commit()
         return DBUser_TUser(db_user)
 

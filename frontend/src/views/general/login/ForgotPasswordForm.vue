@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
+import { TUserError } from '@/rpc/gen/user.user.errors_types';
 import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
 import { TEmailError } from '@/rpc/gen/email.errors_types';
 
@@ -53,7 +53,7 @@ class ForgotPasswordForm extends WorkingComponent {
 			});
 		} catch (error) {
 			if (stores.helper.error.showFilteredError(error, 
-				[TLoginError, TEmailError, TUserEmailError]
+				[TUserError, TEmailError, TUserEmailError]
 			)) return;
 			throw error;
 		} finally {
