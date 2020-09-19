@@ -74,6 +74,7 @@
 					</div>
 					<v-form 
 						ref="passwordForm" 
+						v-model="passwordValid"
 						@submit.prevent.stop="setPasswordDialog = true"
 						:disabled="busy"
 					>
@@ -82,7 +83,22 @@
 									<div class="d-flex flex-grow-1">
 										<v-text-field 
 											class="bigger-input"
-											name="password" 
+											name="password_old" 
+											v-model="passwordOld" 
+											:rules="[ v => !!v || 'Password lama harus diisi' ]"
+											:counter="passwordLenMax"
+											label="Password Lama"
+											required
+										    :append-icon="passwordOldVisible ? 'mdi-eye' : 'mdi-eye-off'"
+										    @click:append="() => { passwordOldVisible = !passwordOldVisible }"
+										    :type="passwordOldVisible ? 'text' : 'password'"
+											:disabled="busy"
+										/>
+									</div>
+									<div class="d-flex flex-grow-1">
+										<v-text-field 
+											class="bigger-input"
+											name="password_new" 
 											v-model="passwordEdit" 
 											:rules="passwordRules"
 											:counter="passwordLenMax"
@@ -134,6 +150,9 @@ import {
 	TUserError, TUserErrorCode, T_USER_ERROR_STR, 
 	NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
 } from "@/rpc/gen/user.user.errors_types";
+import { 
+	TLoginError, TLoginErrorCode, T_LOGIN_ERROR_STR
+} from "@/rpc/gen/user.auth.errors_types";
 
 import stores from "@/store/stores";
 import { router } from "@/router/index";
@@ -172,9 +191,13 @@ class ProfilView extends BaseView {
 
 	emailEdit = ''
 	nameEdit = ''
-	passwordEdit = ''
-	passwordConfirm = ''
-	passwordVisible = false
+
+	passwordOld = '';
+	passwordOldVisible = false;
+	passwordEdit = '';
+	passwordConfirm = '';
+	passwordVisible = false;
+	passwordValid = true;
 
 	passwordEditing = false;
 	setPasswordDialog = false;
@@ -189,6 +212,7 @@ class ProfilView extends BaseView {
 	clearPassword(){
 		this.passwordEdit = '';
 		this.passwordConfirm = '';
+		this.passwordOld = '';
 	}
 	init(){
 		this.emailEdit = this.email;
@@ -272,10 +296,15 @@ class ProfilView extends BaseView {
 	}
 
 	async setPassword(){
+		this.$refs.passwordForm.validate();
+		if(!this.passwordValid) return;
 		const view = this;
 		view.busy=true;
 		try{
-			await stores.client.user.profile.set_password(this.passwordEdit);
+			await stores.client.user.profile.set_password(
+				this.passwordOld,
+				this.passwordEdit
+			);
 			this.cancelPasswordEdit();
 		} catch (error) {
 			this.handleError(error);
@@ -288,6 +317,11 @@ class ProfilView extends BaseView {
 			stores.app.pushTabDialog({
 				title: "Error",
 				text: T_USER_ERROR_STR[error.code]
+			});
+		}else if (error instanceof TLoginError){
+			stores.app.pushTabDialog({
+				title: "Error",
+				text: T_LOGIN_ERROR_STR[error.code]
 			});
 		}else{
 			throw error;

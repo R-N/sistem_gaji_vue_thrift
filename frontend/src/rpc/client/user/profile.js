@@ -19,9 +19,13 @@ class TUserProfileClient extends TBaseClient{
 		await this.client.change_email(this.stores.auth.authToken, email)
 		//await this.stores.auth.setUserEmail(email);
 	}
-	async set_password(password){
+	async set_password(old_password, new_password){
 		this.stores.helper.auth.requireLogin();
-		let tokens = await this.client.set_password(this.stores.auth.authToken, password);
+		let tokens = await this.client.set_password(
+			this.stores.auth.authToken, 
+			old_password,
+			new_password
+		);
 		await this.stores.auth.setTokens(tokens);
 	}
 	async set_name(name){

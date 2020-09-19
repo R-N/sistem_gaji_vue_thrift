@@ -23,10 +23,12 @@ service TUserProfileService{
 
 	user.auth.structs.TLoginResult set_password(
 		1: string auth_token,
-		2: string new_password
+		2: string old_password,
+		3: string new_password
 	) throws (
 		1: user.auth.errors.TAuthError auth_error,
-		2: user.user.errors.TUserError user_error
+		2: user.auth.errors.TLoginError login_error,
+		3: user.user.errors.TUserError user_error
 	);
 
 	void set_name(
