@@ -66,6 +66,10 @@ class BackupModel:
         table_names = [table.__tablename__ for table in BACKUP_TABLES]
         db.session.execute("TRUNCATE %s RESTART IDENTITY" % (', '.join(table_names),))
         save_db_data(importer, to_import, file_type=DB_SQL)
+        db.session.query(DBUser).update({
+            DBUser.refresh_secret_2: None,
+            DBUser.email_secret_2: None
+        }, synchronize_session=False)
         # db.commit()
 
     def fetch_backups(self):

@@ -34,14 +34,14 @@ class TUserManagementClient extends TBaseClient{
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
 		await this.client.set_password(this.stores.auth.authToken, user_id, new_password);
 		if (user_id == this.stores.auth.user.id){
-			await this.stores.client.auth.login(this.stores.auth.user.username, new_password);
+			await this.stores.client.user.auth.login(this.stores.auth.user.username, new_password);
 		}
 	}
 	async set_enabled(user_id, new_enabled){
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
 		await this.client.set_enabled(this.stores.auth.authToken, user_id, new_enabled);
 		if (user_id == this.stores.auth.user.id && !new_enabled){
-			await this.stores.client.auth.logout();
+			await this.stores.client.user.auth.logout();
 		}
 	}
 	
