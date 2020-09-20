@@ -90,7 +90,7 @@ class SimpleInputDialog extends WorkingComponent {
 	@Prop({ default: "Input" }) label;
 	@Prop({ default: false }) password;
 	@Prop({ default: false }) noInput;
-	@Model('change', { type: Boolean }) dialog;
+	@Model('change', { type: [Boolean, String, Object, Array] }) dialog;
 	@Prop(Function) onConfirm;
 	@Prop({ default: undefined }) rules;
 	@Prop({ default: undefined }) counter;
@@ -139,7 +139,17 @@ class SimpleInputDialog extends WorkingComponent {
 
 	close(){
 		this.busy = false;
-		this.myDialog = false;
+		if (typeof this.myDialog == "boolean" || this.myDialog instanceof Boolean){
+			this.myDialog = false;
+		}else if (typeof this.myDialog == "string" || this.myDialog instanceof String){
+			this.myDialog = '';
+		}else if (this.myDialog instanceof Object){
+			this.myDialog = null;
+		}else if (this.myDialog instanceof Array){
+			this.myDialog.pop();
+		}else{
+			console.log(this.myDialog);
+		}
 	}
 
 	async confirm(){

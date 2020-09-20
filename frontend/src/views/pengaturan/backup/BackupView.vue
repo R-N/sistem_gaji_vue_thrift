@@ -66,21 +66,50 @@
 						</template>
 						<span>Download</span>
 					</v-tooltip>
-					<v-tooltip bottom>
-						<template v-slot:activator="{ on, attrs }">
-							<v-btn 
-								icon 
-								@click.stop="prepareDeleteBackup(item)" 
-								class="" 
-								v-bind="attrs" 
-								v-on="on"
-								:disabled="busy"
-							>
-								<v-icon size="32" small>mdi-delete</v-icon>
-							</v-btn>
-						</template>
-						<span>Hapus</span>
-					</v-tooltip>
+					<confirmation-slot
+						class="text-center justify-center justify-self-center"
+						:confirmTextMaker="restoreText(item)"
+						v-slot="{ ask }"
+						:on-confirm="() => restoreBackup(item)"
+					>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn 
+									icon 
+									@click.stop="ask()" 
+									class="" 
+									v-bind="attrs" 
+									v-on="on"
+									:disabled="busy"
+								>
+									<v-icon size="32" small>mdi-restore</v-icon>
+								</v-btn>
+							</template>
+							<span>Restore</span>
+						</v-tooltip>
+					</confirmation-slot>
+					<confirmation-slot
+						class="text-center justify-center justify-self-center"
+						:confirmTextMaker="deleteText(item)"
+						v-slot="{ ask }"
+						:on-confirm="() => deleteBackup(item)"
+					>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn 
+									icon 
+									@click.stop="ask()" 
+									class="" 
+									v-bind="attrs" 
+									v-on="on"
+									:disabled="busy"
+								>
+									<v-icon size="32" small>mdi-delete</v-icon>
+								</v-btn>
+							</template>
+							<span>Hapus</span>
+						</v-tooltip>
+					</confirmation-slot>
 				</template>
 			</v-data-table>
 			<file-upload-dialog 
@@ -97,13 +126,6 @@
 				text="Silahkan masukkan nama backup"
 				label="Nama backup"
 				:rules="fileNameRules"
-			/>
-			<simple-input-dialog 
-				v-model="deleteDialog" 
-				:on-confirm="onConfirmDelete"
-				title="Hapus Backup"
-				:text="deleteText"
-				no-input="true"
 			/>
 		</template>
 	</main-card>
@@ -128,6 +150,7 @@ import { BaseView } from '@/views/BaseView';
 
 import FileUploadDialog from '@/components/dialog/FileUploadDialog'
 import SimpleInputDialog from '@/components/dialog/SimpleInputDialog'
+import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
 import MainCard from '@/components/card/MainCard';
 
 
@@ -136,6 +159,7 @@ import MainCard from '@/components/card/MainCard';
   	components: {
   		FileUploadDialog,
   		SimpleInputDialog,
+  		ConfirmationSlot,
   		MainCard
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_UTAMA)
@@ -143,13 +167,6 @@ import MainCard from '@/components/card/MainCard';
 class BackupView extends BaseView {
 	uploadDialog = false;
 	createDialog = false;
-	toDelete = null;
-	get deleteDialog(){
-		return !!this.toDelete;
-	}
-	set deleteDialog(value){
-		if(!value) this.toDelete = null;
-	}
 
 	search = ''
 	headers = [
@@ -186,18 +203,9 @@ class BackupView extends BaseView {
 			view.busy = false;
 		}
 	}
-	prepareDeleteBackup(item){
-		this.toDelete = item;
-		//this.deleteDialog = true;
-	}
-	get deleteText(){
-		if (!this.toDelete) return '';
-		return "Apa Anda yakin ingin menghapus backup '" + this.toDelete.file_name + "'?";
-	}
-	async onConfirmDelete(){
-		const item = this.toDelete;
-		await this.deleteBackup(item);
-		this.toDelete = null;
+
+	deleteText(item){
+		return "Apa Anda yakin ingin menghapus backup '" + item.file_name + "'?";
 	}
 	async deleteBackup(item){
 		const view = this;
@@ -214,6 +222,24 @@ class BackupView extends BaseView {
 			view.busy = false;
 		}
 	}
+
+
+	restoreText(item){
+		return "Apa Anda yakin ingin me-restore backup '" + item.file_name + "'?";
+	}
+	async restoreBackup(item){
+		const view = this;
+		view.busy=true;
+		try{
+			if (!item.file_name) throw new TFileError({ code: TFileErrorCode.FILE_NAME_EMPTY});
+			await stores.client.system.backup.restore_backup(item.file_name);
+		} catch(error){
+			view.showError(error);
+		} finally {
+			view.busy = false;
+		}
+	}
+
 	async fetchBackups(){
 		const view = this;
 		view.busy = true;

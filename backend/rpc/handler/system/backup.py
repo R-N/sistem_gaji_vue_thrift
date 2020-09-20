@@ -4,6 +4,7 @@ from rpc.gen.system.backup.services import TSystemBackupService
 from rpc.gen.user.user.types.ttypes import TUserRole
 from rpc.gen.system.backup.structs.ttypes import TBackupFile
 
+import db
 from models import models
 
 class TSystemBackupServiceHandler(TSystemBackupService.Iface):
@@ -34,5 +35,6 @@ class TSystemBackupServiceHandler(TSystemBackupService.Iface):
         return self.backup_model.delete_backup(file_name)
 
     def restore_backup(self, auth_token, file_name):
-        auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
-        pass
+        auth_payload = self.auth_model.require_role(auth_token, TUserRole.SUPER_ADMIN)
+        self.backup_model.restore_backup(file_name)
+        db.commit()

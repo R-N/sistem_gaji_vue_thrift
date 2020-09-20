@@ -1,5 +1,10 @@
 <template>
-	<div class="d-flex flex-grow-1">
+	<confirmation-slot
+		:confirmTextMaker="confirmTextMaker"
+		v-slot="{ ask }"
+		:on-confirm="onConfirmFinish"
+		class="d-flex flex-grow-1"
+	>
 		<v-form 
 			class="flex-grow-1" 
 			ref="myForm" 
@@ -62,39 +67,29 @@
 				</span>
 			</div>
 		</v-form>
-		<simple-input-dialog 
-			v-if="confirmTextMaker"
-			v-model="confirmDialog" 
-			:on-confirm="onConfirmFinish"
-			title="Konfirmasi"
-			:text="confirmText"
-			no-input="true"
-		/>
-	</div>
+	</confirmation-slot>
 </template>
 
 <script>
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import WorkingComponent from '@/components/WorkingComponent';
 
-import SimpleInputDialog from '@/components/dialog/SimpleInputDialog'
+import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
 
 @Component({
-  	name: "SyncCheckbox",
+  	name: "EditableCell",
   	components: {
-  		SimpleInputDialog
+  		ConfirmationSlot
   	}
 })
-class SyncCheckbox extends WorkingComponent {
+class EditableCell extends WorkingComponent {
 	@Prop(Function) onFinish;
 	@Prop(Function) onEdit;
 	@Prop(Function) onCancel;
-	@Prop(Function) confirmTextMaker; 
+	@Prop([String, Function]) confirmTextMaker; 
 	@Prop(Function) changeDetector;
 	@Prop({ default: false }) readOnlyMode;
 	editing=false;
-	confirmText = '';
-	confirmDialog = false;
 	valid=true;
 
 	async beginEdit(){
@@ -137,8 +132,8 @@ class SyncCheckbox extends WorkingComponent {
 		this.editing = false;
 	}
 }
-export { SyncCheckbox } 
-export default SyncCheckbox
+export { EditableCell } 
+export default EditableCell
 </script>
 <style scoped>
 </style>

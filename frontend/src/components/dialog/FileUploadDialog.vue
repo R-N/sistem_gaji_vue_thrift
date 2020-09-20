@@ -66,7 +66,7 @@ class FileUploadDialog extends WorkingComponent {
 	@Prop({ default: "Upload File" }) title;
 	@Prop({ default: "Silahkan pilih file untuk diupload" }) text;
 	@Prop({ default: "File" }) label;
-	@Model('change', { type: Boolean }) dialog;
+	@Model('change', { type: [Boolean, String, Object, Array] }) dialog;
 	@Prop({ default: true }) dropUpload;
 
 	file = null
@@ -91,7 +91,15 @@ class FileUploadDialog extends WorkingComponent {
 		this.$emit('change', value);
 	}
 	close(){
-		this.myDialog = false;
+		if (typeof this.myDialog == "boolean" || this.myDialog instanceof Boolean){
+			this.myDialog = false;
+		}else if (typeof this.myDialog == "string" || this.myDialog instanceof String){
+			this.myDialog = '';
+		}else if (this.myDialog instanceof Object){
+			this.myDialog = null;
+		}else if (this.myDialog instanceof Array){
+			this.myDialog.pop();
+		}
 	}
 
 	get dropzoneOptions() {

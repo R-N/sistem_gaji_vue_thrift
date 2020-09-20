@@ -67,7 +67,11 @@ class TSystemBackupClient extends TBaseClient{
 		});
 		return response.data;
 	}
-	async restore_backup(file, file_name=null){
+	async restore_backup(file_name){
+		console.log("File name: " + file_name);
+		await this.client.restore_backup(this.stores.auth.authToken, file_name);
+		await this.stores.client.auth.logout();
+		await this.stores.app.setGlobalRefresh(true);
 	}
 }
 

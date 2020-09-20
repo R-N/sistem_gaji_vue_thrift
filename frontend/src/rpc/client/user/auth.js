@@ -33,6 +33,7 @@ class TUserAuthClient extends TBaseClient{
 		try{
 			await this.stores.auth.logout();
 			await this.stores.app.setGlobalLogout(true);
+			//await this.stores.app.setGlobalRefresh(true);
 		}finally{
 			await this.stores.app.setAuthBusy(false);
 		}

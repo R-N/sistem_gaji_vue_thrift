@@ -17,7 +17,7 @@ const ERROR_NEED_LOGIN = [
 ]
 
 class AuthHelper extends StoreUser{
-	constructor(stores=null, authRefreshPeriod=9){
+	constructor(stores=null, authRefreshPeriod=4){
 		super(stores);
 		this.authRefreshPeriod = authRefreshPeriod
 	}
