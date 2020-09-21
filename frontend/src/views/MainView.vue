@@ -1,15 +1,16 @@
 <template>
-	<vue-page-transition name="overlay-down" class="fill-height">
-		<login-view v-if="!isLoggedIn" key="b"/>
+	<my-page-transition appear name="overlay-down" class="fill-height" >
+		<login-view appear v-if="!isLoggedIn" key="b"/>
 		<v-container 
+			appear
 			class="" 
 			align="start"
 			justify="start"
 			key="c"
 			v-else
 		>
-	        <transition name="fade" mode="out-in">
-				<v-row class="" align="start" justify="start"  v-if="serverReachable && isLoggedIn && breadcrumbs && breadcrumbs.length">
+	        <transition appear name="fade" mode="out-in">
+				<v-row appear class="" align="start" justify="start"  v-if="serverReachable && isLoggedIn && breadcrumbs && breadcrumbs.length">
 					<v-col align="start" justify="start">
 					    <v-alert
 							color="grey"
@@ -24,16 +25,17 @@
 			        </v-col>
 			    </v-row>
 			</transition>
-				<slide-y-down-transition 
-					group
-					:duration="transitionDuration"
-					:delay="transitionDelay"
-				>
-					<router-view appear :key="$route.matched[1].path"/>
-				</slide-y-down-transition>
+			<slide-y-down-transition 
+				group
+				appear
+				:duration="transitionDuration"
+				:delay="transitionDelay"
+			>
+				<router-view appear :key="$route.matched[1].path"/>
+			</slide-y-down-transition>
   			<v-spacer></v-spacer>
 		</v-container>
-	</vue-page-transition>
+	</my-page-transition>
 </template>
 
 <script>
@@ -45,6 +47,7 @@ import { BaseView } from '@/views/BaseView';
 
 import { FadeTransition, SlideYDownTransition, SlideXLeftTransition, CollapseTransition } from 'vue2-transitions'
 import LoginView from '@/views/general/login/LoginView';
+import MyPageTransition from '@/components/general/MyPageTransition';
 
 @Component({
 	name: "MainView",
@@ -52,7 +55,8 @@ import LoginView from '@/views/general/login/LoginView';
 		LoginView,
 		SlideYDownTransition,
 		SlideXLeftTransition,
-		CollapseTransition
+		CollapseTransition,
+		MyPageTransition
 	}
 })
 class MainView extends BaseView{

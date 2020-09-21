@@ -1,17 +1,17 @@
 <template>
 	<v-app>
       	<v-flex shrink>
-	        <v-expand-transition mode="out-in">
-				<top-nav-bar :drawer="drawer" @update:drawer="toggleDrawer" v-if="isLoggedIn"/>
+	        <v-expand-transition appear mode="out-in">
+				<top-nav-bar appear :drawer="drawer" @update:drawer="toggleDrawer" v-if="isLoggedIn"/>
 			</v-expand-transition>
 		</v-flex>
 		<side-nav-drawer :drawer="drawer" @update:drawer="toggleDrawer" v-if="isLoggedIn"/>
 		<image-background :src="require('@/assets/img/login-background.png')" v-if="showBackground"></image-background>
 		<v-main>
-			<vue-page-transition name="overlay-down" class="fill-height">
-				<server-down-view v-if="!serverReachable" key="a"/>
-				<router-view v-else :key="$route.matched[0].path"/>
-			</vue-page-transition>
+			<my-page-transition appear name="overlay-down" class="fill-height">
+				<server-down-view appear v-if="!serverReachable" key="a"/>
+				<router-view appear v-else :key="$route.matched[0].path"/>
+			</my-page-transition>
 		</v-main>
 		<idle-overlay :idle-wait="300" :logout-wait="300"/>
 		<loading-overlay/>
@@ -42,6 +42,7 @@ import DialogStack from '@/components/dialog/DialogStack';
 import IdleOverlay from '@/components/overlay/IdleOverlay';
 
 import ServerDownView from '@/views/general/server_down/ServerDownView';
+import MyPageTransition from '@/components/general/MyPageTransition';
 
 
 const dialogAuthExpired = () => {
@@ -64,7 +65,8 @@ const dialogAuthExpired = () => {
 		IdleOverlay,
 		ServerDownView,
 		SlideYDownTransition,
-		CollapseTransition
+		CollapseTransition,
+		MyPageTransition
 	}
 })
 class App extends BaseView{
@@ -129,3 +131,5 @@ class App extends BaseView{
 export { App }
 export default App
 </script>
+<style>
+</style>

@@ -43,3 +43,7 @@ thead.v-data-table-header tr th {
 .v-data-footer {
   font-size: 1rem !important;
 }
+
+.overlay-left,  .overlay-right,  .overlay-top,  .overlay-bottom   {
+  background: #303382 !important;
+}
