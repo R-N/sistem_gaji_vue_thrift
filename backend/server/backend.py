@@ -7,8 +7,6 @@ import os
 from dotenv import load_dotenv
 from certs import generator
 
-
-
 import db
 import db.entities
 
@@ -20,7 +18,7 @@ if __name__ == "__main__":
     generator.generate_upload()
     generator.generate_email()
 
-from server.frontend import init as init_frontend
+from server.frontend import init as init_frontend, get_ip, MY_IP
 from server.thrift import init as init_thrift
 from server.backup import init as init_backup
 from server.report import init as init_report
@@ -28,9 +26,16 @@ from server.report import init as init_report
 db.create_tables()
 
 DEFAULT_CORS_ORIGINS = os.getenv("CORS_ORIGINS").split(',') or [
+    "https://localhost",
+    "http://localhost",
     "http://localhost:8080",
-    "http://localhost:80"
+    "https://127.0.0.1",
+    "http://127.0.0.1"
 ]
+
+
+DEFAULT_CORS_ORIGINS += ["https://" + MY_IP, "http://" + MY_IP]
+
 CORS_RESOURCES = [
     r"/api/*",
     r"/backup/*",
@@ -64,16 +69,16 @@ def init(app, cors_origins=None):
 SERVER_KEY = os.getenv("SERVER_KEY")
 SERVER_CRT = os.getenv("SERVER_CRT")
 BACKEND_HTTPS = bool(os.getenv("BACKEND_HTTPS") or True)
-BACKEND_HOST = os.getenv("BACKEND_HOST")
+BACKEND_HOST = os.getenv("BACKEND_HOST") or MY_IP
 BACKEND_PORT = int(os.getenv("BACKEND_PORT") or "443")
 
 def serve(app, port=BACKEND_PORT, use_ssl=BACKEND_HTTPS, keyfile=SERVER_KEY, certfile=SERVER_CRT):
     if use_ssl:
         if not (keyfile and certfile):
             raise Exception("Please provide keyfile and certfile to serve with use_ssl")
-        http_server = WSGIServer(('', port), backend, keyfile=keyfile, certfile=certfile)
+        http_server = WSGIServer(('0.0.0.0', port), backend, keyfile=keyfile, certfile=certfile)
     else:
-        http_server = WSGIServer(('', port), backend)
+        http_server = WSGIServer(('0.0.0.0', port), backend)
     print("Serving backend at port %d %s ssl" % (port, "with" if use_ssl else ""))
     http_server.serve_forever()
 
