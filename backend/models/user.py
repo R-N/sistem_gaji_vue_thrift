@@ -10,7 +10,7 @@ from rpc.gen.user.user.types.ttypes import TUserRole
 from rpc.gen.user.email.errors.ttypes import TUserEmailError, TUserEmailErrorCode
 
 import db
-from db.entities import DBUser
+from db.entities import DbUser
 import validators.user as validator
 load_dotenv()
 
@@ -35,14 +35,14 @@ class UserModel:
             raise
 
     def get_user_by_id(self, user_id):
-        user = db.session.query(DBUser).filter(DBUser.id == user_id).scalar()
+        user = db.session.query(DbUser).filter(DbUser.id == user_id).scalar()
         if not user:
             raise TUserError(TUserErrorCode.USER_NOT_FOUND)
         return user
 
     def get_user_by_username_email_silent(self, username):
-        return db.session.query(DBUser).filter(
-            (DBUser.username == username) | (DBUser.email == username)
+        return db.session.query(DbUser).filter(
+            (DbUser.username == username) | (DbUser.email == username)
         ).scalar()
 
     def get_user_by_username_email(self, username):
@@ -53,15 +53,15 @@ class UserModel:
 
 
     def fetch_users(self, query):
-        db_query = db.session.query(DBUser)
-        db_query = db_query.order_by(DBUser.enabled.desc(), DBUser.verified.desc(), DBUser.name.asc())
+        db_query = db.session.query(DbUser)
+        db_query = db_query.order_by(DbUser.enabled.desc(), DbUser.verified.desc(), DbUser.name.asc())
         if query.enabled is not None:
-            db_query = db_query.filter(DBUser.enabled == query.enabled)
+            db_query = db_query.filter(DbUser.enabled == query.enabled)
         if query.verified is not None:
-            db_query = db_query.filter(DBUser.verified == query.verified)
+            db_query = db_query.filter(DbUser.verified == query.verified)
         if query.role is not None:
             validator.__validate_role(query.role)
-            db_query = db_query.filter(DBUser.role == query.role)
+            db_query = db_query.filter(DbUser.role == query.role)
         if query.limit:
             db_query = db_query[query.offset:query.limit+query.offset]
         return db_query.all()
@@ -93,7 +93,7 @@ class UserModel:
         return validator.validate_changer_role(changer_role, user_role)
 
     def register_user(self, changer_role, form):
-        user = DBUser(
+        user = DbUser(
             username=form.username,
             password=form.password,
             name=form.name,

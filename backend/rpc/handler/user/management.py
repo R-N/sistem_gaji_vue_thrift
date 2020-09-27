@@ -2,7 +2,7 @@ from rpc.gen.user.management.services import TUserManagementService
 from rpc.gen.user.user.types.ttypes import TUserRole
 
 from models import models
-from converter.user import DBUser_TUser
+from converter.user import DbUser_TUser
 
 class TUserManagementServiceHandler(TUserManagementService.Iface):
     def __init__(self):
@@ -13,14 +13,14 @@ class TUserManagementServiceHandler(TUserManagementService.Iface):
     def fetch_akun(self, auth_token, query):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_users = self.user_model.fetch_users(query)
-        return [DBUser_TUser(u) for u in db_users]
+        return [DbUser_TUser(u) for u in db_users]
 
     def register_akun(self, auth_token, form):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_user = self.user_model.register_user(auth_payload['role'], form)
         self.email_model.send_welcome(db_user)
         self.user_model.commit()
-        return DBUser_TUser(db_user)
+        return DbUser_TUser(db_user)
 
     def set_role(self, auth_token, user_id, new_role):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)

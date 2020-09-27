@@ -11,14 +11,14 @@ from rpc.gen.file.file.errors.ttypes import TFileError, TFileErrorCode
 from rpc.gen.file.upload.errors.ttypes import TUploadError, TUploadErrorCode
 
 import db
-from db.entities import DBUser
+from db.entities import DbUser
 from utils.file import get_file, file_allowed, last_modified
 
 from .manager import basic_models
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
 
-BACKUP_TABLES = [DBUser]
+BACKUP_TABLES = [DbUser]
 BACKUP_PATH = "backups"
 ALLOWED_EXTENSIONS = ["xlsx"]
 
@@ -66,9 +66,9 @@ class BackupModel:
         table_names = [table.__tablename__ for table in BACKUP_TABLES]
         db.session.execute("TRUNCATE %s RESTART IDENTITY" % (', '.join(table_names),))
         save_db_data(importer, to_import, file_type=DB_SQL)
-        db.session.query(DBUser).update({
-            DBUser.refresh_secret_2: None,
-            DBUser.email_secret_2: None
+        db.session.query(DbUser).update({
+            DbUser.refresh_secret_2: None,
+            DbUser.email_secret_2: None
         }, synchronize_session=False)
         # db.commit()
 

@@ -6,7 +6,7 @@ from rpc.gen.user.auth.errors.ttypes import TLoginError, TLoginErrorCode
 from rpc.gen.user.user.types.ttypes import TUserRole
 
 from models import models
-from converter.user import DBUser_TUser
+from converter.user import DbUser_TUser
 
 class TUserProfileServiceHandler(TUserProfileService.Iface):
     def __init__(self):
@@ -17,7 +17,7 @@ class TUserProfileServiceHandler(TUserProfileService.Iface):
     def get_user(self, auth_token):
         auth_payload = self.auth_model.decode_auth(auth_token)
         db_user = self.user_model.get_user_by_id(auth_payload['user_id'])
-        return DBUser_TUser(db_user)
+        return DbUser_TUser(db_user)
 
     def change_email(self, auth_token, new_email):
         ip = request.remote_addr

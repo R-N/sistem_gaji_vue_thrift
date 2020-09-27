@@ -1,10 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-from contextlib import contextmanager
 
 import os
 from dotenv import load_dotenv
+
+from .session import make_session
+from .scopefunc import get_scopefunc
+
 load_dotenv()
 
 DB_HOST = os.getenv("DB_HOST")
@@ -12,49 +15,29 @@ DB_PORT = os.getenv("DB_PORT")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
+DB_MAIN = DB_NAME
 
 connect_str = "postgresql+psycopg2://%s:%s@%s:%s/%s"
-connect_str = connect_str % (DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME)
-engine = create_engine(connect_str)
 
-DBEntity = declarative_base()
+connect_str_main = connect_str % (DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_MAIN)
+engine_main = create_engine(connect_str_main)
+# engine_staging = engine_main  # change this to move to separate db
+engine = engine_main
 
-session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# DbMainEntity = declarative_base(bind=engine_main)
+# DbStagingEntity = declarative_base(bind=engine_staging)  # To separate them
+# DbEntity = DbMainEntity
 
-def Session(scopefunc=None):
-    if scopefunc:
-        return scoped_session(session_factory, scopefunc=scopefunc)
-    else:
-        return scoped_session(session_factory)
+# connect_str_commited = connect_str % (DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_COMMITED)
+# engine_commited = create_engine(connect_str_commited)
 
-IS_FLASK_APP = os.getenv("IS_FLASK_APP")
-IS_FLASK_APP = bool(IS_FLASK_APP) if IS_FLASK_APP else False
+# DbCommitedEntity = declarative_base(bind=engine_commited)
 
-BaseSession = None
-if IS_FLASK_APP:
-    from flask import _app_ctx_stack
-    BaseSession = Session(_app_ctx_stack.__ident_func__)
-else:
-    BaseSession = Session()
+SCOPEFUNC = get_scopefunc()
 
-'''
-def WithSession(BaseSession):
-    @contextmanager
-    def wrapper():
-        session = BaseSession()
-        try:
-            yield session
-        finally:
-            session.expunge_all()
-            BaseSession.remove()
-    return wrapper
-'''
+session_main = make_session(engine_main, scopefunc=SCOPEFUNC)
+# session_staging = session_main  # change this to move to separate db
+session = session_main
 
-#DBSession = WithSession(BaseSession)
-DBSession = BaseSession
-db_session = DBSession
-DBEntity.query = BaseSession.query_property()
-
-def create_tables():
-    DBEntity.metadata.create_all(engine)
+# session_commited = make_session(engine_commited, scopefunc=SCOPEFUNC)

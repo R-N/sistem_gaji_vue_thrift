@@ -1,4 +1,4 @@
-from db.index import DBEntity
+from .base import DbGeneralEntity
 from sqlalchemy import Column, Integer, String, Sequence, Boolean, orm
 import validators.user as validator
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -9,7 +9,7 @@ from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 
 from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 
-class DBUser(DBEntity):
+class DbUser(DbGeneralEntity):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(user_constants.USERNAME_LEN_MAX), unique=True, nullable=False)
@@ -49,11 +49,11 @@ class DBUser(DBEntity):
             self.set_email(email, changer_role=changer_role)
 
     @orm.reconstructor
-    def init_on_load(self):
+    def reconstruct(self):
         pass
 
     def __repr__(self):
-        return "<User(id=%r, username=%r, name=%r, email=%r, role=%r, enabled=%r)>" % (self.id, self.username, self.name, self.email, self.role, self.enabled)
+        return "<User(id=%r, username=%r, name=%r, email=%r, role=%r, enabled=%r, confirmed=%r)>" % (self.id, self.username, self.name, self.email, self.role, self.enabled, self.confirmed)
 
     def set_password(self, password, changer_role=None):
         validator.validate_changer_role(changer_role, self.role)

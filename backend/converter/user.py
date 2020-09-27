@@ -1,10 +1,10 @@
 
-from db.entities import DBUser
+from db.entities import DbUser
 from rpc.gen.user.user.structs.ttypes import TUser
 
 # FK has to be deferrable
 
-def DBUser_TUser(db_user):
+def DbUser_TUser(db_user):
 	return TUser(
 		id=db_user.id,
 		username=db_user.username,
