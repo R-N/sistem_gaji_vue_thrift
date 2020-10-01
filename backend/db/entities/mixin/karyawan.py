@@ -3,22 +3,15 @@ from sqlalchemy.orm import relationship
 from datetime import date
 from sqlalchemy.ext.declarative import declared_attr
 from .general import pop_periode
+from .karyawan_base import MxKaryawanBase
+from utils.util import get_cls_attr
 
 
-class MxKaryawan:
-    __tablename__ = 'karyawan'
-
-    @declared_attr
-    def no_induk(cls):
-        return Column(Integer, primary_key=True, nullable=False)
+class MxKaryawan(MxKaryawanBase):
 
     @declared_attr
     def nik(cls):
         return Column(String(32), unique=True, nullable=False)
-
-    @declared_attr
-    def nama(cls):
-        return Column(String(50), nullable=False)
 
     @declared_attr
     def tanggal_masuk(cls):
@@ -30,10 +23,6 @@ class MxKaryawan:
 
     @declared_attr
     def alamat(cls):
-        return Column(String(50), nullable=False)
-
-    @declared_attr
-    def email(cls):
         return Column(String(50), nullable=False)
 
     @declared_attr
@@ -70,7 +59,11 @@ class MxKaryawan:
 
     @declared_attr
     def kinerja(cls):
-        return Column(String(1), nullable=True)
+        return Column(String(1), nullable=True, default=None)
+
+    @declared_attr
+    def pph_21(cls):
+        return Column(Integer, nullable=True, default=None)
 
     @declared_attr
     def thr(cls):
@@ -81,50 +74,12 @@ class MxKaryawan:
         return Column(Integer, nullable=False, default=0)
  
     @declared_attr
-    def subdepartemen_id(cls):
-        return Column(Integer, nullable=False)
-
-    @declared_attr
-    def subdepartemen(cls):
-        return relationship("DbSubdepartemen", back_populates="karyawan", uselist=False)
-
-    @declared_attr
-    def jabatan_id(cls):
-        return Column(Integer, nullable=False)
-
-    @declared_attr
-    def jabatan(cls):
-        return relationship("DbJabatan", back_populates="karyawan", uselist=False)
-
-    @declared_attr
-    def angsuran(cls):
-        return relationship("DbAngsuran", back_populates="karyawan", viewonly=True)
-
-    @declared_attr
-    def lembur(cls):
-        return relationship("DbLembur", back_populates="karyawan", viewonly=True)
-
-    @declared_attr
-    def absen(cls):
-        return relationship("DbAbsen", back_populates="karyawan", viewonly=True)
-
-    @declared_attr
     def kinerja_rel(cls):
         return relationship("DbKinerja", back_populates="karyawan", uselist=False)
 
     @declared_attr
     def __table_args__(cls):
-        return (
-            ForeignKeyConstraint(
-                pop_periode(cls, ["periode", "subdepartemen_id"]),
-                pop_periode(cls, ["subdepartemen.periode", "subdepartemen.id"]),
-                deferrable=True
-            ),
-            ForeignKeyConstraint(
-                pop_periode(cls, ["periode", "jabatan_id"]),
-                pop_periode(cls, ["jabatan.periode", "jabatan.id"]),
-                deferrable=True
-            ),
+        return get_cls_attr(MxKaryawanBase, '__table_args__').fget(cls) + (
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "kinerja"]),
                 pop_periode(cls, ["kinerja.periode", "kinerja.kode"]),
@@ -132,17 +87,13 @@ class MxKaryawan:
             ),
         )
 
+    '''
     def mx_init(
         self,
-        no_induk,
+        *args,
         nik,
-        nama,
         status,
         alamat,
-        email,
-        subdepartemen_id,
-        jabatan_id,
-        enabled=True,
         tanggal_masuk=None,
         tempat_lahir=None,
         tanggal_lahir=None,
@@ -153,18 +104,15 @@ class MxKaryawan:
         perumahan=False,
         koperasi=False,
         kinerja=None,
-        lain_lain=0
+        pph_21=None,
+        lain_lain=0,
+        **kwargs
     ):
+        MxKaryawanBase.mx_init(self, *args, **kwargs)
         tanggal_masuk = tanggal_masuk or date.today()
-        self.no_induk = no_induk
         self.nik = nik
-        self.nama = nama
         self.status = status
         self.alamat = alamat
-        self.email = email
-        self.subdepartemen_id = subdepartemen_id
-        self.jabatan_id = jabatan_id
-        self.enabled = enabled
         self.tanggal_masuk = tanggal_masuk
         self.tempat_lahir = tempat_lahir
         self.tanggal_lahir = tanggal_lahir
@@ -175,10 +123,33 @@ class MxKaryawan:
         self.perumahan = perumahan
         self.koperasi = koperasi
         self.kinerja = kinerja
+        self.pph_21 = pph_21
         self.lain_lain = lain_lain
+    '''
 
     def mx_reconstruct(self):
-        pass
+        MxKaryawanBase.mx_reconstruct(self)
 
     def mx_repr(self):
-        return "no_induk=%r, nama=%r, subdepartemen_id=%r, jabatan=%r" % (self.no_induk, self.nama, self.subdepartemen_id, self.jabatan_id)
+        return "%s" % (MxKaryawanBase.mx_repr(self),)
+
+    def mx_init_repr(self):
+        ret = MxKaryawanBase.mx_init_repr(self)
+        ret.update({
+            'nik': self.nik,
+            'status': self.status,
+            'alamat': self.alamat,
+            'tanggal_masuk': self.tanggal_masuk,
+            'tempat_lahir': self.tempat_lahir,
+            'tanggal_lahir': self.tanggal_lahir,
+            'agama': self.agama,
+            'jenis_kelamin': self.jenis_kelamin,
+            'pendidikan': self.pendidikan,
+            'gaji_dilaporkan': self.gaji_dilaporkan,
+            'perumahan': self.perumahan,
+            'koperasi': self.koperasi,
+            'kinerja': self.kinerja,
+            'pph_21': self.pph_21,
+            'lain_lain': self.lain_lain
+        })
+        return ret

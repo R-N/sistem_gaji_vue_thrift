@@ -2,13 +2,10 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.declarative import declared_attr
+from .shift_base import MxShiftBase
 
 
-class MxShift:
-    __tablename__ = 'shift'
-    @declared_attr
-    def kode(cls):
-        return Column(String(6), primary_key=True)
+class MxShift(MxShiftBase):
 
     @declared_attr
     def max_lembur_1(cls):
@@ -22,21 +19,26 @@ class MxShift:
     def max_lembur_3(cls):
         return Column(Integer, nullable=False, default=24)
 
-    @declared_attr
-    def lembur(cls):
-        return relationship("DbLembur", back_populates="shift_rel", viewonly=True)
-
+    '''
     def mx_init(
         self,
-        kode
+        *args,
+        max_lembur_1,
+        max_lembur_2,
+        max_lembur_3,
+        **kwargs
     ):
-        self.kode = kode
+        MxShiftBase.mx_init(self, *args, **kwargs)
+        self.max_lembur_1 = max_lembur_1
+        self.max_lembur_2 = max_lembur_2
+        self.max_lembur_3 = max_lembur_3
+    '''
 
     def mx_reconstruct(self):
-        pass
+        MxShiftBase.mx_reconstruct(self)
 
     def mx_repr(self):
-        return "kode=%r" % (self.kode,)
+        return "%s, max_lembur_1=%r, max_lembur_2=%r, max_lembur_3=%r" % (MxShiftBase.mx_repr(self), self.max_lembur_1, self.max_lembur_2, self.max_lembur_3)
 
     @declared_attr
     def max_lembur(cls):
@@ -44,3 +46,12 @@ class MxShift:
         def max_lembur(self):
             return [self.max_lembur_1, self.max_lembur_2, self.max_lembur_3]
         return max_lembur
+
+    def mx_init_repr(self):
+        ret = MxShiftBase.mx_init_repr(self)
+        ret.update({
+            'max_lembur_1': self.max_lembur_1,
+            'max_lembur_2': self.max_lembur_2,
+            'max_lembur_3': self.max_lembur_3
+        })
+        return ret

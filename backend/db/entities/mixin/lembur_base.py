@@ -1,12 +1,11 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.hybrid import hybrid_method
-from .general import pop_periode, insert_periode
+from .general import pop_periode
 
 
-class MxAbsen:
-    __tablename__ = 'absen'
+class MxLemburBase:
+    __tablename__ = 'lembur'
 
     @declared_attr
     def karyawan_id(cls):
@@ -17,6 +16,10 @@ class MxAbsen:
         return Column(Date, primary_key=True)
     # PK karyawan_id & tanggal
     @declared_attr
+    def shift(cls):
+        return Column(String(6), nullable=False)
+
+    @declared_attr
     def durasi(cls):
         return Column(Integer, nullable=False)
 
@@ -26,7 +29,11 @@ class MxAbsen:
 
     @declared_attr
     def karyawan(cls):
-        return relationship("DbKaryawan", back_populates="absen", uselist=False)
+        return relationship("DbKaryawan", back_populates="lembur", uselist=False)
+
+    @declared_attr
+    def shift_rel(cls):
+        return relationship("DbShift", back_populates="lembur", uselist=False)
 
     @declared_attr
     def __table_args__(cls):
@@ -36,6 +43,11 @@ class MxAbsen:
                 pop_periode(cls, ["karyawan.periode", "karyawan.no_induk"]),
                 deferrable=True
             ),
+            ForeignKeyConstraint(
+                pop_periode(cls, ["periode", "shift"]),
+                pop_periode(cls, ["shift.periode", "shift.kode"]),
+                deferrable=True
+            ),
         )
 
     '''
@@ -43,11 +55,13 @@ class MxAbsen:
         self,
         karyawan_id,
         tanggal,
+        shift,
         durasi,
         keterangan
     ):
         self.karyawan_id = karyawan_id
         self.tanggal = tanggal
+        self.shift = shift
         self.durasi = durasi
         self.keterangan = keterangan
     '''
@@ -56,19 +70,13 @@ class MxAbsen:
         pass
 
     def mx_repr(self):
-        return "karyawan_id=%r, tanggal=%r, durasi=%r" % (self.karyawan_id, self.tanggal, self.durasi)
-
-    @declared_attr
-    def get_potongan_persen(cls):
-        @hybrid_method
-        def get_potongan_persen(self, koef):
-            return koef * (1 + self.durasi // 60)
-        return get_potongan_persen
+        return "karyawan_id=%r, tanggal=%r, shift=%r, durasi=%r" % (self.karyawan_id, self.tanggal, self.shift, self.durasi)
 
     def mx_init_repr(self):
         return {
             'karyawan_id': self.karyawan_id,
             'tanggal': self.tanggal,
+            'shift': self.shift,
             'durasi': self.durasi,
             'keterangan': self.keterangan
         }

@@ -43,6 +43,7 @@ class MxTunjanganKinerja:
             ),
         )
 
+    '''
     def mx_init(
         self,
         job_level_id,
@@ -52,9 +53,17 @@ class MxTunjanganKinerja:
         self.job_level_id = job_level_id
         self.kinerja = kinerja
         self.nilai = nilai
+    '''
 
     def mx_reconstruct(self):
         pass
 
-    def mx_init(self):
+    def mx_repr(self):
         return "id=%r, job_level_id=%r, kinerja=%r, nilai=%r)>" % (self.id, self.job_level_id, self.kinerja, self.nilai)
+
+    def mx_init_repr(self):
+        return {
+            'job_level_id': self.job_level_id,
+            'kinerja': self.kinerja,
+            'nilai': self.nilai
+        }

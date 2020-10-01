@@ -34,16 +34,28 @@ class MxSubdepartemen(MxAiId):
             ),
         )
 
+    '''
     def mx_init(
         self,
+        id,
         departemen_id,
         nama
     ):
         self.nama = nama
         self.departemen_id = departemen_id
+        self.id_init(id)
+    '''
 
     def mx_reconstruct(self):
         pass
 
     def mx_repr(self):
         return "id=%r, departemen_id=%r, nama=%r" % (self.id, self.departemen_id, self.nama)
+
+
+    def mx_init_repr(self):
+        return {
+            'departemen_id': self.departemen_id,
+            'nama': self.nama,
+            'id': self.id
+        }

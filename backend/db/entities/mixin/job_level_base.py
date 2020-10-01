@@ -4,20 +4,16 @@ from sqlalchemy.ext.declarative import declared_attr
 from .general import MxAiId
 
 
-class MxPerusahaan(MxAiId):
-    __tablename__ = 'perusahaan'
+class MxJobLevelBase(MxAiId):
+    __tablename__ = 'job_level'
 
     @declared_attr
     def nama(cls):
         return Column(String(50), unique=True, nullable=False)
 
     @declared_attr
-    def departemen(cls):
-        return relationship("DbDepartemen", back_populates="perusahaan", viewonly=True)
-
-    @declared_attr
-    def pengaturan(cls):
-        return relationship("DbPengaturan", back_populates="perusahaan", uselist=False)
+    def jabatan(cls):
+        return relationship("DbJabatan", back_populates="job_level", viewonly=True)
 
     '''
     def mx_init(
@@ -32,8 +28,8 @@ class MxPerusahaan(MxAiId):
     def mx_reconstruct(self):
         pass
 
-    def mx_base_repr(self):
-        return "id=%r, nama=%r" % (self.id, self.nama,)
+    def mx_repr(self):
+        return "id=%r, nama=%r" % (self.id, self.nama)
 
     def mx_init_repr(self):
         return {

@@ -24,16 +24,27 @@ class MxTunjanganKhusus(MxAiId):
     def ScTunjanganKhususJabatan(cls):
         return ScTunjanganKhususJabatan(cls.metadata, cls)
 
+    '''
     def mx_init(
         self,
+        id,
         nama,
         nilai
     ):
         self.nama = nama
         self.nilai = nilai
+        self.id_init(id)
+    '''
 
     def mx_reconstruct(self):
         pass
 
     def mx_repr(self):
         return "id=%r, nama=%r, nilai=%r" % (self.id, self.nama, self.nilai)
+
+    def mx_init_repr(self):
+        return {
+            'nama': self.nama,
+            'nilai': self.nilai,
+            'id': self.id
+        }

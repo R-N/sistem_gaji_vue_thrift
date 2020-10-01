@@ -2,8 +2,10 @@ from sqlalchemy import Column, Integer, Boolean, Date, ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import reconstructor
 
+
 def pk_periode():
     return Column(Date, ForeignKey('periode_gaji.periode'), primary_key=True)
+
 
 def has_periode(cls):
     return (isinstance(cls, bool) and cls) or hasattr(cls, "periode")
@@ -42,6 +44,9 @@ class MxAiId:
     def id(cls):
         return Column(Integer, primary_key=True, autoincrement=has_periode(cls))
 
+    def id_init(self, id=None):
+        if id is not None:
+            self.id = id
 
 class MxEnabled:
     @declared_attr
@@ -78,6 +83,7 @@ class MxRepr:
 
 
 class MxCommited(MxRepr, MxPkPeriode):
+    '''
     def __init__(
         self,
         periode,
@@ -89,6 +95,7 @@ class MxCommited(MxRepr, MxPkPeriode):
             **kwargs
         )
         self.periode_init(periode)
+    '''
 
     @reconstructor
     def reconstruct(self):
@@ -96,6 +103,7 @@ class MxCommited(MxRepr, MxPkPeriode):
 
 
 class MxStaging(MxRepr, MxEnabled):
+    '''
     def __init__(
         self,
         *args,
@@ -107,6 +115,7 @@ class MxStaging(MxRepr, MxEnabled):
             **kwargs
         )
         self.enabled_init(enabled)
+    '''
 
     @reconstructor
     def reconstruct(self):

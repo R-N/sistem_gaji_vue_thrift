@@ -1,8 +1,8 @@
 from sqlalchemy.orm import reconstructor
 
 from .base import DbLaporanEntity
-from ..mixin import MxPerusahaan, MxStaging
+from ..mixin import MxPerusahaan, MxCommited
 
 
-class DbPerusahaan(MxStaging, MxPerusahaan, DbLaporanEntity):
+class DbPerusahaan(MxCommited, MxPerusahaan, DbLaporanEntity):
     pass

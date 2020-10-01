@@ -55,8 +55,10 @@ class MxAngsuran(MxAiId):
             ),
         )
 
+        '''
     def mx_init(
         self,
+        id,
         karyawan_id,
         jenis_angsuran,
         tanggal,
@@ -70,6 +72,8 @@ class MxAngsuran(MxAiId):
         self.total = total
         self.cicilan = cicilan
         self.terbayar = terbayar
+        self.id_init(id)
+    '''
 
     def mx_reconstruct(self):
         pass
@@ -110,3 +114,14 @@ class MxAngsuran(MxAiId):
         def sisa_akhir(self):
             return self.sisa - self.cicilan
         return sisa_akhir
+
+    def mx_init_repr(self):
+        return {
+            'karyawan_id': self.karyawan_id,
+            'jenis_angsuran': self.jenis_angsuran,
+            'tanggal': self.tanggal,
+            'total': self.total,
+            'cicilan': self.cicilan,
+            'terbayar': self.terbayar,
+            'id': self.id
+        }

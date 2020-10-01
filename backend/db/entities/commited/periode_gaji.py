@@ -1,8 +1,8 @@
 from sqlalchemy.orm import reconstructor
 
 from .base import DbCommitedEntity
-from ..mixin import MxPeriodeGaji, MxCommited
+from ..mixin import MxPeriodeGaji, MxRepr
 
 
-class DbPeriodeGaji(MxCommited, MxPeriodeGaji, DbCommitedEntity):
+class DbPeriodeGaji(MxRepr, MxPeriodeGaji, DbCommitedEntity):
     pass

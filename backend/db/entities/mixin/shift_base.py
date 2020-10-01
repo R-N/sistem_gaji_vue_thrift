@@ -1,18 +1,18 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.declarative import declared_attr
 
 
-class MxKinerja:
-    __tablename__ = 'kinerja'
-
+class MxShiftBase:
+    __tablename__ = 'shift'
     @declared_attr
     def kode(cls):
-        return Column(String(1), primary_key=True, nullable=False)
+        return Column(String(6), primary_key=True)
 
     @declared_attr
-    def karyawan(cls):
-        return relationship("DbKaryawan", back_populates="kinerja_rel", viewonly=True)
+    def lembur(cls):
+        return relationship("DbLembur", back_populates="shift_rel", viewonly=True)
 
     '''
     def mx_init(
@@ -27,6 +27,13 @@ class MxKinerja:
 
     def mx_repr(self):
         return "kode=%r" % (self.kode,)
+
+    @declared_attr
+    def max_lembur(cls):
+        @hybrid_property
+        def max_lembur(self):
+            return [self.max_lembur_1, self.max_lembur_2, self.max_lembur_3]
+        return max_lembur
 
     def mx_init_repr(self):
         return {

@@ -18,16 +18,27 @@ class MxJenisAngsuran(MxAiId):
     def angsuran(cls):
         return relationship("DbAngsuran", back_populates="jenis_angsuran", viewonly=True)
 
+        '''
     def mx_init(
         self,
+        id,
         nama,
         jenis=1
     ):
         self.nama = nama
         self.jenis = jenis
+        self.id_init(id)
+    '''
 
     def mx_reconstruct(self):
         pass
 
     def mx_repr(self):
         return "id=%r, nama=%r, jenis=%r" % (self.id, self.nama, self.jenis)
+
+    def mx_init_repr(self):
+        return {
+            'nama': self.nama,
+            'jenis': self.jenis,
+            'id': self.id
+        }

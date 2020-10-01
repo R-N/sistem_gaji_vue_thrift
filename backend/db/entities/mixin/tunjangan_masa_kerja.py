@@ -56,6 +56,7 @@ class MxTunjanganMasaKerja:
             ),
         )
 
+    '''
     def mx_init(
         self,
         job_level_id,
@@ -67,9 +68,18 @@ class MxTunjanganMasaKerja:
         self.batas_bawah = batas_bawah
         self.batas_atas = batas_atas
         self.nilai = nilai
+    '''
 
     def mx_reconstruct(self):
         pass
 
     def mx_repr(self):
         return "id=%r, job_level_id=%r, batas_bawah=%r, batas_atas=%r, nilai=%r" % (self.id, self.job_level_id, self.batas_bawah, self.batas_atas, self.nilai)
+
+    def mx_init_repr(self):
+        return {
+            'job_level_id': self.job_level_id,
+            'batas_bawah': self.batas_bawah,
+            'batas_atas': self.batas_atas,
+            'nilai': self.nilai
+        }
