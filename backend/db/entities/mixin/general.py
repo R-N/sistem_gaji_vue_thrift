@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Boolean, Date, ForeignKey
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import reconstructor
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 def pk_periode():
@@ -13,6 +14,10 @@ def has_periode(cls):
 
 def has_enabled(cls):
     return (isinstance(cls, bool) and cls) or hasattr(cls, "enabled")
+
+
+def eager_load_staging_parent(cls):
+    return "select" if has_periode(cls) else "selectin"
 
 
 def pop_periode(cls, arr):
@@ -32,8 +37,10 @@ class MxPkPeriode:
     def periode(cls):
         return pk_periode()
 
+    '''
     def periode_init(self, periode):
         self.periode = periode
+    '''
 
     def periode_repr(self):
         return "periode=%r, %s" % (self.periode, self.mx_repr())
@@ -48,16 +55,30 @@ class MxAiId:
         if id is not None:
             self.id = id
 
+
 class MxEnabled:
     @declared_attr
     def enabled(cls):
         return Column(Boolean, nullable=False, default=True)
-
+    '''
     def enabled_init(self, enabled):
         self.enabled = enabled
+    '''
 
     def enabled_repr(self):
         return "%s, enabled=%r" % (self.mx_repr(), self.enabled)
+
+    @declared_attr
+    def real_enabled(cls):
+        @hybrid_property
+        def real_enabled(self):
+            return self.enabled
+
+        @real_enabled.expression
+        def real_enabled(cls):
+            return cls.enabled
+
+        return real_enabled
 
 
 class MxRepr:
@@ -82,7 +103,17 @@ class MxRepr:
         return cls.repr_repr
 
 
-class MxCommited(MxRepr, MxPkPeriode):
+class MxReconstruct:
+    @reconstructor
+    def reconstruct(self):
+        self.mx_reconstruct()
+
+
+class MxEntity(MxReconstruct, MxRepr):
+    pass
+
+
+class MxCommited(MxEntity, MxPkPeriode):
     '''
     def __init__(
         self,
@@ -96,13 +127,40 @@ class MxCommited(MxRepr, MxPkPeriode):
         )
         self.periode_init(periode)
     '''
-
-    @reconstructor
-    def reconstruct(self):
-        self.mx_reconstruct()
+    pass
 
 
-class MxStaging(MxRepr, MxEnabled):
+class MxAlwaysEnabled:
+    @declared_attr
+    def enabled(cls):
+        @hybrid_property
+        def enabled(self):
+            return True
+
+        @enabled.expression
+        def enabled(cls):
+            return True
+
+        return enabled
+
+    @declared_attr
+    def real_enabled(cls):
+        @hybrid_property
+        def real_enabled(self):
+            return True
+
+        @real_enabled.expression
+        def real_enabled(cls):
+            return True
+
+        return real_enabled
+
+
+class MxStagingLite(MxAlwaysEnabled, MxEntity):
+    pass
+
+
+class MxStaging(MxEnabled, MxStagingLite):
     '''
     def __init__(
         self,
@@ -116,7 +174,4 @@ class MxStaging(MxRepr, MxEnabled):
         )
         self.enabled_init(enabled)
     '''
-
-    @reconstructor
-    def reconstruct(self):
-        self.mx_reconstruct()
+    pass

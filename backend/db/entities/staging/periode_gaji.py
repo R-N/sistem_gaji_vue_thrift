@@ -1,8 +1,8 @@
 from sqlalchemy.orm import reconstructor
 
 from .base import DbStagingEntity
-from ..mixin import MxPeriodeGaji, MxStaging
+from ..mixin import MxPeriodeGaji, MxStagingLite
 
 
-class DbPeriodeGaji(MxStaging, MxPeriodeGaji, DbStagingEntity):
+class DbPeriodeGaji(MxStagingLite, MxPeriodeGaji, DbStagingEntity):
     pass

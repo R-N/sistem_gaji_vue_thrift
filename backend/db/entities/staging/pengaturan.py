@@ -1,8 +1,8 @@
 from sqlalchemy.orm import reconstructor
 
 from .base import DbStagingEntity
-from ..mixin import MxPengaturan, MxStaging
+from ..mixin import MxPengaturan, MxStagingLite
 
 
-class DbPengaturan(MxStaging, MxPengaturan, DbStagingEntity):
+class DbPengaturan(MxStagingLite, MxPengaturan, DbStagingEntity):
     pass

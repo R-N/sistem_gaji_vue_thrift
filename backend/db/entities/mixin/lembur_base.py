@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
-from .general import pop_periode
+from .general import pop_periode, has_periode
 
 
 class MxLemburBase:
@@ -29,11 +29,19 @@ class MxLemburBase:
 
     @declared_attr
     def karyawan(cls):
-        return relationship("DbKaryawan", back_populates="lembur", uselist=False)
+        return relationship(
+            "DbKaryawan",
+            back_populates="lembur",
+            uselist=False
+        )
 
     @declared_attr
     def shift_rel(cls):
-        return relationship("DbShift", back_populates="lembur", uselist=False)
+        return relationship(
+            "DbShift",
+            back_populates="lembur",
+            uselist=False
+        )
 
     @declared_attr
     def __table_args__(cls):

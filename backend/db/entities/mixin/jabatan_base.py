@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
-from .general import MxAiId, pop_periode
+from .general import MxAiId, pop_periode, eager_load_staging_parent
 from .secondary import ScTunjanganKhususJabatan
 
 
@@ -18,7 +18,12 @@ class MxJabatanBase(MxAiId):
 
     @declared_attr
     def job_level(cls):
-        return relationship("DbJobLevel", back_populates="jabatan", uselist=False)
+        return relationship(
+            "DbJobLevel",
+            back_populates="jabatan",
+            uselist=False,
+            lazy=eager_load_staging_parent(cls)
+        )
 
     @declared_attr
     def karyawan(cls):

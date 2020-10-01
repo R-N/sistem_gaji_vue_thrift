@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
 from .general import MxAiId
 from .secondary import ScTunjanganKhususJabatan
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class MxTunjanganKhusus(MxAiId):
@@ -23,6 +24,14 @@ class MxTunjanganKhusus(MxAiId):
     @declared_attr
     def ScTunjanganKhususJabatan(cls):
         return ScTunjanganKhususJabatan(cls.metadata, cls)
+
+    @declared_attr
+    def jabatan_enabled(cls):
+        @hybrid_property
+        def jabatan_enabled(self):
+            return [j for j in self.jabatan if j.real_enabled]
+
+        return jabatan_enabled
 
     '''
     def mx_init(

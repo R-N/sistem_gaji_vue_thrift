@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from ...mixin import MxAbsen
 
+
 class MxPotonganAbsenKaryawan:
     koef_absen = Column(Numeric, nullable=False)
 
