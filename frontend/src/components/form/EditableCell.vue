@@ -8,7 +8,7 @@
 		<v-form 
 			class="flex-grow-1" 
 			ref="myForm" 
-			@submit.native.prevent.stop="finishEdit"
+			@submit.native.prevent.stop="finishEdit(ask)"
 			v-model="valid"
 			:disabled="busy"
 		>
@@ -89,6 +89,7 @@ class EditableCell extends WorkingComponent {
 	@Prop([String, Function]) confirmTextMaker; 
 	@Prop(Function) changeDetector;
 	@Prop({ default: false }) readOnlyMode;
+	confirmDialog=false;
 	editing=false;
 	valid=true;
 
@@ -107,18 +108,17 @@ class EditableCell extends WorkingComponent {
 			this.$emit("cancel");
 		this.$refs.myForm.resetValidation();
 	}
-	async finishEdit(){
+	async finishEdit(ask=null){
 		if(!this.valid) return;
 		if(this.changeDetector && !this.changeDetector()){
 			await this.cancelEdit();
 			return;
 		}
-		if(!this.confirmTextMaker){
+		if(!this.confirmTextMaker || !ask){
 			await this.onConfirmFinish();
 			return;
 		}else{
-			this.confirmText = this.confirmTextMaker();
-			this.confirmDialog = true;
+			ask();
 		}
 	}
 	async onConfirmFinish(){

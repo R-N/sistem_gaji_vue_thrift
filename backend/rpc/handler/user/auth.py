@@ -15,7 +15,7 @@ class TUserAuthServiceHandler(TUserAuthService.Iface):
             raise TLoginError(TLoginErrorCode.USERNAME_EMPTY)
         if not password:
             raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
-        db_user = self.user_model.get_user_by_username_email_silent(username)
+        db_user = self.user_model.get_by_username_email_silent(username)
         if not db_user:
         	raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
         auth_token, refresh_token = self.auth_model.login(db_user, password)
@@ -24,7 +24,7 @@ class TUserAuthServiceHandler(TUserAuthService.Iface):
 
     def refresh_auth(self, auth_token, refresh_token):
         auth_payload = self.auth_model.decode_auth(auth_token)
-        db_user = self.user_model.get_user_by_id(auth_payload['user_id'])
+        db_user = self.user_model.get_by_id(auth_payload['user_id'])
         refresh_token = self.auth_model.refresh_auth(db_user, auth_payload, refresh_token)
         db.commit()
         return refresh_token

@@ -3,13 +3,17 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
 from .general import MxAiId
 
+import rpc.gen.data.perusahaan.errors.constants as perusahaan_constants
+
+import validators.perusahaan as validator
+
 
 class MxPerusahaan(MxAiId):
     __tablename__ = 'perusahaan'
 
     @declared_attr
     def nama(cls):
-        return Column(String(50), unique=True, nullable=False)
+        return Column(String(perusahaan_constants.NAMA_LEN_MAX), unique=True, nullable=False)
 
     @declared_attr
     def departemen(cls):
@@ -40,3 +44,7 @@ class MxPerusahaan(MxAiId):
             'nama': self.nama,
             'id': self.id
         }
+
+    def set_nama(self, nama):
+        validator.validate_nama(nama)
+        self.nama = nama

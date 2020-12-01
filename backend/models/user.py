@@ -1,20 +1,17 @@
-import re 
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime
 import os
 from dotenv import load_dotenv
 
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
-from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode, TLoginError, TLoginErrorCode
+from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
 from rpc.gen.user.user.types.ttypes import TUserRole
 from rpc.gen.user.email.errors.ttypes import TUserEmailError, TUserEmailErrorCode
 
 import db
-from db.entities import DbUser
+from db.entities.general import DbUser
 import validators.user as validator
-load_dotenv()
 
-BASE_URL = os.getenv("BASE_URL") or "https://localhost"
+load_dotenv()
 
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
@@ -24,7 +21,7 @@ class UserModel:
     def __init__(self):
         self.validator = validator
 
-    def parse_error(ex):
+    def parse_error(self, ex):
         validator.parse_error(ex)
 
     def commit(self):
@@ -34,36 +31,38 @@ class UserModel:
             self.parse_error(ex)
             raise
 
-    def get_user_by_id(self, user_id):
+    def get_by_id(self, user_id):
         user = db.session.query(DbUser).filter(DbUser.id == user_id).scalar()
         if not user:
             raise TUserError(TUserErrorCode.USER_NOT_FOUND)
         return user
 
-    def get_user_by_username_email_silent(self, username):
+    def get_by_username_email_silent(self, username):
         return db.session.query(DbUser).filter(
             (DbUser.username == username) | (DbUser.email == username)
         ).scalar()
 
-    def get_user_by_username_email(self, username):
+    def get_by_username_email(self, username):
         user = self._get_user_by_username_email(username)
         if not user:
             raise TUserError(TUserErrorCode.USER_NOT_FOUND)
         return user
 
 
-    def fetch_users(self, query):
+    def fetch(self, query=None):
         db_query = db.session.query(DbUser)
         db_query = db_query.order_by(DbUser.enabled.desc(), DbUser.verified.desc(), DbUser.name.asc())
-        if query.enabled is not None:
-            db_query = db_query.filter(DbUser.enabled == query.enabled)
-        if query.verified is not None:
-            db_query = db_query.filter(DbUser.verified == query.verified)
-        if query.role is not None:
-            validator.__validate_role(query.role)
-            db_query = db_query.filter(DbUser.role == query.role)
-        if query.limit:
-            db_query = db_query[query.offset:query.limit+query.offset]
+        if query:
+            if query.enabled is not None:
+                db_query = db_query.filter(DbUser.enabled == query.enabled)
+            if query.verified is not None:
+                db_query = db_query.filter(DbUser.verified == query.verified)
+            if query.role is not None:
+                validator.__validate_role(query.role)
+                db_query = db_query.filter(DbUser.role == query.role)
+            if query.limit:
+                offset = query.offset if query.offset else 0
+                db_query = db_query[offset:query.limit + offset]
         return db_query.all()
 
 
@@ -92,7 +91,7 @@ class UserModel:
     def validate_changer_role(self, changer_role, user_role):
         return validator.validate_changer_role(changer_role, user_role)
 
-    def register_user(self, changer_role, form):
+    def register(self, changer_role, form):
         user = DbUser(
             username=form.username,
             password=form.password,

@@ -16,7 +16,7 @@ class TUserEmailServiceHandler(TUserEmailService.Iface):
     def has_password(self, email_token):
         ip = request.remote_addr
         email_payload = self.email_model.decode_verify(ip, email_token)
-        db_user = self.user_model.get_user_by_id(email_payload['user_id'])
+        db_user = self.user_model.get_by_id(email_payload['user_id'])
         if db_user.email_secret_2 != email_payload['email_secret_2']:
             raise TUserEmailError(TUserEmailErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED)
         return db_user.has_password
@@ -24,7 +24,7 @@ class TUserEmailServiceHandler(TUserEmailService.Iface):
     def verify_email(self, verify_token, password):
         ip = request.remote_addr
         email_payload = self.email_model.decode_verify(ip, verify_token)
-        db_user = self.user_model.get_user_by_id(email_payload['user_id'])
+        db_user = self.user_model.get_by_id(email_payload['user_id'])
         if db_user.has_password:
             raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
         self.user_model.verify_email(
@@ -39,7 +39,7 @@ class TUserEmailServiceHandler(TUserEmailService.Iface):
     def change_email(self, verify_token, password):
         ip = request.remote_addr
         email_payload = self.email_model.decode_verify(ip, verify_token)
-        db_user = self.user_model.get_user_by_id(email_payload['user_id'])
+        db_user = self.user_model.get_by_id(email_payload['user_id'])
         if not db_user.has_password:
             raise TUserError(TUserErrorCode.USER_UNVERIFIED)
         old_email = db_user.email
@@ -55,7 +55,7 @@ class TUserEmailServiceHandler(TUserEmailService.Iface):
     def set_password(self, password_token, password):
         ip = request.remote_addr
         password_payload = self.email_model.decode_password(ip, password_token)
-        db_user = self.user_model.get_user_by_id(password_payload['user_id'])
+        db_user = self.user_model.get_by_id(password_payload['user_id'])
         if not db_user.has_password:
             raise TUserError(TUserErrorCode.USER_UNVERIFIED)
         self.user_model.reset_password(

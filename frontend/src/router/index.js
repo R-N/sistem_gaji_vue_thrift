@@ -11,19 +11,17 @@ import LoginView from '@/views/general/login/LoginView';
 import BerandaView from '@/views/general/beranda/BerandaView';
 import ProfilView from '@/views/general/profil/ProfilView';
 
-import BackupView from '@/views/pengaturan/backup/BackupView';
-import AkunView from '@/views/pengaturan/akun/AkunView';
-import VerifyEmailView from '@/views/email/verify/VerifyEmailView';
-import ResetPasswordView from '@/views/email/password/ResetPasswordView';
+import pengaturanRoutes from '@/router/routes/pengaturan';
+import emailRoutes from '@/router/routes/email';
+import dataRoutes from '@/router/routes/data';
 
 const routes = [
 	//{ path: '/login', component: LoginView, name: "login" },
-	{ path: '/verifyemail/:token', component: VerifyEmailView, name: "verifyemail" },
-	{ path: '/resetpassword/:token', component: ResetPasswordView, name: "resetpassword" },
+	...emailRoutes,
 	{ path: '/', component: MainView, name: "main",
 		children: [
-			{ path: 'pengaturan/backup', component: BackupView, name: "backup" },
-			{ path: 'pengaturan/akun', component: AkunView, name: "akun" },
+			...dataRoutes,
+			...pengaturanRoutes,
 			{ path: 'profil', component: ProfilView, name: "profil" },
 			{ path: '', component: BerandaView, name: "beranda" },
 		] 

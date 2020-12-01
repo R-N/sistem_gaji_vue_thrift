@@ -85,9 +85,10 @@ class SideNavDrawer extends Vue {
 		{
 			icon: 'mdi-chevron-up',
 			'icon-alt': 'mdi-chevron-down',
-			text: 'Karyawan',
+			text: 'Data',
 			model: false,
 			children: [
+				{ text: 'Perusahaan', to: { name: 'data-perusahaan' } },
 				{ text: 'Departemen' },
 				{ text: 'Job Level' },
 				{ text: 'Jabatan' },

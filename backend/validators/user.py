@@ -1,10 +1,11 @@
 import re 
 
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
+import rpc.gen.user.user.errors.constants as user_constants
 from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
 from rpc.gen.user.user.types.ttypes import TUserRole
 
-from db.errors import parse_db_error, UniqueError
+from db.errors import UniqueError
   
 # MODELS MUST ONLY USE THRIFT ENUM AND EXCEPTIONS
 # MODELS MAY NOT USE THRIFT STRUCTS
@@ -36,22 +37,32 @@ def validate_role(role, changer_role=None):
 def validate_email(email):
     if not email:
         raise TUserError(TUserErrorCode.EMAIL_EMPTY)
+    if len(email) > user_constants.EMAIL_LEN_MAX:
+        raise TUserError(TUserErrorCode.EMAIL_TOO_LONG)
     if not EMAIL_REGEX.match(email):
         raise TUserError(TUserErrorCode.EMAIL_INVALID)
 
 def validate_password(password):
     if not password:
         raise TUserError(TUserErrorCode.PASSWORD_EMPTY)
+    if len(password) < user_constants.PASSWORD_LEN_MIN:
+        raise TUserError(TUserErrorCode.PASSWORD_TOO_SHORT)
+    if len(password) > user_constants.PASSWORD_LEN_MAX:
+        raise TUserError(TUserErrorCode.PASSWORD_TOO_LONG)
     if not PASSWORD_REGEX.match(password):
         raise TUserError(TUserErrorCode.PASSWORD_INVALID)
 
 def validate_name(name):
     if not name:
         raise TUserError(TUserErrorCode.NAME_EMPTY)
+    if len(name) > user_constants.NAME_LEN_MAX:
+        raise TUserError(TUserErrorCode.NAME_TOO_LONG)
 
 def validate_username(username):
     if not username:
         raise TUserError(TUserErrorCode.USERNAME_EMPTY)
+    if len(username) > user_constants.USERNAME_LEN_MAX:
+        raise TUserError(TUserErrorCode.USERNAME_TOO_LONG)
     if not USERNAME_REGEX.match(username):
         raise TUserError(TUserErrorCode.USERNAME_INVALID)
 

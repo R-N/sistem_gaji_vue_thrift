@@ -21,8 +21,9 @@ class ClientStore extends VuexModule {
 	user = null;
 	hello = null;
 	system = null;
+	data = null;
 
-	@MutationAction({ mutate: ['hello', 'user', 'system'] })
+	@MutationAction({ mutate: ['hello', 'user', 'system', 'data'] })
 	async init(payload){
 		return payload;
 	}

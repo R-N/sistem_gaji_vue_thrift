@@ -45,11 +45,16 @@ class MxPkPeriode:
     def periode_repr(self):
         return "periode=%r, %s" % (self.periode, self.mx_repr())
 
+    @declared_attr
+    def set_periode(cls):
+        def set_periode(self, periode):
+            self.periode = periode
+        return set_periode
 
 class MxAiId:
     @declared_attr
     def id(cls):
-        return Column(Integer, primary_key=True, autoincrement=has_periode(cls))
+        return Column(Integer, primary_key=True, autoincrement=not has_periode(cls))
 
     def id_init(self, id=None):
         if id is not None:
@@ -79,6 +84,12 @@ class MxEnabled:
             return cls.enabled
 
         return real_enabled
+
+    @declared_attr
+    def set_enabled(cls):
+        def set_enabled(self, enabled):
+            self.enabled = enabled
+        return set_enabled
 
 
 class MxRepr:
@@ -154,6 +165,12 @@ class MxAlwaysEnabled:
             return True
 
         return real_enabled
+
+    @declared_attr
+    def set_enabled(cls):
+        def set_enabled(self, enabled):
+            raise Exception("Always enabled")
+        return set_enabled
 
 
 class MxStagingLite(MxAlwaysEnabled, MxEntity):

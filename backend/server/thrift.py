@@ -4,6 +4,9 @@ from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
 from thrift.transport import TTransport
 
+from rpc.gen.data.perusahaan.services import TDataPerusahaanService
+from rpc.handler.data.perusahaan import TDataPerusahaanServiceHandler
+
 from rpc.gen.user.auth.services import TUserAuthService
 from rpc.handler.user.auth import TUserAuthServiceHandler
 
@@ -43,6 +46,10 @@ def respond(foo_server):
     foo_server.processor.process(iprot, oprot)
     return make_response(otrans.getvalue())
 
+data_perusahaan_server = make_server(TDataPerusahaanService, TDataPerusahaanServiceHandler())
+def data_perusahaan():
+    return respond(data_perusahaan_server)
+
 user_auth_server = make_server(TUserAuthService, TUserAuthServiceHandler())
 def user_auth():
     return respond(user_auth_server)
@@ -72,6 +79,7 @@ def system_backup():
     return respond(system_backup_server)
 
 def init(app):
+    app.route('/api/data/perusahaan', methods=['POST'])(data_perusahaan)
     app.route('/api/user/auth', methods=['POST'])(user_auth)
     app.route('/api/user/recovery', methods=['POST'])(user_recovery)
     app.route('/api/user/profile', methods=['POST'])(user_profile)

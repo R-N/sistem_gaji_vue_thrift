@@ -200,7 +200,6 @@ class UserFormDialog extends WorkingComponent {
 	set myDialog(value){
 		if(value == this.dialog) return;
 		if (!value){
-			this.input = '';
 			this.busy = false;
 		}
 		this.$emit('change', value);

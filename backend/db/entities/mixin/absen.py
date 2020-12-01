@@ -4,7 +4,6 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_method
 from .general import pop_periode, insert_periode
 
-
 class MxAbsen:
     __tablename__ = 'absen'
 

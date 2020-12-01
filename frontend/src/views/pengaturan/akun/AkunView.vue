@@ -32,7 +32,7 @@
 				class="backup-table"
 				:headers="headers"
 				:items="akun"
-				item-key="file_name"
+				item-key="id"
 				:search="search"
 				:loading="busy"
 			>
@@ -281,7 +281,7 @@ class AkunView extends BaseView {
 	}
 	setEmailConfirmText(user){
 		return "Apa Anda yakin ingin mengubah email untuk user '" 
-			+ user.username + "' menjadi '" 
+			+ user.email + "' menjadi '" 
 			+ user.emailEdit + "'?"
 	}
 	async setEmail(user, email){
@@ -309,7 +309,7 @@ class AkunView extends BaseView {
 			}
 		}
 		return "Apa Anda yakin ingin mengubah role untuk user '" 
-			+ user.username + "' menjadi '" 
+			+ this.roleText(user.role) + "' menjadi '" 
 			+ this.roleText(user.roleEdit) + "'?" + warn;
 	}
 	async setRole(user, role){

@@ -13,7 +13,7 @@ class TUserRecoveryServiceHandler(TUserRecoveryService.Iface):
 
     def reset_password(self, username):
         ip = request.remote_addr
-        db_user = self.user_model.get_user_by_username_email_silent(username)
+        db_user = self.user_model.get_by_username_email_silent(username)
         if not db_user:
             email_delay()
             return
@@ -22,7 +22,7 @@ class TUserRecoveryServiceHandler(TUserRecoveryService.Iface):
 
     def resend_verification(self, username):
         ip = request.remote_addr
-        db_user = self.user_model.get_user_by_username_email_silent(username)
+        db_user = self.user_model.get_by_username_email_silent(username)
         if not db_user:
             email_delay()
             return

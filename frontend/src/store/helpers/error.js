@@ -20,6 +20,9 @@ import {
 import { 
 	TFileError, T_FILE_ERROR_STR
 } from '@/rpc/gen/file.file.errors_types';
+import { 
+	TPerusahaanError, T_PERUSAHAAN_ERROR_STR
+} from '@/rpc/gen/data.perusahaan.errors_types';
 
 import { TUserRole } from '@/rpc/gen/user.user.types_types';
 
@@ -35,7 +38,8 @@ const T_ERROR_STR = {
 	TEmailError: T_EMAIL_ERROR_STR,
 	TDownloadError: T_DOWNLOAD_ERROR_STR,
 	TUploadError: T_UPLOAD_ERROR_STR,
-	TFileError: T_FILE_ERROR_STR
+	TFileError: T_FILE_ERROR_STR,
+	TPerusahaanError: T_PERUSAHAAN_ERROR_STR
 }
 
 class ErrorHelper extends StoreUser{
