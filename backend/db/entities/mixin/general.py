@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 
 def pk_periode():
-    return Column(Date, ForeignKey('periode_gaji.periode'), primary_key=True)
+    return Column("periode", Date, ForeignKey('periode_gaji.periode'), primary_key=True)
 
 
 def has_periode(cls):
@@ -45,16 +45,11 @@ class MxPkPeriode:
     def periode_repr(self):
         return "periode=%r, %s" % (self.periode, self.mx_repr())
 
-    @declared_attr
-    def set_periode(cls):
-        def set_periode(self, periode):
-            self.periode = periode
-        return set_periode
 
 class MxAiId:
     @declared_attr
     def id(cls):
-        return Column(Integer, primary_key=True, autoincrement=not has_periode(cls))
+        return Column("id", Integer, primary_key=True, autoincrement=not has_periode(cls))
 
     def id_init(self, id=None):
         if id is not None:
@@ -64,7 +59,7 @@ class MxAiId:
 class MxEnabled:
     @declared_attr
     def enabled(cls):
-        return Column(Boolean, nullable=False, default=True)
+        return Column("enabled", Boolean, nullable=False, default=True)
     '''
     def enabled_init(self, enabled):
         self.enabled = enabled
@@ -84,12 +79,6 @@ class MxEnabled:
             return cls.enabled
 
         return real_enabled
-
-    @declared_attr
-    def set_enabled(cls):
-        def set_enabled(self, enabled):
-            self.enabled = enabled
-        return set_enabled
 
 
 class MxRepr:

@@ -85,7 +85,7 @@ class EmailModel(GeneralKeyModel):
         now_ts = str(now.timestamp())
         email_secret_2 = md5(str(user.id) + func + now_ts)
 
-        user.set_email_secret_2(email_secret_2)
+        user.email_secret_2 = email_secret_2
         db.session.add(user)
         #db.commit()
         #db.session.refresh(user)

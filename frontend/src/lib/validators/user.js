@@ -4,15 +4,19 @@ import {
 	PASSWORD_LEN_MIN,
 	PASSWORD_LEN_MAX,
 	NAME_LEN_MAX,
-	EMAIL_LEN_MAX
+	EMAIL_LEN_MAX,
+	EMAIL_REGEX_STR,
+	PASSWORD_REGEX_STR,
+	USERNAME_REGEX_STR,
+	NAME_REGEX_STR
 } from '@/rpc/gen/user.user.errors_types';
 import { T_USER_ROLE_STR } from '@/rpc/gen/user.user.types_types';
 import { isInt } from '@/lib/util'
 
-
-export const EMAIL_REGEX = /^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$/
-export const PASSWORD_REGEX = /^(?=\S{8,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])/
-export const USERNAME_REGEX = /^[a-zA-Z0-9\.\_]+$/
+export const EMAIL_REGEX = new RegExp(EMAIL_REGEX_STR);
+export const PASSWORD_REGEX = new RegExp(PASSWORD_REGEX_STR);
+export const USERNAME_REGEX = new RegExp(USERNAME_REGEX_STR);
+export const NAME_REGEX = new RegExp(NAME_REGEX_STR);
 
 export const USERNAME_RULES = [
 	v => !!v || T_USER_ERROR_STR[TUserErrorCode.USERNAME_EMPTY],
@@ -21,7 +25,8 @@ export const USERNAME_RULES = [
 ]
 export const NAME_RULES = [
 	v => !!v || T_USER_ERROR_STR[TUserErrorCode.NAME_EMPTY],
-	v => v.length <= NAME_LEN_MAX || T_USER_ERROR_STR[TUserErrorCode.NAME_TOO_LONG]
+	v => v.length <= NAME_LEN_MAX || T_USER_ERROR_STR[TUserErrorCode.NAME_TOO_LONG],
+	v => NAME_REGEX.test(v) || T_USER_ERROR_STR[TUserErrorCode.NAME_INVALID]
 ]
 export const PASSWORD_RULES = [
 	v => !!v || T_USER_ERROR_STR[TUserErrorCode.PASSWORD_EMPTY],

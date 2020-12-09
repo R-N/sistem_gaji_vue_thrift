@@ -114,7 +114,7 @@ class AuthModel:
 
         refresh_secret_2 = md5(user_id_str + 'urefresh' + now_ts + self.refresh_secret)
 
-        user.set_refresh_secret_2(refresh_secret_2)
+        user.refresh_secret_2 = refresh_secret_2
         db.session.add(user)
         #db.commit()
 

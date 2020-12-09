@@ -5,14 +5,16 @@ from rpc.gen.data.perusahaan.errors.ttypes import TPerusahaanError, TPerusahaanE
 
 import db
 from db.entities.staging import DbPerusahaan
-import validators.perusahaan as validator
+from db.errors import UniqueError
 
 class PerusahaanModel:
     def __init__(self):
-        self.validator = validator
+        pass
 
-    def parse_error(self, ex):
-        validator.parse_error(ex)
+    def parse_error(self, parsed):
+        if isinstance(parsed, UniqueError):
+            if parsed.column == "nama":
+                raise TPerusahaanError(TPerusahaanErrorCode.NAMA_ALREADY_EXISTS)
 
     def commit(self):
         try:
@@ -40,15 +42,16 @@ class PerusahaanModel:
 
     def create(self, form):
         perusahaan = DbPerusahaan()
-        perusahaan.set_nama(form.nama)
+        perusahaan.nama = form.nama
+
         db.session.add(perusahaan)
         return perusahaan
 
     def set_enabled(self, perusahaan, enabled):
-        perusahaan.set_enabled(enabled)
+        perusahaan.enabled = enabled
         db.session.add(perusahaan)
 
     def set_nama(self, perusahaan, nama):
-        perusahaan.set_nama(nama)
+        perusahaan.nama = nama
         db.session.add(perusahaan)
 

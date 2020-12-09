@@ -4,9 +4,9 @@ from rpc.gen.user.profile.services import TUserProfileService
 from rpc.gen.user.auth.structs.ttypes import TLoginResult
 from rpc.gen.user.auth.errors.ttypes import TLoginError, TLoginErrorCode
 from rpc.gen.user.user.types.ttypes import TUserRole
+from rpc.gen.user.user.structs.ttypes import TUser
 
 from models import models
-from converter.user import db_to_rpc
 
 class TUserProfileServiceHandler(TUserProfileService.Iface):
     def __init__(self):
@@ -17,7 +17,7 @@ class TUserProfileServiceHandler(TUserProfileService.Iface):
     def get_user(self, auth_token):
         auth_payload = self.auth_model.decode_auth(auth_token)
         db_user = self.user_model.get_by_id(auth_payload['user_id'])
-        return db_to_rpc(db_user)
+        return db_user.fill(TUser())
 
     def change_email(self, auth_token, new_email):
         ip = request.remote_addr

@@ -32,6 +32,11 @@ const i32 PASSWORD_LEN_MIN = 8;
 const i32 PASSWORD_LEN_MAX = 20;
 const i32 EMAIL_LEN_MAX = 50;
 
+const string PASSWORD_REGEX_STR = "^(?=\\S{8,20}$)(?=.*?\\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\\s0-9])";
+const string EMAIL_REGEX_STR = "^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$";
+const string NAME_REGEX_STR = "^[a-zA-Z0-9 \\.\\,]+$"
+const string USERNAME_REGEX_STR = "^[a-zA-Z0-9\\.\\_]+$"
+
 const map<TUserErrorCode, string> T_USER_ERROR_STR = {
 	TUserErrorCode.USERNAME_EMPTY: "Username tidak boleh kosong",
 	TUserErrorCode.PASSWORD_EMPTY: "Password tidak boleh kosong",
@@ -39,9 +44,9 @@ const map<TUserErrorCode, string> T_USER_ERROR_STR = {
 	TUserErrorCode.EMAIL_EMPTY: "Email tidak boleh kosong",
 	TUserErrorCode.ROLE_EMPTY: "Role harus dipilih",
 	TUserErrorCode.STATUS_EMPTY: "Status harus dipilih",
-	TUserErrorCode.USERNAME_INVALID: "Username tidak valid",
+	TUserErrorCode.USERNAME_INVALID: "Username tidak valid. Username hanya boleh berisi huruf, angka, titik, dan garis bawah.",
 	TUserErrorCode.PASSWORD_INVALID: "Password tidak valid. Password harus terdiri dari huruf kecil, huruf besar, angka, dan simbol.",
-	TUserErrorCode.NAME_INVALID: "Nama tidak valid",
+	TUserErrorCode.NAME_INVALID: "Nama tidak valid. Nama hanya boleh berisi huruf, angka, spasi, titik, dan koma.",
 	TUserErrorCode.EMAIL_INVALID: "Email tidak valid",
 	TUserErrorCode.ROLE_INVALID: "Role tidak valid",
 	TUserErrorCode.STATUS_INVALID: "Status tidak valid",
