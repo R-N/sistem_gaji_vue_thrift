@@ -203,13 +203,14 @@ def generate_report(enc_file=REPORT_ENC, dec_file=REPORT_DEC):
     key = make_key()
     enc, dec = export_key(key, priv_file=enc_file, pub_file=dec_file)
     return enc, dec
-    
+
 EMAIL_ENC = os.getenv("EMAIL_ENC")
 EMAIL_DEC = os.getenv("EMAIL_DEC")
 
 def generate_email(enc_file=EMAIL_ENC, dec_file=EMAIL_DEC):
     key = make_key()
     enc, dec = export_key(key, priv_file=enc_file, pub_file=dec_file)
+    print(enc_file, dec_file)
     return enc, dec
 
 if __name__ == "__main__":

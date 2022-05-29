@@ -11,14 +11,13 @@ from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
 
 from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 
-
 class DbUser(DbGeneralEntity):
     # Columns
 
     __tablename__ = 'users'
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     _username = Column("username", String(user_constants.USERNAME_LEN_MAX), unique=True, nullable=False)
-    _password = Column("password", String(77), nullable=True, default=None)
+    _password = Column("password", String(83), nullable=True, default=None)
     _name = Column("name", String(user_constants.NAME_LEN_MAX), nullable=False)
     _email = Column("email", String(user_constants.EMAIL_LEN_MAX), unique=True, nullable=False)
     _role = Column("role", Integer, nullable=False, default=TUserRole.ADMIN_BIASA)
@@ -47,8 +46,8 @@ class DbUser(DbGeneralEntity):
     @password.setter
     def password(self, password):
         DbUserValidator.validate_password(password)
-        self.set_refresh_secret_2(None)
-        self.set_email_secret_2(None)
+        self.refresh_secret_2 = None
+        self.email_secret_2 = None
         self._password = hash_bcrypt_sha256(password)
 
     @property
@@ -85,7 +84,7 @@ class DbUser(DbGeneralEntity):
     def role(self, role):
         DbUserValidator.validate_role(role)
         self._role = role
-        self.set_refresh_secret_2(None)
+        self.refresh_secret_2 = None
 
     # username
 
@@ -107,8 +106,8 @@ class DbUser(DbGeneralEntity):
     @email.setter
     def email(self, email):
         DbUserValidator.validate_email(email)
-        self.set_verified(False)
-        self.set_email_secret_2(None)
+        self.verified = False
+        self.email_secret_2 = None
         self._email = email
 
     # verified
@@ -121,8 +120,8 @@ class DbUser(DbGeneralEntity):
     def verified(self, verified):
         if self.verified and verified:
             raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
-        self.set_email_secret_2(None)
-        self.set_refresh_secret_2(None)
+        self.email_secret_2 = None
+        self.refresh_secret_2 = None
         self._verified = verified
 
     def require_verified(self, verified):
@@ -139,7 +138,7 @@ class DbUser(DbGeneralEntity):
 
     @enabled.setter
     def enabled(self, enabled):
-        self.set_refresh_secret_2(None)
+        self.refresh_secret_2 = None
         self._enabled = enabled
 
     # Other methods

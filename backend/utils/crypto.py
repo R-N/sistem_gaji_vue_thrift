@@ -31,7 +31,7 @@ def verify_bcrypt_sha256(hash, text):
 def encode_jwt(payload, enc, expiration, now=None):
     now = now or datetime.utcnow()
     payload['exp'] = now + expiration
-    return jwt.encode(payload, enc, algorithm='RS256').decode('utf-8')
+    return jwt.encode(payload, enc, algorithm='RS256')  # .decode('utf-8')
 
 def decode_jwt(token, dec, issuer=None, audience=None):
     return jwt.decode(token.decode('utf-8') if token is str else token, dec, algorithms='RS256', issuer=issuer, audience=audience)

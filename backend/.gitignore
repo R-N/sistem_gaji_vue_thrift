@@ -128,10 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-Learning/Arcgis/country
-learning/arcgis/country
-notebooks/arcgis/country
-
 venv
 *.pyc
 .env
@@ -139,22 +135,18 @@ venv/
 rpc/gen/*
 frontend/*
 
-certs/auth.enc
-certs/auth.dec
-certs/refresh.enc
-certs/refresh.dec
-certs/download.enc
-certs/download.dec
-certs/upload.enc
-certs/upload.dec
-certs/report.enc
-certs/report.dec
-certs/reset.enc
-certs/reset.dec
-.gitkeep
-!/**/.gitkeep
-
 scratchpad.py
 playground.py
 backup/*
 backups/*
+
+*.enc
+*.dec
+*.crt
+*.key
+*.p12
+*.pem
+
+.gitkeep
+!/**/.gitkeep
+
