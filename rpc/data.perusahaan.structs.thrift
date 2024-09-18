@@ -3,8 +3,8 @@ namespace js data.perusahaan.structs
 
 struct TPerusahaan{
 	1: i32 id;
-	2: string nama;
-	3: bool enabled;
+	2: bool enabled;
+	3: string nama;
 }
 
 struct TPerusahaanForm{

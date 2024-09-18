@@ -2,14 +2,19 @@ from sqlalchemy import Column, Integer, String, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
 from .general import MxAiId, pop_periode, eager_load_staging_parent
+from sqlalchemy.ext.hybrid import hybrid_property
+
+from rpc.gen.data.departemen.errors.ttypes import TDepartemenError, TDepartemenErrorCode
+import rpc.gen.data.departemen.errors.constants as departemen_constants
+import re
 
 
 class MxDepartemen(MxAiId):
     __tablename__ = 'departemen'
 
     @declared_attr
-    def nama(cls):
-        return Column(String(50), nullable=False)
+    def _nama(cls):
+        return Column("nama", String(50), nullable=False)
 
     @declared_attr
     def perusahaan_id(cls):
@@ -62,3 +67,47 @@ class MxDepartemen(MxAiId):
             'nama': self.nama,
             'id': self.id
         }
+
+    # Properties and other methods associated with columns
+
+    # nama
+
+    @declared_attr
+    def nama(cls):
+        @hybrid_property
+        def nama(self):
+            return self._nama
+
+        @nama.setter
+        def nama(self, nama):
+            DbDepartemenValidator.validate_nama(nama)
+            self._nama = nama
+
+        return nama
+
+    # Other methods
+
+    def fill(self, obj):
+        obj.id = self.id
+        obj.nama = self.nama
+        obj.enabled = self.enabled
+        obj.perusahaan_id = self.perusahaan_id
+
+        return obj
+
+    # validator
+
+    def validator():
+        return DbDepartemenValidator
+
+
+class DbDepartemenValidator:
+    NAMA_REGEX = re.compile(departemen_constants.NAMA_REGEX_STR)
+
+    def validate_nama(nama):
+        if not nama:
+            raise TDepartemenError(TDepartemenErrorCode.NAMA_EMPTY)
+        if len(nama) > departemen_constants.NAMA_LEN_MAX:
+            raise TDepartemenError(TDepartemenErrorCode.NAMA_TOO_LONG)
+        if not DbDepartemenValidator.NAMA_REGEX.match(nama):
+            raise TDepartemenError(TDepartemenErrorCode.NAMA_INVALID)

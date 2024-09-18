@@ -7,6 +7,9 @@ from thrift.transport import TTransport
 from rpc.gen.data.perusahaan.services import TDataPerusahaanService
 from rpc.handler.data.perusahaan import TDataPerusahaanServiceHandler
 
+from rpc.gen.data.departemen.services import TDataDepartemenService
+from rpc.handler.data.departemen import TDataDepartemenServiceHandler
+
 from rpc.gen.user.auth.services import TUserAuthService
 from rpc.handler.user.auth import TUserAuthServiceHandler
 
@@ -50,6 +53,10 @@ data_perusahaan_server = make_server(TDataPerusahaanService, TDataPerusahaanServ
 def data_perusahaan():
     return respond(data_perusahaan_server)
 
+data_departemen_server = make_server(TDataDepartemenService, TDataDepartemenServiceHandler())
+def data_departemen():
+    return respond(data_departemen_server)
+
 user_auth_server = make_server(TUserAuthService, TUserAuthServiceHandler())
 def user_auth():
     return respond(user_auth_server)
@@ -80,11 +87,16 @@ def system_backup():
 
 def init(app):
     app.route('/api/data/perusahaan', methods=['POST'])(data_perusahaan)
+    app.route('/api/data/departemen', methods=['POST'])(data_departemen)
+
     app.route('/api/user/auth', methods=['POST'])(user_auth)
     app.route('/api/user/recovery', methods=['POST'])(user_recovery)
     app.route('/api/user/profile', methods=['POST'])(user_profile)
     app.route('/api/user/management', methods=['POST'])(user_management)
     app.route('/api/user/email', methods=['POST'])(user_email)
+
     app.route('/api/hello/hello', methods=['POST'])(hello_hello)
+
     app.route('/api/system/backup', methods=['POST'])(system_backup)
+    
     return app

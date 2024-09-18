@@ -9,6 +9,7 @@ import helloHelloClient from '@/rpc/client/hello/hello';
 import systemBackupClient from '@/rpc/client/system/backup';
 
 import dataPerusahaanClient from '@/rpc/client/data/perusahaan';
+import dataDepartemenClient from '@/rpc/client/data/departemen';
 
 const clients = {
 	user: {
@@ -25,7 +26,8 @@ const clients = {
 		backup: systemBackupClient
 	},
 	data: {
-		perusahaan: dataPerusahaanClient
+		perusahaan: dataPerusahaanClient,
+		departemen: dataDepartemenClient
 	}
 }
 

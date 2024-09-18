@@ -25,3 +25,4 @@ pnpm-debug.log*
 src/rpc/gen/*
 .gitkeep
 !/**/.gitkeep
+backups/*

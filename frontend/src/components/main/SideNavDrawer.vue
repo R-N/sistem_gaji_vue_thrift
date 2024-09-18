@@ -89,11 +89,11 @@ class SideNavDrawer extends Vue {
 			model: false,
 			children: [
 				{ text: 'Perusahaan', to: { name: 'data-perusahaan' } },
-				{ text: 'Departemen' },
-				{ text: 'Job Level' },
-				{ text: 'Jabatan' },
-				{ text: 'Karyawan' },
-				{ text: 'Shift' },
+				{ text: 'Departemen', to: { name: 'data-departemen' } },
+				{ text: 'Job Level', to: { name: 'data-job-level' } },
+				{ text: 'Jabatan', to: { name: 'data-jabatan' } },
+				{ text: 'Karyawan', to: { name: 'data-karyawan' } },
+				{ text: 'Shift', to: { name: 'data-shift' } },
 			],
 		},
 		{
@@ -102,11 +102,11 @@ class SideNavDrawer extends Vue {
 			text: 'Gaji',
 			model: false,
 			children: [
-				{ text: 'Job Level' },
-				{ text: 'Tunjangan Khusus' },
-				{ text: 'Karyawan' },
-				{ text: 'Lembur' },
-				{ text: 'Absen' },
+				{ text: 'Job Level', to: { name: 'gaji-job-level' } },
+				{ text: 'Tunjangan Khusus', to: { name: 'gaji-tunjangan-khusus' } },
+				{ text: 'Karyawan', to: { name: 'gaji-karyawan' } },
+				{ text: 'Lembur', to: { name: 'gaji-lembur' } },
+				{ text: 'Absen', to: { name: 'gaji-absen' } },
 			],
 		},
 		{
@@ -115,8 +115,8 @@ class SideNavDrawer extends Vue {
 			text: 'Angsuran',
 			model: false,
 			children: [
-				{ text: 'Angsuran' },
-				{ text: 'Potongan' },
+				{ text: 'Angsuran', to: { name: 'angsuran-angsuran' } },
+				{ text: 'Potongan', to: { name: 'angsuran-potongan' } },
 			],
 		},
 		{
@@ -125,12 +125,12 @@ class SideNavDrawer extends Vue {
 			text: 'Laporan',
 			model: false,
 			children: [
-				{ text: 'Slip Gaji' },
-				{ text: 'Laporan Gaji' },
-				{ text: 'Laporan Lembur' },
-				{ text: 'Laporan Absen' },
-				{ text: 'Laporan Angsuran' },
-				{ text: 'Rekap Gaji' },
+				{ text: 'Slip Gaji', to: { name: 'laporan-slip-gaji' } },
+				{ text: 'Laporan Gaji', to: { name: 'laporan-gaji' } },
+				{ text: 'Laporan Lembur', to: { name: 'laporan-lembur' } },
+				{ text: 'Laporan Absen', to: { name: 'laporan-absen' } },
+				{ text: 'Laporan Angsuran', to: { name: 'laporan-angsuran' } },
+				{ text: 'Rekap Gaji', to: { name: 'laporan-rekap-gaji' } },
 			],
 		},
 		{
@@ -139,7 +139,7 @@ class SideNavDrawer extends Vue {
 			text: 'Pengaturan',
 			model: false,
 			children: [
-				{ text: 'Variabel' },
+				{ text: 'Variabel', to: { name: 'pengaturan-variabel' } },
 				{ text: 'Backup', to: { name: 'backup' } },
 				{ text: 'Akun', to: { name: 'akun' } },
 			],

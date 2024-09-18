@@ -39,7 +39,7 @@ const createClient = (
 
 const setUseHttps = (newUseHttps) => { defaultUseHttps = newUseHttps };
 const setBackendHost = (newHost) => { defaultBackendHost = newHost };
-const setBackendPort = (newPort) => { defaultBackendPort = newHost };
+const setBackendPort = (newPort) => { defaultBackendPort = newPort };
 
 class TBaseClient extends StoreUser{
 	client = null

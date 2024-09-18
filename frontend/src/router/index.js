@@ -14,6 +14,9 @@ import ProfilView from '@/views/general/profil/ProfilView';
 import pengaturanRoutes from '@/router/routes/pengaturan';
 import emailRoutes from '@/router/routes/email';
 import dataRoutes from '@/router/routes/data';
+import gajiRoutes from '@/router/routes/gaji';
+import angsuranRoutes from '@/router/routes/angsuran';
+import laporanRoutes from '@/router/routes/laporan';
 
 const routes = [
 	//{ path: '/login', component: LoginView, name: "login" },
@@ -21,6 +24,9 @@ const routes = [
 	{ path: '/', component: MainView, name: "main",
 		children: [
 			...dataRoutes,
+			...gajiRoutes,
+			...angsuranRoutes,
+			...laporanRoutes,
 			...pengaturanRoutes,
 			{ path: 'profil', component: ProfilView, name: "profil" },
 			{ path: '', component: BerandaView, name: "beranda" },

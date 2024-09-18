@@ -58,6 +58,7 @@ async function main(){
 		console.log("Server unreachable");
 	}
 	stores.app.setServerReachable(serverReachable);
+
 	var app = new Vue({
 		vuetify,
 		store,
