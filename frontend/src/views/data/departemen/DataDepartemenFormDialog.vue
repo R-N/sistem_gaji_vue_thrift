@@ -71,7 +71,6 @@ class DataDepartemenFormDialog extends WorkingComponent {
 	@Model('change', { type: Boolean }) dialog;
 
 	nama = ''
-	perusahaanId = 1 // Perusahaan is set globally
 
 	namaRules = NAMA_RULES
 
@@ -118,7 +117,7 @@ class DataDepartemenFormDialog extends WorkingComponent {
 		view.busy = true;
 		let form = new TDepartemenForm({
 			nama: this.nama,
-			perusahaan_id: this.perusahaanId,
+			perusahaan_id: stores.settings.perusahaanId,
 		});
 		try{
 			let departemen = await stores.client.data.departemen.create(form);

@@ -133,7 +133,6 @@ class DataDepartemenView extends BaseView {
 	departemen = []
 	namaLenMax = NAMA_LEN_MAX
 	namaRules = NAMA_RULES
-	perusahaanId = 1 // Perusahaan is set globally
 
 	get headers(){
 		let headers = [
@@ -151,8 +150,8 @@ class DataDepartemenView extends BaseView {
 	async mounted(){
 		stores.app.setBreadcrumbs([
 			{ text: "Beranda", to: { name: 'beranda' }, exact: true },
-			{ text: "Pengaturan" },
-			{ text: "Akun" },
+			{ text: "Data" },
+			{ text: "Departemen" },
 		]);
 		await this.fetchDepartemen();
 	}
@@ -160,7 +159,7 @@ class DataDepartemenView extends BaseView {
 		const view = this;
 		view.busy = true;
 		let query = new TDepartemenQuery({
-			perusahaan_id: this.perusahaanId
+			perusahaan_id: stores.settings.perusahaanId
 		});
 		try{
 			let departemen = await stores.client.data.departemen.fetch(query);

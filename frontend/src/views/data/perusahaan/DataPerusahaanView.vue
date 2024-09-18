@@ -150,8 +150,8 @@ class DataPerusahaanView extends BaseView {
 	async mounted(){
 		stores.app.setBreadcrumbs([
 			{ text: "Beranda", to: { name: 'beranda' }, exact: true },
-			{ text: "Pengaturan" },
-			{ text: "Akun" },
+			{ text: "Data" },
+			{ text: "Perusahaan" },
 		]);
 		await this.fetchPerusahaan();
 	}
@@ -161,6 +161,7 @@ class DataPerusahaanView extends BaseView {
 		let query = new TPerusahaanQuery();
 		try{
 			let perusahaan = await stores.client.data.perusahaan.fetch(query);
+        	await stores.settings.setPerusahaans(perusahaan);
 			this.perusahaan = perusahaan;
 		} catch(error){
 			view.showError(error);

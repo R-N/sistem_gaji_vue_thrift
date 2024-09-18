@@ -1,0 +1,51 @@
+import {
+	Action,
+	Mutation,
+	MutationAction,
+	VuexModule,
+	getModule,
+	Module
+} from "vuex-module-decorators";
+import { store, unregisterModule } from "@/store/index";
+
+
+const name = 'settings'
+unregisterModule(name);
+
+@Module({
+	namespaced: true,
+	name,
+	store,
+	dynamic: true
+})
+class SettingsStore extends VuexModule {
+    perusahaans = []
+    perusahaansDict = {}
+    perusahaanId = null
+
+	@MutationAction({ mutate: ['perusahaanId'] })
+	async setPerusahaanId(perusahaanId){
+		return {
+			perusahaanId,
+		};
+	}
+
+	@MutationAction({ mutate: ['perusahaans', 'perusahaansDict', 'perusahaanId'] })
+	async setPerusahaans(perusahaans){
+		let perusahaansDict = Object.fromEntries(perusahaans.map(x => [x.id, x.nama]));
+		let perusahaanId = this.perusahaanId;
+		if (!perusahaanId){
+			perusahaanId = perusahaans[0].id;
+		}
+		return {
+			perusahaans,
+			perusahaansDict,
+			perusahaanId,
+		};
+	}
+}
+
+const settingsStore = getModule(SettingsStore);
+
+export { name, SettingsStore, settingsStore };
+export default settingsStore;
