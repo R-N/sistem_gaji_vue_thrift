@@ -1,4 +1,9 @@
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
-DbLaporanEntity = declarative_base(metadata=MetaData(schema="laporan"))
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DbLaporanEntity = declarative_base(metadata=MetaData(schema=os.getenv("DB_LAPORAN", "laporan")))

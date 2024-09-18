@@ -1,4 +1,5 @@
-from flask import request, jsonify, send_from_directory, safe_join, abort
+from flask import request, jsonify, send_from_directory, abort
+from werkzeug.utils import safe_join
 import json
 from thrift.Thrift import TException
 

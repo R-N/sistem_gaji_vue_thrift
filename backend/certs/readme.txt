@@ -10,6 +10,7 @@ A. Server
 4. mkcert localhost 127.0.0.1 <computer static ip> <computer name>
 5. Rename the outputs to server.crt and server.key
 6. Make sure they are in ./backend/certs
+7. python certs/generator.py
 
 B. Client
 1. Install rootCA.crt as root trusted certs 

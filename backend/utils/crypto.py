@@ -1,9 +1,10 @@
 import hashlib
 import os
 from dotenv import load_dotenv
-from passlib.hash import sha256_crypt, bcrypt, bcrypt_sha256
+from passlib.hash import sha256_crypt, bcrypt_sha256
 import jwt
 from datetime import datetime
+import bcrypt
 load_dotenv()
 
 
@@ -17,10 +18,16 @@ def verify_sha256(hash, text):
     return sha256_crypt.verify(text, hash)
 
 def hash_bcrypt(text):
-    return bcrypt.hash(text)
+    pwd_bytes = text.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password=pwd_bytes, salt=salt)
+    return hashed_password
+    #return bcrypt.hash(text)
 
 def verify_bcrypt(hash, text):
-    return bcrypt.verify(text, hash)
+    password_byte_enc = text.encode('utf-8')
+    return bcrypt.checkpw(password = password_byte_enc , hashed_password = hash)
+    #return bcrypt.verify(text, hash)
 
 def hash_bcrypt_sha256(text):
     return bcrypt_sha256.hash(text)

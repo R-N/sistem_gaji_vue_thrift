@@ -15,3 +15,4 @@ flask
 flask-cors
 greenlet
 gevent
+werkzeug

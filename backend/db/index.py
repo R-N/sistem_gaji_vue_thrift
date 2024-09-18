@@ -14,16 +14,14 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
-DB_NAME = os.getenv("DB_NAME")
-DB_MAIN = DB_NAME
+DB_NAME = os.getenv("DB_NAME", "sistem_gaji")
 
 connect_str = "postgresql+psycopg2://%s:%s@%s:%s/%s"
 
-connect_str_main = connect_str % (DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_MAIN)
+connect_str_main = connect_str % (DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME)
 engine_main = create_engine(connect_str_main)
 # engine_staging = engine_main  # change this to move to separate db
 engine = engine_main
-
 
 # DbMainEntity = declarative_base(bind=engine_main)
 # DbStagingEntity = declarative_base(bind=engine_staging)  # To separate them

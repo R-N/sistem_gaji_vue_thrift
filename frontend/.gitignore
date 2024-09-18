@@ -22,6 +22,6 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-src/rpc/gen/
+src/rpc/gen/*
 .gitkeep
 !/**/.gitkeep

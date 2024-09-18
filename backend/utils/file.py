@@ -1,5 +1,5 @@
 from pathlib import Path
-from flask import safe_join
+from werkzeug.utils import safe_join
 from werkzeug.exceptions import NotFound
 from os.path import getmtime
 from datetime import datetime

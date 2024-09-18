@@ -17,13 +17,14 @@ if __name__ == "__main__":
     generator.generate_download()
     generator.generate_upload()
     generator.generate_email()
+db.create_schemas()
+db.create_tables()
 
 from server.frontend import init as init_frontend, get_ip, MY_IP
 from server.thrift import init as init_thrift
 from server.backup import init as init_backup
 from server.report import init as init_report
 
-db.create_tables()
 
 DEFAULT_CORS_ORIGINS = os.getenv("CORS_ORIGINS").split(',') or [
     "https://localhost",

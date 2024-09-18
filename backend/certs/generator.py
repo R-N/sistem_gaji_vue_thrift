@@ -87,25 +87,25 @@ def export_key_crt(
 ):
     key_str = pem_priv_key(key)
     if key_file:
-        with open(key_file, "wt") as f:
+        with open(key_file, "wt+") as f:
             f.write(key_str)
     crt_str = pem_crt(crt)
     if crt_file:
-        with open(crt_file, "wt") as f:
+        with open(crt_file, "wt+") as f:
             f.write(crt_str)
     pem_str = crt_str + key_str
     if pem_file:
-        with open(pem_file, "wt") as f:
+        with open(pem_file, "wt+") as f:
             f.write(pem_str)
     if p12_file:
         if not p12_password:
             raise Exception("Please provide p12_password to export p12_file")
         p12_str = p12_key_crt(key, crt, p12_password)
-        with open(p12_file, "wb") as f:
+        with open(p12_file, "wb+") as f:
             f.write(p12_str)
     if ca_file:
         ca_str = text_crt(crt)
-        with open(ca_file, "wt") as f:
+        with open(ca_file, "wt+") as f:
             f.write(ca_str)
 
 SERVER_KEY = os.getenv("SERVER_KEY")
@@ -151,12 +151,12 @@ def generate_server(
 def export_key(key, priv_file=None, pub_file=None):
     priv_str = pem_priv_key(key)
     if priv_file:
-        with open(priv_file, "wt") as f:
+        with open(priv_file, "wt+") as f:
             f.write(priv_str)
 
     pub_str = pem_pub_key(key)
     if pub_file:
-        with open(pub_file, "wt") as f:
+        with open(pub_file, "wt+") as f:
             f.write(pub_str)
     return priv_str, pub_str
 
