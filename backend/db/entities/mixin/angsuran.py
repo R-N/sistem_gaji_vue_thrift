@@ -46,12 +46,14 @@ class MxAngsuran(MxAiId):
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "karyawan_id"]),
                 pop_periode(cls, ["karyawan.periode", "karyawan.no_induk"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "jenis_angsuran_id"]),
                 pop_periode(cls, ["jenis_angsuran.periode", "jenis_angsuran.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

@@ -35,7 +35,8 @@ class MxSubdepartemen(MxAiId):
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "departemen_id"]),
                 pop_periode(cls, ["departemen.periode", "departemen.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

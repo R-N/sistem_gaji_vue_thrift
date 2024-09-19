@@ -42,17 +42,20 @@ class MxTunjanganMasaKerja:
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "job_level_id"]),
                 pop_periode(cls, ["job_level.periode", "job_level.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "batas_bawah"]),
                 pop_periode(cls, ["masa_kerja.periode", "masa_kerja.nilai"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "batas_atas"]),
                 pop_periode(cls, ["masa_kerja.periode", "masa_kerja.nilai"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

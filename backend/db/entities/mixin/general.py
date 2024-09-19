@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 
 def pk_periode():
-    return Column("periode", Date, ForeignKey('periode_gaji.periode'), primary_key=True)
+    return Column("periode", Date, ForeignKey('periode_gaji.periode', ondelete="RESTRICT"), primary_key=True)
 
 
 def has_periode(cls):

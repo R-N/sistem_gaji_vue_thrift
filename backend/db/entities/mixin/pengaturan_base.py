@@ -26,7 +26,8 @@ class MxPengaturanBase:
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "perusahaan_id"]),
                 pop_periode(cls, ["perusahaan.periode", "perusahaan.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

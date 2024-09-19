@@ -63,12 +63,14 @@ class MxKaryawanBase:
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "subdepartemen_id"]),
                 pop_periode(cls, ["subdepartemen.periode", "subdepartemen.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "jabatan_id"]),
                 pop_periode(cls, ["jabatan.periode", "jabatan.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

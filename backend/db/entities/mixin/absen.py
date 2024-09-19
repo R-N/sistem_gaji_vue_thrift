@@ -33,7 +33,8 @@ class MxAbsen:
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "karyawan_id"]),
                 pop_periode(cls, ["karyawan.periode", "karyawan.no_induk"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

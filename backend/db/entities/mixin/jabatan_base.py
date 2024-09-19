@@ -35,7 +35,8 @@ class MxJabatanBase(MxAiId):
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "job_level_id"]),
                 pop_periode(cls, ["job_level.periode", "job_level.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

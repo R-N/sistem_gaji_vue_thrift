@@ -49,12 +49,14 @@ class MxLemburBase:
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "karyawan_id"]),
                 pop_periode(cls, ["karyawan.periode", "karyawan.no_induk"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "shift"]),
                 pop_periode(cls, ["shift.periode", "shift.kode"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

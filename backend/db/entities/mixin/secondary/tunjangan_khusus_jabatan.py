@@ -19,12 +19,14 @@ def ScTunjanganKhususJabatan(metadata, cls):
         ForeignKeyConstraint(
             pop_periode(cls, ["periode", "tunjangan_khusus_id"]),
             pop_periode(cls, ["tunjangan_khusus.periode", "tunjangan_khusus.id"]),
-            deferrable=True
+            deferrable=True,
+            ondelete="RESTRICT",
         ),
         ForeignKeyConstraint(
             pop_periode(cls, ["periode", "jabatan_id"]),
             pop_periode(cls, ["jabatan.periode", "jabatan.id"]),
-            deferrable=True
+            deferrable=True,
+            ondelete="RESTRICT",
         )
     ]
 

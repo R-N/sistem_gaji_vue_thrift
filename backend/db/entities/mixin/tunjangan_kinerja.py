@@ -34,12 +34,14 @@ class MxTunjanganKinerja:
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "job_level_id"]),
                 pop_periode(cls, ["job_level.periode", "job_level.id"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "kinerja"]),
                 pop_periode(cls, ["kinerja.periode", "kinerja.kode"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 

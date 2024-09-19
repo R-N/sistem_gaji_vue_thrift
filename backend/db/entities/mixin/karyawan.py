@@ -83,7 +83,8 @@ class MxKaryawan(MxKaryawanBase):
             ForeignKeyConstraint(
                 pop_periode(cls, ["periode", "kinerja"]),
                 pop_periode(cls, ["kinerja.periode", "kinerja.kode"]),
-                deferrable=True
+                deferrable=True,
+                ondelete="RESTRICT",
             ),
         )
 
