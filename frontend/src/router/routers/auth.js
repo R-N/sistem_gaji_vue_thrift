@@ -147,7 +147,8 @@ class AuthRouter extends RouterUser{
 		const router = this.router;
 		this.stores.app.pushTabDialog({
 			title: "Error",
-			text: "Error tidak diketahui: " + error,
+			//text: "Error tidak diketahui: " + error,
+			text: error,
 			onDismiss: function(){ window.location.reload() }
 		});
 		return false;

@@ -17,7 +17,7 @@ class TUserAuthServiceHandler(TUserAuthService.Iface):
             raise TLoginError(TLoginErrorCode.PASSWORD_EMPTY)
         db_user = self.user_model.get_by_username_email_silent(username)
         if not db_user:
-        	raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
+            raise TLoginError(TLoginErrorCode.USERNAME_PASSWORD_SALAH)
         auth_token, refresh_token = self.auth_model.login(db_user, password)
         db.commit()
         return TLoginResult(auth_token, refresh_token)

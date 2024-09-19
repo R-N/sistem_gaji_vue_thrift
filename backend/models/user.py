@@ -6,6 +6,7 @@ from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
 from rpc.gen.user.user.types.ttypes import TUserRole
 from rpc.gen.user.email.errors.ttypes import TUserEmailError, TUserEmailErrorCode
+from rpc.gen.user.management.errors.ttypes import TUserManagementError, TUserManagementErrorCode
 
 import db
 from db.entities.general import DbUser
@@ -108,7 +109,8 @@ class UserModel:
         user = DbUser()
         user.role = form.role
         user.username = form.username
-        user.password = form.password
+        if form.password:
+            user.password = form.password
         user.name = form.name
         user.email = form.email
 
@@ -145,3 +147,16 @@ class UserModel:
             raise TUserError(TUserErrorCode.USER_UNVERIFIED)
 
         self.set_password(TUserRole.SUPER_ADMIN, user, password)
+
+    def set_verified(self, changer_role, user, verified):
+        self.validate_changer_role(changer_role, user.role)
+        if not user.password:
+            raise TUserManagementError(TUserManagementErrorCode.PASSWORD_EMPTY)
+        user.verified = verified
+        db.session.add(user)
+
+    def delete(self, changer_role, user):
+        self.validate_changer_role(changer_role, user.role)
+        if user.verified:
+            raise TUserManagementError(TUserManagementErrorCode.CANNOT_DELETE_VERIFIED)
+        db.session.delete(user)

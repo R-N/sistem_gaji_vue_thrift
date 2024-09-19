@@ -112,7 +112,23 @@
 				    </span>
 				</template>
 				<template v-slot:item.verified="{ item }">
-					<span>
+					<v-tooltip 
+						v-if="isSuperAdmin"
+						bottom
+					>
+						<template v-slot:activator="{ on, attrs }">
+						    <sync-checkbox 
+						    	:input-value="item.verified" 
+						    	@change="value => setVerified(item, value)"
+						    	:confirm-text-maker="() => setVerifiedConfirmText(item)"
+						    	readonly
+						    	v-bind="attrs" v-on="on"
+								:disabled="busy"
+					    	/>
+						</template>
+						<span>{{ item.enabled ? "Batalkan verifikasi" : "Paksa verifikasi" }}</span>
+					</v-tooltip>
+					<span v-else>
 					    <v-simple-checkbox 
 					    	:value="item.verified" 
 					    	disabled
@@ -137,6 +153,29 @@
 						</template>
 						<span>Ubah password</span>
 					</v-tooltip>
+					<confirmation-slot
+						class="text-center justify-center justify-self-center"
+						:confirmTextMaker="deleteText(item)"
+						v-slot="{ ask }"
+						:on-confirm="() => deleteUser(item)"
+						v-if="isSuperAdmin"
+					>
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn 
+									icon 
+									@click.stop="askDeleteUser(item, ask)" 
+									class="" 
+									v-bind="attrs" 
+									v-on="on"
+									:disabled="busy"
+								>
+									<v-icon size="32" small>mdi-delete</v-icon>
+								</v-btn>
+							</template>
+							<span>Hapus</span>
+						</v-tooltip>
+					</confirmation-slot>
 				</template>
 			</v-data-table>
 			<simple-input-dialog 
@@ -185,6 +224,7 @@ import SyncCheckbox from '@/components/form/SyncCheckbox';
 import EditableCell from '@/components/form/EditableCell';
 
 import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
+import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
 
 @Component({
   	name: "AkunView",
@@ -193,7 +233,8 @@ import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
   		MainCard,
   		SyncCheckbox,
   		EditableCell,
-  		UserFormDialog
+  		UserFormDialog,
+		ConfirmationSlot,
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_AKUN)
 })
@@ -206,6 +247,7 @@ class AkunView extends BaseView {
 	search = ''
 	akun = []
 	selfDisableWarning = " Akun ini adalah akun Anda sendiri, sehingga anda akan logout dan tidak dapat login kembali hingga diaktifkan lagi."
+	selfDeleteWarning = " Akun ini adalah akun Anda sendiri, sehingga anda akan logout dan tidak dapat menggunakan akun ini lagi secara permanen."
 	roleLogoutWarning = " Akun yang diubah role nya harus login ulang."
 	selfRoleLogoutWarning = " Akun ini adalah akun Anda sendiri, sehingga Anda akan logout otomatis."
 	selfRoleDownWarning = " Selain itu, jika Anda bukan Admin Akun maupun Super Admin, Anda tidak bisa mengakses halaman ini."
@@ -213,6 +255,7 @@ class AkunView extends BaseView {
 	passwordRules = PASSWORD_RULES
 	emailLenMax = EMAIL_LEN_MAX
 	passwordLenMax = PASSWORD_LEN_MAX
+
 
 	get headers(){
 		let headers = [
@@ -350,6 +393,54 @@ class AkunView extends BaseView {
 			view.busy = false;
 		}
 	}
+
+	setVerifiedConfirmText(user){
+		let action = user.verified ? 'membatalkan verifikasi' : 'memaksa verifikasi';
+		let warn = (user.verified && user.id == stores.auth.user.id) ? this.selfDisableWarning : "";
+		return "Apa Anda yakin ingin " + action 
+			+ " user '" + user.username + "'?" + warn;
+	}
+	async setVerified(user, verified){
+		const view = this;
+		view.busy=true;
+		if (verified === undefined || verified === null)
+			verified = !user.verified;
+		try{
+			await stores.client.user.management.set_verified(user.id, verified);
+			user.verified = verified;
+		} catch (error) {
+			view.showError(error);
+		} finally {
+			view.busy = false;
+		}
+	}
+
+	deleteText(user){
+		let warn = (user.enabled && user.id == stores.auth.user.id) ? this.selfDeleteWarning : "";
+		return "Apa Anda yakin ingin menghapus user '" + user.username + "'?" + warn;
+	}
+
+	async askDeleteUser(user, ask){
+		if (user.verified){
+			this.showError("Tidak dapat menghapus akun yang telah terverifikasi.");
+			return;
+		}
+		ask();
+	}
+
+	async deleteUser(user){
+		const view = this;
+		view.busy=true;
+		try{
+			await stores.client.user.management.delete(user.id);
+			this.akun.pop(user);
+		} catch (error) {
+			view.showError(error);
+		} finally {
+			view.busy = false;
+		}
+	}
+
 	prepareSetPassword(user){
 		this.toSetPassword = user;
 		this.setPasswordDialog = true;

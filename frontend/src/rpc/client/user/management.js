@@ -44,8 +44,20 @@ class TUserManagementClient extends TBaseClient{
 			await this.stores.client.user.auth.logout();
 		}
 	}
-	
-
+	async set_verified(user_id, new_verified){
+		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
+		await this.client.set_verified(this.stores.auth.authToken, user_id, new_verified);
+		if (user_id == this.stores.auth.user.id && !new_verified){
+			await this.stores.client.user.auth.logout();
+		}
+	}
+	async delete(user_id){
+		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
+		await this.client.delete(this.stores.auth.authToken, user_id);
+		if (user_id == this.stores.auth.user.id){
+			await this.stores.client.user.auth.logout();
+		}
+	}
 }
 
 const userManagementClient = new TUserManagementClient();
