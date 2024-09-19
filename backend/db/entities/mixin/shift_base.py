@@ -12,7 +12,7 @@ class MxShiftBase:
 
     @declared_attr
     def lembur(cls):
-        return relationship("DbLembur", back_populates="shift_rel", viewonly=True)
+        return relationship("DbLembur", back_populates="shift_rel", viewonly=True, passive_deletes="all")
 
     '''
     def mx_init(

@@ -17,7 +17,7 @@ class MxJobLevelBase(MxAiId):
 
     @declared_attr
     def jabatan(cls):
-        return relationship("DbJabatan", back_populates="job_level", viewonly=True)
+        return relationship("DbJabatan", back_populates="job_level", viewonly=True, passive_deletes="all")
 
     '''
     def mx_init(

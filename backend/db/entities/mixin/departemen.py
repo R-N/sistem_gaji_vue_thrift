@@ -31,7 +31,7 @@ class MxDepartemen(MxAiId):
 
     @declared_attr
     def subdepartemen(cls):
-        return relationship("DbSubdepartemen", back_populates="departemen", viewonly=True)
+        return relationship("DbSubdepartemen", back_populates="departemen", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def __table_args__(cls):

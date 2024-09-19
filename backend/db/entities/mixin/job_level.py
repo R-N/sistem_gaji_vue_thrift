@@ -18,11 +18,11 @@ class MxJobLevel(MxJobLevelBase, MxJobLevelLembur):
 
     @declared_attr
     def tunjangan_kinerja(cls):
-        return relationship("DbTunjanganKinerja", back_populates="job_level", viewonly=True, order_by="DbTunjanganKinerja.kinerja")
+        return relationship("DbTunjanganKinerja", back_populates="job_level", viewonly=True, order_by="DbTunjanganKinerja.kinerja", passive_deletes="all")
 
     @declared_attr
     def tunjangan_masa_kerja(cls):
-        return relationship("DbTunjanganMasaKerja", back_populates="job_level", viewonly=True, order_by="DbTunjanganMasaKerja.batas_bawah")
+        return relationship("DbTunjanganMasaKerja", back_populates="job_level", viewonly=True, order_by="DbTunjanganMasaKerja.batas_bawah", passive_deletes="all")
 
     '''
     def mx_init(

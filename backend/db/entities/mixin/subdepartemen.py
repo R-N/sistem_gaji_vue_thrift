@@ -27,7 +27,7 @@ class MxSubdepartemen(MxAiId):
 
     @declared_attr
     def karyawan(cls):
-        return relationship("DbKaryawan", back_populates="subdepartemen", viewonly=True)
+        return relationship("DbKaryawan", back_populates="subdepartemen", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def __table_args__(cls):

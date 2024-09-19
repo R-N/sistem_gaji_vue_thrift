@@ -18,7 +18,7 @@ class MxPengaturanBase:
 
     @declared_attr
     def perusahaan(cls):
-        return relationship("DbPerusahaan", back_populates="pengaturan", uselist=False)
+        return relationship("DbPerusahaan", back_populates="pengaturan", uselist=False, passive_deletes="all")
 
     @declared_attr
     def __table_args__(cls):

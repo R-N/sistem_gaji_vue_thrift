@@ -23,11 +23,11 @@ class MxPerusahaan(MxAiId):
 
     @declared_attr
     def departemen(cls):
-        return relationship("DbDepartemen", back_populates="perusahaan", viewonly=True)
+        return relationship("DbDepartemen", back_populates="perusahaan", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def pengaturan(cls):
-        return relationship("DbPengaturan", back_populates="perusahaan", uselist=False)
+        return relationship("DbPengaturan", back_populates="perusahaan", uselist=False, passive_deletes="all")
 
     # Inits and stuff
 

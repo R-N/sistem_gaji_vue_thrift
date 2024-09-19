@@ -47,15 +47,15 @@ class MxKaryawanBase:
 
     @declared_attr
     def angsuran(cls):
-        return relationship("DbAngsuran", back_populates="karyawan", viewonly=True)
+        return relationship("DbAngsuran", back_populates="karyawan", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def lembur(cls):
-        return relationship("DbLembur", back_populates="karyawan", viewonly=True)
+        return relationship("DbLembur", back_populates="karyawan", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def absen(cls):
-        return relationship("DbAbsen", back_populates="karyawan", viewonly=True)
+        return relationship("DbAbsen", back_populates="karyawan", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def __table_args__(cls):

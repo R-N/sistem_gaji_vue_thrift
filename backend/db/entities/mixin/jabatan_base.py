@@ -27,7 +27,7 @@ class MxJabatanBase(MxAiId):
 
     @declared_attr
     def karyawan(cls):
-        return relationship("DbKaryawan", back_populates="jabatan", viewonly=True)
+        return relationship("DbKaryawan", back_populates="jabatan", viewonly=True, passive_deletes="all")
 
     @declared_attr
     def __table_args__(cls):
