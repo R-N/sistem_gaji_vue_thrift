@@ -8,6 +8,10 @@ import { WorkingComponent } from '@/components/WorkingComponent';
 	name: "BaseView"
 })
 class BaseView extends WorkingComponent {
+
+	get isSuperAdmin(){
+		return authStore.isSuperAdmin;
+	}
 	get isLoggedIn(){
 		return authStore.isLoggedIn;
 	}
