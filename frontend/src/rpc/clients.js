@@ -10,6 +10,7 @@ import systemBackupClient from '@/rpc/client/system/backup';
 
 import dataPerusahaanClient from '@/rpc/client/data/perusahaan';
 import dataDepartemenClient from '@/rpc/client/data/departemen';
+import dataJobLevelClient from '@/rpc/client/data/job_level';
 
 const clients = {
 	user: {
@@ -17,17 +18,18 @@ const clients = {
 		email: userEmailClient,
 		management: userManagementClient,
 		profile: userProfileClient,
-		recovery: userRecoveryClient
+		recovery: userRecoveryClient,
 	},
 	hello: {
-		hello: helloHelloClient
+		hello: helloHelloClient,
 	},
 	system: {
-		backup: systemBackupClient
+		backup: systemBackupClient,
 	},
 	data: {
 		perusahaan: dataPerusahaanClient,
-		departemen: dataDepartemenClient
+		departemen: dataDepartemenClient,
+		jobLevel: dataJobLevelClient,
 	}
 }
 

@@ -7,6 +7,7 @@ import 'vue2-animate/dist/vue2-animate.min.css'
 
 import Vue from 'vue'
 import vuetify from './plugins/vuetify';
+import plugins from './plugins';
 
 import VuePageTransition from 'vue-page-transition'
 Vue.use(VuePageTransition)
@@ -18,7 +19,6 @@ Vue.use(VueLazyload, {
   //loading: 'static/img/loading.gif',
   attempt: 1
 })
-// TODO: add loading & error placeholder... maybe
 
 import { checkBackend, backendUrl } from '@/lib/util';
 
@@ -34,9 +34,11 @@ import { clients, initClients } from '@/rpc/clients';
 import { helpers, initHelpers } from '@/store/helpers';
 
 import { App } from './App.vue'
+import { VueMaskDirective } from 'v-mask'
 
 Vue.config.productionTip = false;
 async function main(){
+	Vue.directive('mask', VueMaskDirective);
 	initClients(stores);
 	await stores.client.init(clients);
 
@@ -47,6 +49,8 @@ async function main(){
 	await stores.helper.init(helpers);
 
 	initStorePlugins(store);
+
+	plugins.forEach((plugin) => plugin(Vue));
 
 	const serverHost = backendUrl(defaultUseHttps, defaultBackendHost, defaultBackendPort);
 	var serverReachable = false;

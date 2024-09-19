@@ -6,7 +6,8 @@ enum TDepartemenErrorCode{
 	NAMA_INVALID,
 	NAMA_TOO_LONG,
 	NAMA_ALREADY_EXISTS,
-	DEPARTEMEN_NOT_FOUND
+	DEPARTEMEN_NOT_FOUND,
+	PERUSAHAAN_NOT_FOUND
 }
 
 const i32 NAMA_LEN_MAX = 50;
@@ -19,6 +20,7 @@ const map<TDepartemenErrorCode, string> T_DEPARTEMEN_ERROR_STR = {
 	TDepartemenErrorCode.NAMA_TOO_LONG: "Nama departemen terlalu panjang. Nama maksimal 50 karakter.",
 	TDepartemenErrorCode.NAMA_ALREADY_EXISTS: "Nama departemen sudah digunakan.",
 	TDepartemenErrorCode.DEPARTEMEN_NOT_FOUND: "Departemen tidak ditemukan.",
+	TDepartemenErrorCode.PERUSAHAAN_NOT_FOUND: "Perusahaan tidak ditemukan.",
 };
 
 exception TDepartemenError{

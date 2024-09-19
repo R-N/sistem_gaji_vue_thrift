@@ -10,6 +10,9 @@ from rpc.handler.data.perusahaan import TDataPerusahaanServiceHandler
 from rpc.gen.data.departemen.services import TDataDepartemenService
 from rpc.handler.data.departemen import TDataDepartemenServiceHandler
 
+from rpc.gen.data.job_level.services import TDataJobLevelService
+from rpc.handler.data.job_level import TDataJobLevelServiceHandler
+
 from rpc.gen.user.auth.services import TUserAuthService
 from rpc.handler.user.auth import TUserAuthServiceHandler
 
@@ -57,6 +60,10 @@ data_departemen_server = make_server(TDataDepartemenService, TDataDepartemenServ
 def data_departemen():
     return respond(data_departemen_server)
 
+data_job_level_server = make_server(TDataJobLevelService, TDataJobLevelServiceHandler())
+def data_job_level():
+    return respond(data_job_level_server)
+
 user_auth_server = make_server(TUserAuthService, TUserAuthServiceHandler())
 def user_auth():
     return respond(user_auth_server)
@@ -88,6 +95,7 @@ def system_backup():
 def init(app):
     app.route('/api/data/perusahaan', methods=['POST'])(data_perusahaan)
     app.route('/api/data/departemen', methods=['POST'])(data_departemen)
+    app.route('/api/data/job-level', methods=['POST'])(data_job_level)
 
     app.route('/api/user/auth', methods=['POST'])(user_auth)
     app.route('/api/user/recovery', methods=['POST'])(user_recovery)

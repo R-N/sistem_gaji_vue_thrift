@@ -4,6 +4,7 @@ from .backup import BackupModel
 from .email import EmailModel
 from .perusahaan import PerusahaanModel
 from .departemen import DepartemenModel
+from .job_level import JobLevelModel
 
 from .manager import models, basic_models
 
@@ -14,3 +15,4 @@ models['email'] = EmailModel()
 
 models['perusahaan'] = PerusahaanModel()
 models['departemen'] = DepartemenModel()
+models['job_level'] = JobLevelModel()
