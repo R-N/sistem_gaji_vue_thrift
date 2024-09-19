@@ -8,13 +8,13 @@ class TUserManagementClient extends TBaseClient{
 		super(stores, TUserManagementService, '/api/user/management');
 	}
 
-	async fetch_akun(query){
+	async fetch(query){
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		return await this.client.fetch_akun(this.stores.auth.authToken, query);
+		return await this.client.fetch(this.stores.auth.authToken, query);
 	}
-	async register_akun(form){
+	async register(form){
 		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		return await this.client.register_akun(this.stores.auth.authToken, form);
+		return await this.client.register(this.stores.auth.authToken, form);
 	}
 
 	async set_role(user_id, new_role){

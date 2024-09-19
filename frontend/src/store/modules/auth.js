@@ -79,7 +79,8 @@ class AuthStore extends VuexModule {
 		return { user: { ...this.state.user, role } }
 	}
 	get isSuperAdmin(){
-		return this.user.role == TUserRole.SUPER_ADMIN;
+		if (!this.user) return false;
+		return this.user && this.user.role == TUserRole.SUPER_ADMIN;
 	}
 	get isLoggedIn(){
 		return !!this.authToken;

@@ -7,7 +7,7 @@ enum TUserManagementErrorCode{
     INSUFFICIENT_PERMISSION_SET_ROLE,
     PASSWORD_EMPTY,
 }
-const map<TUserManagementErrorCode, string> T_AUTH_ERROR_STR = {
+const map<TUserManagementErrorCode, string> T_USER_MANAGEMENT_ERROR_STR = {
 	TUserManagementErrorCode.CANNOT_DELETE_VERIFIED: "Tidak dapat menghapus akun yang telah terverifikasi",
 	TUserManagementErrorCode.INSUFFICIENT_PERMISSION: "Anda tidak berhak melakukan ini pada user dengan peran lebih tinggi daripada Anda",
 	TUserManagementErrorCode.INSUFFICIENT_PERMISSION_SET_ROLE: "Anda tidak berhak menentukan role yang lebih tinggi daripada Anda",

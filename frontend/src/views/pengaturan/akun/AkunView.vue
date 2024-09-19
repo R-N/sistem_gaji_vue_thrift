@@ -31,7 +31,7 @@
 			<v-data-table
 				class="backup-table"
 				:headers="headers"
-				:items="akun"
+				:items="items"
 				item-key="id"
 				:search="search"
 				:loading="busy"
@@ -85,7 +85,7 @@
 							<span>{{ roleText(item.role) }}</span>
 						</template>
 					</editable-cell>
-					<span v-else >{{ item.email }}</span>
+					<span v-else >{{ item.role }}</span>
 				</template>
 				<template v-slot:item.enabled="{ item }">
 					<v-tooltip 
@@ -155,16 +155,16 @@
 					</v-tooltip>
 					<confirmation-slot
 						class="text-center justify-center justify-self-center"
-						:confirmTextMaker="deleteText(item)"
+						:confirmTextMaker="deleteConfirmText(item)"
 						v-slot="{ ask }"
-						:on-confirm="() => deleteUser(item)"
+						:on-confirm="() => deleteItem(item)"
 						v-if="isSuperAdmin"
 					>
 						<v-tooltip bottom>
 							<template v-slot:activator="{ on, attrs }">
 								<v-btn 
 									icon 
-									@click.stop="askDeleteUser(item, ask)" 
+									@click.stop="askDelete(item, ask)" 
 									class="" 
 									v-bind="attrs" 
 									v-on="on"
@@ -192,7 +192,7 @@
 			/>
 			<user-form-dialog
 				v-model="createDialog"
-				@register="user => { akun.push(user) }"
+				@register="user => { items.push(user) }"
 				:roles="roles"
 				:parent-busy="busy"
 			/>
@@ -203,6 +203,7 @@
 <script>
 import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
 import { TEmailError } from '@/rpc/gen/email.errors_types';
+import { TUserManagementError, TUserManagementErrorCode } from '@/rpc/gen/user.management.errors_types';
 import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TUserError, 
@@ -224,7 +225,8 @@ import SyncCheckbox from '@/components/form/SyncCheckbox';
 import EditableCell from '@/components/form/EditableCell';
 
 import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
-import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
+import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
+import BaseCrudView from '@/views/BaseCrudView';
 
 @Component({
   	name: "AkunView",
@@ -238,14 +240,12 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_AKUN)
 })
-class AkunView extends BaseView {
-	createDialog = false;
+class AkunView extends BaseCrudView {
 	setPasswordDialog = false;
 	toSetPassword = null;
 	roles = []
 	rolesDict = {}
-	search = ''
-	akun = []
+	rolesText = {}
 	selfDisableWarning = " Akun ini adalah akun Anda sendiri, sehingga anda akan logout dan tidak dapat login kembali hingga diaktifkan lagi."
 	selfDeleteWarning = " Akun ini adalah akun Anda sendiri, sehingga anda akan logout dan tidak dapat menggunakan akun ini lagi secara permanen."
 	roleLogoutWarning = " Akun yang diubah role nya harus login ulang."
@@ -257,6 +257,16 @@ class AkunView extends BaseView {
 	passwordLenMax = PASSWORD_LEN_MAX
 
 
+    get itemNameLower(){ return 'akun'; }
+    get client(){ return stores.client.user.management; }
+    get query(){ return new TUserQuery(); }
+	get breadcrumbs(){
+		return [
+			{ text: "Beranda", to: { name: 'beranda' }, exact: true },
+			{ text: "Pengaturan" },
+			{ text: "Akun" },
+		]
+	}
 	get headers(){
 		let headers = [
 			{ text: 'Username', value: 'username' },
@@ -271,14 +281,16 @@ class AkunView extends BaseView {
 		}
 		return headers
 	}
+	get filteredErrors() { return [TUserError, TEmailError, TUserEmailError, TUserManagementError]; }
 
 	populateRoles(){
 		for (const key in T_USER_ROLE_STR){
-			if (key == TUserRole.SUPER_ADMIN && stores.auth.user.role != TUserRole.SUPER_ADMIN)
+			if (key == TUserRole.SUPER_ADMIN && !this.isSuperAdmin)
 				continue;
 			let obj = { role: key, text: T_USER_ROLE_STR[key] };
 			this.roles.push(obj);
 			this.rolesDict[key] = obj;
+			this.rolesText[key] = obj.text;
 		}
 	}
 
@@ -286,53 +298,27 @@ class AkunView extends BaseView {
 		return T_USER_ROLE_STR[role];
 	}
 
-	get isSuperAdmin(){
-		return stores.auth.user.role == TUserRole.SUPER_ADMIN;
-	}
-
 	mayEdit(user){
-		return user.role != TUserRole.SUPER_ADMIN || this.isSuperAdmin;
+		return T_USER_ROLE_DOUBLES[user.role].includes(stores.auth.user.role);
 	}
 
 	mayEditEmail(user){
 		return this.mayEdit(user) && !user.verified;
 	}
 
-
 	async mounted(){
-		stores.app.setBreadcrumbs([
-			{ text: "Beranda", to: { name: 'beranda' }, exact: true },
-			{ text: "Pengaturan" },
-			{ text: "Akun" },
-		]);
+		await this._mounted();
 		this.populateRoles();
-		await this.fetchAkun();
-	}
-	async fetchAkun(){
-		const view = this;
-		view.busy = true;
-		let query = new TUserQuery();
-		try{
-			let akun = await stores.client.user.management.fetch_akun(query);
-			//this.akun = addEditFieldsBulk(akun, ["email", "role"]);
-			this.akun = akun;
-		} catch(error){
-			view.showError(error);
-		} finally {
-			view.busy = false;
-		}
 	}
 	setEmailConfirmText(user){
-		return "Apa Anda yakin ingin mengubah email untuk user '" 
-			+ user.email + "' menjadi '" 
-			+ user.emailEdit + "'?"
+		return this.setFieldConfirmText("email", user, "email", "emailEdit");
 	}
+
 	async setEmail(user, email){
 		const view = this;
 		view.busy=true;
 		try{
-			await stores.client.user.management.set_email(user.id, email);
-			user.email = email;
+			await this.setField("email", user, email, false);
 			user.verified = false;
 			if (user.id == stores.auth.user.id) 
 				await stores.auth.setUserEmail(user.email);
@@ -351,16 +337,15 @@ class AkunView extends BaseView {
 				warn += this.selfRoleDownWarning;
 			}
 		}
-		return "Apa Anda yakin ingin mengubah role untuk user '" 
-			+ this.roleText(user.role) + "' menjadi '" 
-			+ this.roleText(user.roleEdit) + "'?" + warn;
+		return this.setFieldConfirmText("role", user, "role", "roleEdit", this.rolesText) + warn;
 	}
+
 	async setRole(user, role){
 		const view = this;
 		view.busy=true;
 		try{
 			if (!(role in  T_USER_ROLE_STR)) throw new TUserError({ code: TUserErrorCode.ROLE_INVALID});
-			await stores.client.user.management.set_role(user.id, role);
+			await this.setField("role", user, role, false);
 			user.role = role;
 			/*
 			if (user.id == stores.auth.user.id){
@@ -374,71 +359,28 @@ class AkunView extends BaseView {
 		}
 	}
 	setEnabledConfirmText(user){
-		let action = user.enabled ? 'menonaktifkan' : 'mengaktifkan';
 		let warn = (user.enabled && user.id == stores.auth.user.id) ? this.selfDisableWarning : "";
-		return "Apa Anda yakin ingin " + action 
-			+ " user '" + user.username + "'?" + warn;
+        return this._setEnabledConfirmText(user, "username") + warn;
 	}
-	async setEnabled(user, enabled){
-		const view = this;
-		view.busy=true;
-		if (enabled === undefined || enabled === null)
-			enabled = !user.enabled;
-		try{
-			await stores.client.user.management.set_enabled(user.id, enabled);
-			user.enabled = enabled;
-		} catch (error) {
-			view.showError(error);
-		} finally {
-			view.busy = false;
-		}
-	}
-
 	setVerifiedConfirmText(user){
-		let action = user.verified ? 'membatalkan verifikasi' : 'memaksa verifikasi';
 		let warn = (user.verified && user.id == stores.auth.user.id) ? this.selfDisableWarning : "";
-		return "Apa Anda yakin ingin " + action 
-			+ " user '" + user.username + "'?" + warn;
+		return this.toggleFieldConfirmText("verified", 'membatalkan verifikasi', 'memaksa verifikasi', user, "username") + warn;
 	}
 	async setVerified(user, verified){
-		const view = this;
-		view.busy=true;
-		if (verified === undefined || verified === null)
-			verified = !user.verified;
-		try{
-			await stores.client.user.management.set_verified(user.id, verified);
-			user.verified = verified;
-		} catch (error) {
-			view.showError(error);
-		} finally {
-			view.busy = false;
-		}
+		return await this.toggleField("verified", user, verified);
 	}
 
-	deleteText(user){
+	deleteConfirmText(user){
 		let warn = (user.enabled && user.id == stores.auth.user.id) ? this.selfDeleteWarning : "";
-		return "Apa Anda yakin ingin menghapus user '" + user.username + "'?" + warn;
+        return this._deleteConfirmText(user, "username") + warn;
 	}
 
-	async askDeleteUser(user, ask){
+	async askDelete(user, ask){
 		if (user.verified){
-			this.showError("Tidak dapat menghapus akun yang telah terverifikasi.");
+			this.showError(new TUserManagementError({ code: TUserManagementErrorCode.CANNOT_DELETE_VERIFIED}));
 			return;
 		}
-		ask();
-	}
-
-	async deleteUser(user){
-		const view = this;
-		view.busy=true;
-		try{
-			await stores.client.user.management.delete(user.id);
-			this.akun.pop(user);
-		} catch (error) {
-			view.showError(error);
-		} finally {
-			view.busy = false;
-		}
+        return this._askDelete(user, ask);
 	}
 
 	prepareSetPassword(user){
@@ -447,26 +389,10 @@ class AkunView extends BaseView {
 	}
 	get setPasswordText(){
 		if (!this.toSetPassword) return '';
-		return "Masukkan password baru untuk user '" 
-			+ this.toSetPassword.username + "'"
+		return `Masukkan password baru untuk user '${this.toSetPassword.username}'`
 	}
 	async setPassword(password){
-		const user = this.toSetPassword;
-		const view = this;
-		view.busy=true;
-		try{
-			await stores.client.user.management.set_password(user.id, password);
-		} catch (error) {
-			view.showError(error);
-		} finally {
-			view.busy = false;
-		}
-	}
-	showError(error){
-		if (stores.helper.error.showFilteredError(error, 
-			[TUserError, TEmailError, TUserEmailError]
-		)) return;
-		throw error;
+		return await this.setField("password", this.toSetPassword, password);
 	}
 }
 export { AkunView } 

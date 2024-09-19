@@ -11,12 +11,12 @@ class TUserManagementServiceHandler(TUserManagementService.Iface):
         self.user_model = models['user']
         self.email_model = models['email']
 
-    def fetch_akun(self, auth_token, query=None):
+    def fetch(self, auth_token, query=None):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_users = self.user_model.fetch(query)
         return [u.fill(TUser()) for u in db_users]
 
-    def register_akun(self, auth_token, form):
+    def register(self, auth_token, form):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_user = self.user_model.register(auth_payload['role'], form)
         self.auth_model.require_role(auth_payload, db_user.role, Exception=TUserManagementError, error_code=TUserManagementErrorCode.INSUFFICIENT_PERMISSION)

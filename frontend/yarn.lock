@@ -3706,6 +3706,13 @@ error-stack-parser@^2.0.0:
   dependencies:
     stackframe "^1.1.1"
 
+error-stack-parser@^2.0.6:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/error-stack-parser/-/error-stack-parser-2.1.4.tgz#229cb01cdbfa84440bfa91876285b94680188286"
+  integrity sha512-Sk5V6wVazPhq5MhpO+AUxJn5x7XSXGl1R93Vn7i+zS15KDVxQijejNCrz8340/2bgLBjR9GtEG8ZVKONDjcqGQ==
+  dependencies:
+    stackframe "^1.3.4"
+
 es-abstract@^1.17.0-next.1, es-abstract@^1.17.2, es-abstract@^1.17.5:
   version "1.17.6"
   resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.17.6.tgz#9142071707857b2cacc7b89ecb670316c3e2d52a"
@@ -8290,6 +8297,11 @@ stackframe@^1.1.1:
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.2.0.tgz#52429492d63c62eb989804c11552e3d22e779303"
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
 
+stackframe@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.3.4.tgz#b881a004c8c149a5e8efef37d51b16e412943310"
+  integrity sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==
+
 static-extend@^0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/static-extend/-/static-extend-0.1.2.tgz#60809c39cbff55337226fd5e0b520f341f1fb5c6"
@@ -9115,6 +9127,14 @@ vue-html2pdf@^1.6.6:
   dependencies:
     html2pdf.js "^0.9.2"
 
+vue-just-super@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/vue-just-super/-/vue-just-super-0.0.1.tgz#8125cc9f942c52e8d8884366f92911113582be8b"
+  integrity sha512-vp6xlafYfQfGc00Yk+KJzufR7eBfL+34/7TUFVsOiWdAuXeYomgZW+n0cDPWby//WbFwNUQMq/y1tKLMIQ61Lg==
+  dependencies:
+    error-stack-parser "^2.0.6"
+    vue "^2.6.11"
+
 vue-lazyload@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/vue-lazyload/-/vue-lazyload-1.3.3.tgz#4df50a271bde9b74c3caf7a228d6e0af50d5682f"
@@ -9177,6 +9197,16 @@ vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
   dependencies:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
+
+vue-super-call@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-super-call/-/vue-super-call-1.0.0.tgz#d1ae934dd431f1d4aa543c57705e4bc3c244d74d"
+  integrity sha512-+42AB8oUT3VBitKnkWE9WS9N9KNNeLmK5TPiIn/LGwYyJfYIcoifx/lZoUJtuCdwVq5sU9eP8GRZFNQIhIh+3w==
+
+vue-super@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vue-super/-/vue-super-0.1.0.tgz#502849fb8b5a908469ab32d8514e22a9782295eb"
+  integrity sha512-+R9ApTX/7YNHXqysIGR0dAAw2YRK/Dr3WX63be2FUh5nG7iQ8h4y4qYw8Ts8T/kKsaIp87fKNRqels5r92yFtQ==
 
 vue-sync@^3.2.0:
   version "3.2.0"

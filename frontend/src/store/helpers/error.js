@@ -6,6 +6,9 @@ import {
 	TUserError, T_USER_ERROR_STR
 } from '@/rpc/gen/user.user.errors_types';
 import { 
+	TUserManagementError, T_USER_MANAGEMENT_ERROR_STR
+} from '@/rpc/gen/user.management.errors_types';
+import { 
 	TUserEmailError, T_USER_EMAIL_ERROR_STR
 } from '@/rpc/gen/user.email.errors_types';
 import { 
@@ -23,6 +26,12 @@ import {
 import { 
 	TPerusahaanError, T_PERUSAHAAN_ERROR_STR
 } from '@/rpc/gen/data.perusahaan.errors_types';
+import { 
+	TDepartemenError, T_DEPARTEMEN_ERROR_STR
+} from '@/rpc/gen/data.departemen.errors_types';
+import { 
+	TJobLevelError, T_JOB_LEVEL_ERROR_STR
+} from '@/rpc/gen/data.job_level.errors_types';
 
 import { TUserRole } from '@/rpc/gen/user.user.types_types';
 
@@ -34,12 +43,15 @@ const T_ERROR_STR = {
 	TAuthError: T_AUTH_ERROR_STR,
 	TLoginError: T_LOGIN_ERROR_STR,
 	TUserError: T_USER_ERROR_STR,
+	TUserManagementError: T_USER_MANAGEMENT_ERROR_STR,
 	TUserEmailError: T_USER_EMAIL_ERROR_STR,
 	TEmailError: T_EMAIL_ERROR_STR,
 	TDownloadError: T_DOWNLOAD_ERROR_STR,
 	TUploadError: T_UPLOAD_ERROR_STR,
 	TFileError: T_FILE_ERROR_STR,
-	TPerusahaanError: T_PERUSAHAAN_ERROR_STR
+	TPerusahaanError: T_PERUSAHAAN_ERROR_STR,
+	TDepartemenError: T_DEPARTEMEN_ERROR_STR,
+	TJobLevelError: T_JOB_LEVEL_ERROR_STR,
 }
 
 class ErrorHelper extends StoreUser{
@@ -67,7 +79,8 @@ class ErrorHelper extends StoreUser{
 		return this.showError(message, "beranda");
 	}
 	showFilteredError(error, classes=null, route=null){
-		if (!classes || classes.includes(error.constructor)){
+		console.log(error);
+		if (!classes || classes.includes(error.constructor) || classes.some(c => error instanceof c)){
 			let errorName = this.getErrorName(error);
 			this.showError(T_ERROR_STR[errorName][error.code], route);
 			return true;
@@ -101,6 +114,7 @@ class ErrorHelper extends StoreUser{
 				return authRouter.dialogUnknownTAuthError("TAuthError", error.code);
 			}
 		} else {
+			// throw error;
 			console.log(error);
 			return authRouter.dialogUnknownError(error);
 		}

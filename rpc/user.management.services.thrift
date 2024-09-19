@@ -11,14 +11,14 @@ namespace py user.management.services
 namespace js user.management.services
 
 service TUserManagementService{
-	list<user.user.structs.TUser> fetch_akun(
+	list<user.user.structs.TUser> fetch(
 		1: string auth_token,
 		2: user.management.structs.TUserQuery query
 	) throws (
 		1: user.auth.errors.TAuthError auth_error
 	);
 
-	user.user.structs.TUser register_akun(
+	user.user.structs.TUser register(
 		1: string auth_token,
 		2: user.management.structs.TUserRegistrationForm form
 	) throws (
