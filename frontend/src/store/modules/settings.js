@@ -43,6 +43,9 @@ class SettingsStore extends VuexModule {
 			perusahaanId,
 		};
 	}
+	get perusahaanNama(){
+		return this.perusahaansDict[this.perusahaanId];
+	}
 }
 
 const settingsStore = getModule(SettingsStore);
