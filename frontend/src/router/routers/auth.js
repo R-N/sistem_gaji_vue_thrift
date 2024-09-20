@@ -84,7 +84,7 @@ class AuthRouter extends RouterUser{
 		const router = this.router;
 		this.stores.app.pushTabDialog({
 			title: "Error",
-			text: "Anda tidak memiliki hak untuk melakukan ini",
+			text: "Anda tidak memiliki ijin untuk melakukan ini",
 			onDismiss: function(){ router.safePush({ name: "beranda"}) }
 		});
 		return false;

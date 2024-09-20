@@ -6,6 +6,7 @@ from utils.crypto import md5
 
 from rpc.gen.user.auth.errors.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
 from rpc.gen.user.user.types.constants import T_USER_ROLE_DOUBLES
+from db.entities.general import DbUser
 
 import db
 
@@ -147,9 +148,8 @@ class AuthModel:
         auth_token = self.encode_auth(auth_payload)
         return auth_token
 
-    def require_role(self, auth, role, Exception=TAuthError, error_code=TAuthErrorCode.ROLE_INVALID):
-        if isinstance(auth, str):
-            auth = self.decode_auth(auth)
-        if not (role in T_USER_ROLE_DOUBLES and auth['role'] in T_USER_ROLE_DOUBLES[role]):
-            raise Exception(error_code)
-        return auth
+    def require_role(self, actor, roles, Exception=TAuthError, error_code=TAuthErrorCode.ROLE_INVALID):
+        if isinstance(actor, str):
+            actor = self.decode_auth(actor)
+        DbUser.validator().validate_actor_role(actor, roles, Exception=Exception, error_code=error_code)
+        return actor

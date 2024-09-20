@@ -2,6 +2,7 @@ namespace py data.job_level.errors
 namespace js data.job_level.errors
 
 enum TJobLevelErrorCode{
+	ZERO,
 	NAMA_EMPTY,
 	NAMA_INVALID,
 	NAMA_TOO_LONG,

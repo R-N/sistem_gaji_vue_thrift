@@ -8,9 +8,11 @@ from rpc.gen.user.user.types.ttypes import TUserRole
 import rpc.gen.user.user.errors.constants as user_constants
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
+from rpc.gen.user.management.errors.ttypes import TUserManagementError, TUserManagementErrorCode
+from rpc.gen.user.user.types.constants import T_USER_ROLE_DOUBLES
 
 from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
-
+import traceback
 class DbUser(DbGeneralEntity):
     # Columns
 
@@ -33,7 +35,7 @@ class DbUser(DbGeneralEntity):
         pass
 
     def __repr__(self):
-        return "<User(id=%r, username=%r, name=%r, email=%r, role=%r, enabled=%r, confirmed=%r)>" % (self.id, self.username, self.name, self.email, self.role, self.enabled, self.confirmed)
+        return "<User(id=%r, username=%r, name=%r, email=%r, role=%r, enabled=%r, verified=%r)>" % (self.id, self.username, self.name, self.email, self.role, self.enabled, self.verified)
 
     # Properties and other methods associated with columns
 
@@ -59,9 +61,9 @@ class DbUser(DbGeneralEntity):
 
     def require_has_password(self, has_password):
         if has_password and not self.has_password:
-            raise TUserError(TUserErrorCode.USER_UNVERIFIED)
+            raise TUserError(TUserErrorCode.UNVERIFIED)
         if not has_password and self.has_password:
-            raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
+            raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
 
     # name
 
@@ -105,6 +107,8 @@ class DbUser(DbGeneralEntity):
 
     @email.setter
     def email(self, email):
+        # if self.verified:
+        #     raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
         DbUserValidator.validate_email(email)
         self.verified = False
         self.email_secret_2 = None
@@ -119,16 +123,19 @@ class DbUser(DbGeneralEntity):
     @verified.setter
     def verified(self, verified):
         if self.verified and verified:
-            raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
+            raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
+        if verified and not self.password:
+            #traceback.print_stack()
+            raise TUserManagementError(TUserManagementErrorCode.PASSWORD_EMPTY)
         self.email_secret_2 = None
         self.refresh_secret_2 = None
         self._verified = verified
 
     def require_verified(self, verified):
         if verified and not self.verified:
-            raise TUserError(TUserErrorCode.USER_UNVERIFIED)
+            raise TUserError(TUserErrorCode.UNVERIFIED)
         if not verified and self.verified:
-            raise TUserError(TUserErrorCode.USER_ALREADY_VERIFIED)
+            raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
 
     # enabled
 
@@ -172,13 +179,20 @@ class DbUserValidator:
         if role not in TUserRole._VALUES_TO_NAMES:
             raise TUserError(TUserErrorCode.ROLE_INVALID)
 
-    def validate_changer_role(changer_role, user_role):
-        return (not user_role) or user_role != TUserRole.SUPER_ADMIN or changer_role == TUserRole.SUPER_ADMIN
-
-    def validate_role_set(role, changer_role=None):
-        DbUserValidator.validate_role(role)
-        if role == TUserRole.SUPER_ADMIN and (changer_role != TUserRole.SUPER_ADMIN or not changer_role):
-            raise TAuthError(TAuthErrorCode.ROLE_INVALID)
+    def validate_actor_role(actor_role, roles, Exception=TAuthError, error_code=TAuthErrorCode.ROLE_INVALID):
+        if hasattr(actor_role, "role"):
+            actor_role = actor_role.role
+        if hasattr(actor_role, "__getitem__") and "role" in actor_role:
+            actor_role = actor_role["role"]
+        if not hasattr(roles, "__iter__"):
+            roles = [roles]
+        allowed_roles = {j for i in roles for j in T_USER_ROLE_DOUBLES[i]}
+        if actor_role not in allowed_roles:
+            traceback.print_stack()
+            if Exception:
+                raise Exception(error_code)
+            return False
+        return True
 
     def validate_email(email):
         if not email:

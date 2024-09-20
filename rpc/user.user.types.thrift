@@ -2,6 +2,7 @@ namespace py user.user.types
 namespace js user.user.types
 
 enum TUserRole{
+	ZERO,
 	KARYAWAN,
 	ADMIN_BIASA,
 	ADMIN_UTAMA,

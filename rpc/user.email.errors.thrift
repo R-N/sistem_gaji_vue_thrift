@@ -2,6 +2,7 @@ namespace js user.email.errors
 namespace py user.email.errors
 
 enum TUserEmailErrorCode{
+	ZERO,
 	RESET_PASSWORD_TOKEN_INVALID,
 	RESET_PASSWORD_TOKEN_EXPIRED,
 	EMAIL_VERIFICATION_TOKEN_INVALID,

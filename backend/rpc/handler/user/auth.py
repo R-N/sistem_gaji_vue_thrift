@@ -23,9 +23,9 @@ class TUserAuthServiceHandler(TUserAuthService.Iface):
         return TLoginResult(auth_token, refresh_token)
 
     def refresh_auth(self, auth_token, refresh_token):
-        auth_payload = self.auth_model.decode_auth(auth_token)
-        db_user = self.user_model.get_by_id(auth_payload['user_id'])
-        refresh_token = self.auth_model.refresh_auth(db_user, auth_payload, refresh_token)
+        actor = self.auth_model.decode_auth(auth_token)
+        db_user = self.user_model.get(actor['user_id'], actor=actor)
+        refresh_token = self.auth_model.refresh_auth(db_user, actor, refresh_token)
         db.commit()
         return refresh_token
 

@@ -52,8 +52,9 @@ class TUserManagementClient extends TCrudClient{
 		}
 	}
 	async delete(id){
-		// await super.delete(id);
-		await this.call("delete", id, TUserRole.SUPER_ADMIN);
+		await super.delete(id);
+		// this.requireRoleAction("delete");
+		// await this.client.delete(this.stores.auth.authToken, id);
 		if (id == this.stores.auth.user.id){
 			await this.stores.client.user.auth.logout();
 		}

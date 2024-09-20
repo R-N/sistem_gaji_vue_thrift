@@ -2,6 +2,7 @@ namespace py user.auth.errors
 namespace js user.auth.errors
 
 enum TLoginErrorCode{
+	ZERO,
 	USERNAME_EMPTY,
 	PASSWORD_EMPTY,
 	USERNAME_PASSWORD_SALAH,
@@ -29,6 +30,7 @@ exception TLoginError{
 }
 
 enum TAuthErrorCode{
+	ZERO,
 	NOT_LOGGED_IN,
 	AUTH_TOKEN_INVALID,
 	AUTH_TOKEN_EXPIRED,

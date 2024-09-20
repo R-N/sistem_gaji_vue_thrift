@@ -2,6 +2,7 @@ namespace py data.departemen.errors
 namespace js data.departemen.errors
 
 enum TDepartemenErrorCode{
+	ZERO,
 	NAMA_EMPTY,
 	NAMA_INVALID,
 	NAMA_TOO_LONG,

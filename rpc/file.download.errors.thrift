@@ -2,6 +2,7 @@ namespace py file.download.errors
 namespace js file.download.errors
 
 enum TDownloadErrorCode{
+	ZERO,
 	DOWNLOAD_TOKEN_INVALID,
 	DOWNLOAD_TOKEN_EXPIRED
 }

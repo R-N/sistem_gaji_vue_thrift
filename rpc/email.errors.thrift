@@ -2,6 +2,7 @@ namespace js email.errors
 namespace py email.errors
 
 enum TEmailErrorCode{
+	ZERO,
 	EMAIL_TOKEN_INVALID,
 	EMAIL_TOKEN_EXPIRED,
 	EMAIL_INVALID,

@@ -2,6 +2,7 @@ namespace py data.perusahaan.errors
 namespace js data.perusahaan.errors
 
 enum TPerusahaanErrorCode{
+	ZERO,
 	NAMA_EMPTY,
 	NAMA_INVALID,
 	NAMA_TOO_LONG,

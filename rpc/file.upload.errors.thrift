@@ -2,6 +2,7 @@ namespace py file.upload.errors
 namespace js file.upload.errors
 
 enum TUploadErrorCode{
+	ZERO,
 	UPLOAD_TOKEN_INVALID,
 	UPLOAD_TOKEN_EXPIRED,
 	FILE_NOT_PROVIDED,

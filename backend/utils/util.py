@@ -5,6 +5,8 @@ import random
 def email_delay():
     sleep(random.uniform(2, 5))
 
+def get_obj_attrs(obj):
+    return {k: v for k, v in obj.__dict__.items() if not k.startswith("__")}
 
 def get_obj_attr(obj, attr):
     for obj in [obj] + obj.__class__.mro():

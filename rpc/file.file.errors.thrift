@@ -2,6 +2,7 @@ namespace py file.file.errors
 namespace js file.file.errors
 
 enum TFileErrorCode{
+	ZERO,
 	FILE_NOT_FOUND,
 	FILE_ALREADY_EXISTS,
 	FILE_NAME_EMPTY,

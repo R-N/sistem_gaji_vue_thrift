@@ -2,6 +2,7 @@ namespace py user.user.errors
 namespace js user.user.errors
 
 enum TUserErrorCode{
+	ZERO,
 	USERNAME_EMPTY,
 	PASSWORD_EMPTY,
 	NAME_EMPTY,
@@ -21,9 +22,9 @@ enum TUserErrorCode{
 	PASSWORD_TOO_SHORT,
 	USERNAME_ALREADY_EXISTS,
 	EMAIL_ALREADY_EXISTS,
-	USER_NOT_FOUND,
-	USER_UNVERIFIED,
-	USER_ALREADY_VERIFIED
+	NOT_FOUND,
+	UNVERIFIED,
+	ALREADY_VERIFIED
 }
 
 const i32 USERNAME_LEN_MAX = 50;
@@ -57,9 +58,9 @@ const map<TUserErrorCode, string> T_USER_ERROR_STR = {
 	TUserErrorCode.PASSWORD_TOO_SHORT: "Password terlalu pendek. Password minimal 8 karakter",
 	TUserErrorCode.USERNAME_ALREADY_EXISTS: "Username sudah digunakan",
 	TUserErrorCode.EMAIL_ALREADY_EXISTS: "Email sudah digunakan",
-	TUserErrorCode.USER_NOT_FOUND: "User tidak ditemukan",
-	TUserErrorCode.USER_UNVERIFIED: "Akun belum terverifikasi",
-	TUserErrorCode.USER_ALREADY_VERIFIED: "Akun telah terverifikasi"
+	TUserErrorCode.NOT_FOUND: "User tidak ditemukan",
+	TUserErrorCode.UNVERIFIED: "Akun belum terverifikasi",
+	TUserErrorCode.ALREADY_VERIFIED: "Akun telah terverifikasi"
 };
 
 exception TUserError{
