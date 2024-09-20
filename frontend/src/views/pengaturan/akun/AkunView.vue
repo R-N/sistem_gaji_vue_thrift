@@ -37,54 +37,31 @@
 				:loading="busy"
 			>
 				<template v-slot:item.email="{ item }">
-					<editable-cell 
-						v-if="mayEditEmail(item) || isSuperAdmin"
-						@edit="item.emailEdit = item.email"
-						@finish="setEmail(item, item.emailEdit)"
-						:change-detector="() => item.email != item.emailEdit"
-						:confirm-text-maker="() => setEmailConfirmText(item)"
-						:parent-busy="busy"
-					>
-						<template v-slot:editing>
-							<v-text-field 
-								name="email" 
-								v-model="item.emailEdit" 
-								:rules="emailRules"
-								:counter="emailLenMax"
-								type="email"
-								:disabled="busy"
-							/>
-						</template>
-						<template v-slot:default>
-							<span>{{ item.email }}</span>
-						</template>
-					</editable-cell>
+					<editable-cell-text-field
+						v-if="mayEditEmail(item)"
+						name="email" 
+						type="email"
+						:counter="emailLenMax"
+						:confirm-text-maker="(value) => setFieldConfirmText('email', item, value)"
+						:value="item.email" 
+						@change="(value) => setEmail(item, value)"
+						:rules="emailRules"
+						:disabled="!mayEditEmail(item) || busy"
+					/>
 					<span v-else >{{ item.email }}</span>
 				</template>
 				<template v-slot:item.role="{ item }">
-					<editable-cell 
+					<editable-cell-select
 						v-if="mayEdit(item)"
-						@edit="item.roleEdit = item.role"
-						@finish="setRole(item, item.roleEdit)"
-						:change-detector="() => item.role != item.roleEdit"
-						:confirm-text-maker="() => setRoleConfirmText(item)"
-						:parent-busy="busy"
-					>
-						<template v-slot:editing>
-							<v-select
-								name="role"
-								:items="roles"
-								item-value="role"
-								item-text="text"
-								:value="rolesDict[item.role]"
-								@change="value => item.roleEdit = value"
-								:disabled="busy"
-							></v-select>
-						</template>
-						<template v-slot:default>
-							<span>{{ roleText(item.role) }}</span>
-						</template>
-					</editable-cell>
+						name="role" 
+						item-value="role"
+						item-title="text"
+						:value="rolesDict[item.role]"
+						:items="roles"
+						:confirm-text-maker="(value) => setRoleConfirmText(item, value)"
+						@change="(value) => setRole(item, value)"
+						:disabled="!mayEdit(item) || busy"
+					/>
 					<span v-else >{{ item.role }}</span>
 				</template>
 				<template v-slot:item.enabled="{ item }">
@@ -153,29 +130,15 @@
 						</template>
 						<span>Ubah password</span>
 					</v-tooltip>
-					<confirmation-slot
-						class="text-center justify-center justify-self-center"
+					<confirmation-icon-button
+						icon="mdi-delete"
+						text="Hapus"
 						:confirmTextMaker="deleteConfirmText(item)"
-						v-slot="{ ask }"
 						:on-confirm="() => deleteItem(item)"
+						:ask="(ask) => askDelete(item, ask)" 
+						:disabled="busy"
 						v-if="isSuperAdmin"
-					>
-						<v-tooltip bottom>
-							<template v-slot:activator="{ on, attrs }">
-								<v-btn 
-									icon 
-									@click.stop="askDelete(item, ask)" 
-									class="" 
-									v-bind="attrs" 
-									v-on="on"
-									:disabled="busy"
-								>
-									<v-icon size="32" small>mdi-delete</v-icon>
-								</v-btn>
-							</template>
-							<span>Hapus</span>
-						</v-tooltip>
-					</confirmation-slot>
+					/>
 				</template>
 			</v-data-table>
 			<simple-input-dialog 
@@ -228,6 +191,10 @@ import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
 import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
 import BaseCrudView from '@/views/BaseCrudView';
 
+import ConfirmationIconButton from '@/components/form/buttons/ConfirmationIconButton';
+import EditableCellTextField from '@/components/form/editable_cells/EditableCellTextField';
+import EditableCellSelect from '@/components/form/editable_cells/EditableCellSelect';
+
 @Component({
   	name: "AkunView",
   	components: {
@@ -237,6 +204,9 @@ import BaseCrudView from '@/views/BaseCrudView';
   		EditableCell,
   		UserFormDialog,
 		ConfirmationSlot,
+		ConfirmationIconButton,
+		EditableCellTextField,
+		EditableCellSelect,
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_AKUN)
 })
@@ -256,7 +226,7 @@ class AkunView extends BaseCrudView {
 	emailLenMax = EMAIL_LEN_MAX
 	passwordLenMax = PASSWORD_LEN_MAX
 
-
+	get nameField(){ return "username"; }
     get itemNameLower(){ return 'akun'; }
     get client(){ return stores.client.user.management; }
     get query(){ return new TUserQuery(); }
@@ -310,8 +280,8 @@ class AkunView extends BaseCrudView {
 		await this._mounted();
 		this.populateRoles();
 	}
-	setEmailConfirmText(user){
-		return this.setFieldConfirmText("email", user, "email", "emailEdit");
+	setEmailConfirmText(user, newValue){
+		return this.setFieldConfirmText("email", user, newValue);
 	}
 
 	async setEmail(user, email){
@@ -329,7 +299,7 @@ class AkunView extends BaseCrudView {
 		}
 	}
 
-	setRoleConfirmText(user){
+	setRoleConfirmText(user, newValue){
 		let warn = this.roleLogoutWarning;
 		if (user.id == stores.auth.user.id){
 			warn += this.selfRoleLogoutWarning;
@@ -337,7 +307,7 @@ class AkunView extends BaseCrudView {
 				warn += this.selfRoleDownWarning;
 			}
 		}
-		return this.setFieldConfirmText("role", user, "role", "roleEdit", this.rolesText) + warn;
+		return this.setFieldConfirmText("role", user, newValue, this.rolesText) + warn;
 	}
 
 	async setRole(user, role){
@@ -358,9 +328,9 @@ class AkunView extends BaseCrudView {
 			view.busy = false;
 		}
 	}
-	setEnabledConfirmText(user){
+	setEnabledConfirmText(user, newValue){
 		let warn = (user.enabled && user.id == stores.auth.user.id) ? this.selfDisableWarning : "";
-        return this._setEnabledConfirmText(user, "username") + warn;
+        return this._setEnabledConfirmText(user, newValue) + warn;
 	}
 	setVerifiedConfirmText(user){
 		let warn = (user.verified && user.id == stores.auth.user.id) ? this.selfDisableWarning : "";
@@ -372,7 +342,7 @@ class AkunView extends BaseCrudView {
 
 	deleteConfirmText(user){
 		let warn = (user.enabled && user.id == stores.auth.user.id) ? this.selfDeleteWarning : "";
-        return this._deleteConfirmText(user, "username") + warn;
+        return this._deleteConfirmText(user) + warn;
 	}
 
 	async askDelete(user, ask){

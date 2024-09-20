@@ -5,13 +5,16 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 
 @Component({
-      name: "BaseCrudView",
+    name: "BaseCrudView",
+  	components: {
+  	}
 })
 class BaseCrudView extends BaseView {
     createDialog = false;
     search = ''
     items = []
 
+    get nameField() { return "nama"; }
     get itemNameLower(){ return 'item'; }
     get client(){ return null; }
     get headers(){ return []; }
@@ -19,8 +22,8 @@ class BaseCrudView extends BaseView {
     get query(){ return {}; }
     get filteredErrors() { return []; }
 
-    _deleteConfirmText(item, nameField="nama"){
-        return `Apa Anda yakin ingin menghapus ${this.itemNameLower} '${item[nameField]}'?`;
+    _deleteConfirmText(item){
+        return `Apa Anda yakin ingin menghapus ${this.itemNameLower} '${item[this.nameField]}'?`;
     }
 
     async _askDelete(item, ask){
@@ -61,22 +64,22 @@ class BaseCrudView extends BaseView {
                 view.busy = false;
         }
     }
-    _setNamaConfirmText(item){
-        return setFieldConfirmText("nama", item, "nama", "namaEdit");
+    _setNamaConfirmText(item, newValue){
+        return setFieldConfirmText("nama", item, newValue);
     }
 
-    async _setNama(item, nama){
-        return await this.setField("nama", item, nama);
+    async _setNama(item, newValue){
+        return await this.setField("nama", item, newValue);
     }
 
-    _setFieldConfirmText(fieldName, item, oldField, newField, alias=null){
-        let oldValue = item[oldField];
-        let newValue = item[newField];
+    _setFieldConfirmText(fieldName, item, newValue, alias=null){
+        let oldValue = item[fieldName];
+        // let newValue = item[newField];
         if (alias){
             oldValue = alias[oldValue];
             newValue = alias[newValue];
         }
-        return `Apa Anda yakin ingin mengubah ${fieldName} ${this.itemNameLower} '${oldValue}' menjadi '${newValue}'?`
+        return `Apa Anda yakin ingin mengubah ${fieldName} ${this.itemNameLower} '${item[this.nameField]}' dari '${oldValue}' menjadi '${newValue}'?`
     }
     async _setField(fieldName, item, value, releaseBusy=true){
         const view = this;
@@ -92,17 +95,17 @@ class BaseCrudView extends BaseView {
         }
     }
 
-    _setEnabledConfirmText(item, nameField="nama"){
-        return this.toggleFieldConfirmText("enabled", 'menonaktifkan', 'mengaktifkan', item, nameField);
+    _setEnabledConfirmText(item){
+        return this.toggleFieldConfirmText("enabled", 'menonaktifkan', 'mengaktifkan', item);
     }
 
     async _setEnabled(item, enabled){
         return await this.toggleField("enabled", item, enabled);
     }
 
-    _toggleFieldConfirmText(fieldName, disable, enable, item, nameField="nama"){
+    _toggleFieldConfirmText(fieldName, disable, enable, item){
         let action = item[fieldName] ? disable : enable;
-        return `Apa Anda yakin ingin ${action} ${this.itemNameLower} '${item[nameField]}'?`;
+        return `Apa Anda yakin ingin ${action} ${this.itemNameLower} '${item[this.nameField]}'?`;
     }
 
     async _toggleField(toggleName, item, enabled){
@@ -118,8 +121,8 @@ class BaseCrudView extends BaseView {
     }
 
     
-    deleteConfirmText(item, nameField="nama"){
-        return this._deleteConfirmText(item, nameField);
+    deleteConfirmText(item){
+        return this._deleteConfirmText(item);
     }
 
     async askDelete(item, ask){
@@ -145,23 +148,24 @@ class BaseCrudView extends BaseView {
         return await this._setNama(item, nama);
     }
 
-    setFieldConfirmText(fieldName, item, oldField, newField, alias=null){
-        return this._setFieldConfirmText(fieldName, item, oldField, newField, alias);
+    setFieldConfirmText(fieldName, item, newValue, alias=null){
+        return this._setFieldConfirmText(fieldName, item, newValue, alias);
     }
+
     async setField(fieldName, item, value, releaseBusy=true){
         return await this._setField(fieldName, item, value, releaseBusy);
     }
 
-    setEnabledConfirmText(item, nameField="nama"){
-        return this._setEnabledConfirmText(item, nameField);
+    setEnabledConfirmText(item){
+        return this._setEnabledConfirmText(item);
     }
 
     async setEnabled(item, enabled){
         return await this._setEnabled(item, enabled);
     }
 
-    toggleFieldConfirmText(fieldName, disable, enable, item, nameField="nama"){
-        return this._toggleFieldConfirmText(fieldName, disable, enable, item, nameField);
+    toggleFieldConfirmText(fieldName, disable, enable, item){
+        return this._toggleFieldConfirmText(fieldName, disable, enable, item);
     }
 
     async toggleField(toggleName, item, enabled){

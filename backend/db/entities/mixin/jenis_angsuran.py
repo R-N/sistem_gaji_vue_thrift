@@ -16,7 +16,7 @@ class MxJenisAngsuran(MxAiId):
 
     @declared_attr
     def angsuran(cls):
-        return relationship("DbAngsuran", back_populates="jenis_angsuran", viewonly=True, , passive_deletes="all")
+        return relationship("DbAngsuran", back_populates="jenis_angsuran", viewonly=True, passive_deletes="all")
 
         '''
     def mx_init(

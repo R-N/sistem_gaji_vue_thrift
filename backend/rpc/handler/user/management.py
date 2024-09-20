@@ -16,9 +16,9 @@ class TUserManagementServiceHandler(TUserManagementService.Iface):
         db_users = self.user_model.fetch(query)
         return [u.fill(TUser()) for u in db_users]
 
-    def register(self, auth_token, form):
+    def create(self, auth_token, form):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
-        db_user = self.user_model.register(auth_payload['role'], form)
+        db_user = self.user_model.create(auth_payload['role'], form)
         self.auth_model.require_role(auth_payload, db_user.role, Exception=TUserManagementError, error_code=TUserManagementErrorCode.INSUFFICIENT_PERMISSION)
         self.email_model.send_welcome(db_user)
         self.user_model.commit()

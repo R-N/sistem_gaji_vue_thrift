@@ -18,7 +18,7 @@ service TUserManagementService{
 		1: user.auth.errors.TAuthError auth_error
 	);
 
-	user.user.structs.TUser register(
+	user.user.structs.TUser create(
 		1: string auth_token,
 		2: user.management.structs.TUserRegistrationForm form
 	) throws (

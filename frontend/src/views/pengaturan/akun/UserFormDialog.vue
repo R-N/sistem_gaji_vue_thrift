@@ -222,7 +222,7 @@ class UserFormDialog extends WorkingComponent {
 			role: this.role.role
 		});
 		try{
-			let user = await stores.client.user.management.register(form);
+			let user = await stores.client.user.management.create(form);
 			view.$emit("register", user);
 			view.close();
 		} catch (error) {

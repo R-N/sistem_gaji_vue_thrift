@@ -14,10 +14,10 @@
 		>
 			<div class="d-flex align-center justify-space-between">
 				<span class="flex-grow-1">
-					<slot v-if="readOnlyMode || editing" name="editing" :readonly="readOnlyMode && !editing" :editing="editing">Edit</slot>
+					<slot v-if="!disabled && editing" name="editing" :readonly="disabled || busy || !editing" :editing="editing">Edit</slot>
 					<slot v-else name="default">Hello</slot>
 				</span>
-				<span  class="flex-grow-0 flex-shrink-0">
+				<span  class="flex-grow-0 flex-shrink-0" v-if="!disabled">
 					<span v-if="editing">
 						<v-tooltip bottom key="submit">
 							<template v-slot:activator="{ on, attrs }">
@@ -88,7 +88,7 @@ class EditableCell extends WorkingComponent {
 	@Prop(Function) onCancel;
 	@Prop([String, Function]) confirmTextMaker; 
 	@Prop(Function) changeDetector;
-	@Prop({ default: false }) readOnlyMode;
+	@Prop({ default: false }) disabled;
 	confirmDialog=false;
 	editing=false;
 	valid=true;

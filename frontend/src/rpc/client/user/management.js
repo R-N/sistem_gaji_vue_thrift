@@ -1,60 +1,60 @@
 import TUserManagementService from '@/rpc/gen/TUserManagementService';
-import { TBaseClient } from '@/rpc/client/base';
+import { TCrudClient } from '@/rpc/client/crud';
 import { TUserRole } from '@/rpc/gen/user.user.types_types';
 
 
-class TUserManagementClient extends TBaseClient{
+class TUserManagementClient extends TCrudClient{
 	constructor(stores=null){
-		super(stores, TUserManagementService, '/api/user/management');
+		super(
+			stores, 
+			TUserManagementService, 
+			'/api/user/management',
+			{
+				fetch: TUserRole.ADMIN_AKUN,
+				create: TUserRole.ADMIN_AKUN,
+				delete: TUserRole.SUPER_ADMIN,
+			},
+			{}
+		);
 	}
 
-	async fetch(query){
-		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		return await this.client.fetch(this.stores.auth.authToken, query);
-	}
-	async register(form){
-		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		return await this.client.register(this.stores.auth.authToken, form);
-	}
-
-	async set_role(user_id, new_role){
-		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		await this.client.set_role(this.stores.auth.authToken, user_id, new_role);
-		if (user_id == this.stores.auth.user.id){
+	async set_role(id, value){
+		await this.set_field("role", id, value, TUserRole.ADMIN_AKUN);
+		if (id == this.stores.auth.user.id){
 			//await this.stores.auth.setUserRole(new_role);
 			await this.stores.client.user.auth.logout();
 		}
 	}
 
-	async set_email(user_id, new_email){
-		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		await this.client.set_email(this.stores.auth.authToken, user_id, new_email);
+	async set_email(id, value){
+		await this.set_field("email", id, value, TUserRole.ADMIN_AKUN);
+		if (id == this.stores.auth.user.id){
+			await this.stores.client.user.auth.logout();
+		}
 	}
-	async set_password(user_id, new_password){
-		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		await this.client.set_password(this.stores.auth.authToken, user_id, new_password);
-		if (user_id == this.stores.auth.user.id){
+	async set_enabled(id, value){
+		await this.set_field("enabled", id, value, TUserRole.ADMIN_AKUN);
+		if (id == this.stores.auth.user.id && !value){
+			await this.stores.client.user.auth.logout();
+		}
+	}
+	async set_password(id, value){
+		await this.set_field("password", id, value, TUserRole.SUPER_ADMIN);
+		if (id == this.stores.auth.user.id){
+			// await this.stores.client.user.auth.logout();
 			await this.stores.client.user.auth.login(this.stores.auth.user.username, new_password);
 		}
 	}
-	async set_enabled(user_id, new_enabled){
-		this.stores.helper.auth.requireRole(TUserRole.ADMIN_AKUN);
-		await this.client.set_enabled(this.stores.auth.authToken, user_id, new_enabled);
-		if (user_id == this.stores.auth.user.id && !new_enabled){
+	async set_verified(id, value){
+		await this.set_field("verified", id, value, TUserRole.SUPER_ADMIN);
+		if (id == this.stores.auth.user.id && !value){
 			await this.stores.client.user.auth.logout();
 		}
 	}
-	async set_verified(user_id, new_verified){
-		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		await this.client.set_verified(this.stores.auth.authToken, user_id, new_verified);
-		if (user_id == this.stores.auth.user.id && !new_verified){
-			await this.stores.client.user.auth.logout();
-		}
-	}
-	async delete(user_id){
-		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		await this.client.delete(this.stores.auth.authToken, user_id);
-		if (user_id == this.stores.auth.user.id){
+	async delete(id){
+		// await super.delete(id);
+		await this.call("delete", id, TUserRole.SUPER_ADMIN);
+		if (id == this.stores.auth.user.id){
 			await this.stores.client.user.auth.logout();
 		}
 	}

@@ -12,6 +12,10 @@ class WorkingComponent extends Vue {
 	@Prop({ default: false }) parentBusy
 	selfBusy = false
 
+	log(x){
+		console.log(x);
+	}
+
 	get busy(){
 		return this.selfBusy || this.parentBusy || appStore.routerBusy || appStore.tabBusy || appStore.authBusy || appStore.globalBusy
 	}

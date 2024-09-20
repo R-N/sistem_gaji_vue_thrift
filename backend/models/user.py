@@ -103,7 +103,7 @@ class UserModel:
     def validate_role_set(self, new_role, changer_role):
         return DbUser.validator().validate_role_set(new_role, changer_role)
 
-    def register(self, changer_role, form):
+    def create(self, changer_role, form):
         self.validate_role_set(form.role, changer_role)
         
         user = DbUser()
