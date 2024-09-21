@@ -115,7 +115,6 @@ import {
 } from "@/rpc/gen/user.user.errors_types";
 import { TUserQuery } from '@/rpc/gen/user.management.structs_types';
 
-import { router } from "@/router/index";
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
 import { EMAIL_RULES, PASSWORD_RULES } from '@/lib/validators/user';
