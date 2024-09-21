@@ -47,10 +47,10 @@
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TPerusahaanError, 
-	NAMA_LEN_MAX 
+	NAMA_MAX_LEN 
 } from "@/rpc/gen/data.perusahaan.errors_types";
 import { TPerusahaanQuery } from '@/rpc/gen/data.perusahaan.structs_types';
 
@@ -84,7 +84,7 @@ import EditableCellTextField from '@/components/form/editable_cell/EditableCellT
 })
 class DataPerusahaanView extends BaseCrudViewBase {
 	createDialog = false;
-	namaLenMax = NAMA_LEN_MAX
+	namaLenMax = NAMA_MAX_LEN
 	namaRules = NAMA_RULES
 
 	get nameField(){ return "nama"; }

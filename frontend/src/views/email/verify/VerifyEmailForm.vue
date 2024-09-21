@@ -61,7 +61,7 @@ class VerifyEmailForm extends WorkingComponent {
 	passwordConfirm = ''
 	passwordVisible = false;
 	passwordRules = PASSWORD_RULES
-	passwordLenMax = PASSWORD_LEN_MAX
+	passwordLenMax = PASSWORD_MAX_LEN
 
 	validateConfirm(passwordConfirm){
 		if (this.password === passwordConfirm) return true;

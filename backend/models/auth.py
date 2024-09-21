@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from utils.crypto import md5
 
 from rpc.gen.user.auth.errors.ttypes import TLoginError, TLoginErrorCode, TAuthError, TAuthErrorCode
-from rpc.gen.user.user.types.constants import T_USER_ROLE_DOUBLES
+from rpc.gen.user.user.types.constants import T_ROLE_DOUBLES
 from db.entities.general import DbUser
 
 import db

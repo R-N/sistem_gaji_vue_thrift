@@ -135,7 +135,7 @@
 import axios from 'axios';
 import FileSaver from 'file-saver';
 
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { TFileError } from '@/rpc/gen/file.file.errors_types';
 import { TUploadError } from '@/rpc/gen/file.upload.errors_types';
 import { TDownloadError } from '@/rpc/gen/file.download.errors_types';

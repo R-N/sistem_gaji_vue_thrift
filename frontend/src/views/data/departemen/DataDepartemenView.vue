@@ -96,10 +96,10 @@
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TDepartemenError, 
-	NAMA_LEN_MAX 
+	NAMA_MAX_LEN 
 } from "@/rpc/gen/data.departemen.errors_types";
 import { TDepartemenQuery } from '@/rpc/gen/data.departemen.structs_types';
 
@@ -131,7 +131,7 @@ class DataDepartemenView extends BaseView {
 	createDialog = false;
 	search = ''
 	departemen = []
-	namaLenMax = NAMA_LEN_MAX
+	namaLenMax = NAMA_MAX_LEN
 	namaRules = NAMA_RULES
 
 	get headers(){

@@ -104,10 +104,10 @@
 import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
 import { TEmailError } from '@/rpc/gen/email.errors_types';
 import { TUserManagementError, TUserManagementErrorCode } from '@/rpc/gen/user.management.errors_types';
-import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TUserError, 
-	EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
+	EMAIL_MAX_LEN, PASSWORD_MAX_LEN 
 } from "@/rpc/gen/user.user.errors_types";
 import { TUserQuery } from '@/rpc/gen/user.management.structs_types';
 
@@ -158,8 +158,8 @@ class AkunView extends BaseCrudViewBase {
 	selfRoleDownWarning = " Selain itu, jika Anda bukan Admin Akun maupun Super Admin, Anda tidak bisa mengakses halaman ini."
 	emailRules = EMAIL_RULES
 	passwordRules = PASSWORD_RULES
-	emailLenMax = EMAIL_LEN_MAX
-	passwordLenMax = PASSWORD_LEN_MAX
+	emailLenMax = EMAIL_MAX_LEN
+	passwordLenMax = PASSWORD_MAX_LEN
 
 	get nameField(){ return "username"; }
     get itemNameLower(){ return 'akun'; }
@@ -189,10 +189,10 @@ class AkunView extends BaseCrudViewBase {
 	get filteredErrors() { return [TUserError, TEmailError, TUserEmailError, TUserManagementError]; }
 
 	populateRoles(){
-		for (const key in T_USER_ROLE_STR){
+		for (const key in T_ROLE_STR){
 			if (key == TUserRole.SUPER_ADMIN && !this.isSuperAdmin)
 				continue;
-			let obj = { role: key, text: T_USER_ROLE_STR[key] };
+			let obj = { role: key, text: T_ROLE_STR[key] };
 			this.roles.push(obj);
 			this.rolesDict[key] = obj;
 			this.rolesText[key] = obj.text;
@@ -200,11 +200,11 @@ class AkunView extends BaseCrudViewBase {
 	}
 
 	roleText(role){
-		return T_USER_ROLE_STR[role];
+		return T_ROLE_STR[role];
 	}
 
 	mayEdit(user){
-		return T_USER_ROLE_DOUBLES[user.role].includes(stores.auth.user.role);
+		return T_ROLE_DOUBLES[user.role].includes(stores.auth.user.role);
 	}
 
 	mayEditEmail(user){
@@ -238,7 +238,7 @@ class AkunView extends BaseCrudViewBase {
 		let warn = this.roleLogoutWarning;
 		if (user.id == stores.auth.user.id){
 			warn += this.selfRoleLogoutWarning;
-			if (!T_USER_ROLE_DOUBLES[TUserRole.ADMIN_AKUN].includes(parseInt(user.roleEdit))){
+			if (!T_ROLE_DOUBLES[TUserRole.ADMIN_AKUN].includes(parseInt(user.roleEdit))){
 				warn += this.selfRoleDownWarning;
 			}
 		}
@@ -249,7 +249,7 @@ class AkunView extends BaseCrudViewBase {
 		const view = this;
 		view.busy=true;
 		try{
-			if (!(role in  T_USER_ROLE_STR)) throw new TUserError({ code: TUserErrorCode.ROLE_INVALID});
+			if (!(role in  T_ROLE_STR)) throw new TUserError({ code: TUserErrorCode.ROLE_INVALID});
 			await this.setField("role", user, role, false);
 			user.role = role;
 			/*

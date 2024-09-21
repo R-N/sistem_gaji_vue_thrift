@@ -96,10 +96,10 @@
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR, T_USER_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TJobLevelError, 
-	NAMA_LEN_MAX 
+	NAMA_MAX_LEN 
 } from "@/rpc/gen/data.job_level.errors_types";
 import { TJobLevelQuery } from '@/rpc/gen/data.job_level.structs_types';
 
@@ -131,7 +131,7 @@ class DataJobLevelView extends BaseView {
 	createDialog = false;
 	search = ''
 	jobLevel = []
-	namaLenMax = NAMA_LEN_MAX
+	namaLenMax = NAMA_MAX_LEN
 	namaRules = NAMA_RULES
 
 	get headers(){

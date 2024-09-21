@@ -27,11 +27,11 @@ enum TUserErrorCode{
 	ALREADY_VERIFIED
 }
 
-const i32 USERNAME_LEN_MAX = 50;
-const i32 NAME_LEN_MAX = 50;
-const i32 PASSWORD_LEN_MIN = 8;
-const i32 PASSWORD_LEN_MAX = 20;
-const i32 EMAIL_LEN_MAX = 50;
+const i32 USERNAME_MAX_LEN = 50;
+const i32 NAME_MAX_LEN = 50;
+const i32 PASSWORD_MIN_LEN = 8;
+const i32 PASSWORD_MAX_LEN = 20;
+const i32 EMAIL_MAX_LEN = 50;
 
 const string PASSWORD_REGEX_STR = "^(?=\\S{8,20}$)(?=.*?\\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\\s0-9])";
 const string EMAIL_REGEX_STR = "^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$";

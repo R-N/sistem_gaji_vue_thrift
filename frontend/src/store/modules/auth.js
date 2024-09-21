@@ -11,7 +11,7 @@ import {
 	TAuthError, TAuthErrorCode, 
 	TLoginError, TLoginErrorCode 
 } from '@/rpc/gen/user.auth.errors_types';
-import { TUserRole, T_USER_ROLE_DOUBLES } from '@/rpc/gen/user.user.types_types';
+import { TUserRole, T_ROLE_DOUBLES } from '@/rpc/gen/user.user.types_types';
 
 import { dateAsInt } from '@/lib/util';
 
@@ -90,7 +90,7 @@ class AuthStore extends VuexModule {
 		return this.user.role;
 	}
 	get checkRole(){
-		return (role) => this.authToken && this.user && (role in T_USER_ROLE_DOUBLES) && T_USER_ROLE_DOUBLES[role].includes(this.user.role);
+		return (role) => this.authToken && this.user && (role in T_ROLE_DOUBLES || T_ROLE_DOUBLES.hasOwnProperty(role)) && T_ROLE_DOUBLES[role].includes(this.user.role);
 	}
 
 

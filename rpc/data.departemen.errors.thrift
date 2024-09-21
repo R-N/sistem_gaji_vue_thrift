@@ -11,7 +11,7 @@ enum TDepartemenErrorCode{
 	PERUSAHAAN_NOT_FOUND
 }
 
-const i32 NAMA_LEN_MAX = 50;
+const i32 NAMA_MAX_LEN = 50;
 
 const string NAMA_REGEX_STR = "^[a-zA-Z0-9 \\.\\,\\&]+$";
 

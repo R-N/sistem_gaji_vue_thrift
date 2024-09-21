@@ -26,7 +26,7 @@
 <script>
 import { 
 	TPerusahaanError, 
-	NAMA_LEN_MAX 
+	NAMA_MAX_LEN 
 } from "@/rpc/gen/data.perusahaan.errors_types";
 import { TPerusahaanForm } from "@/rpc/gen/data.perusahaan.structs_types";
 
@@ -51,7 +51,7 @@ class DataPerusahaanFormDialog extends FormDialogBase {
 
 	namaRules = NAMA_RULES
 
-	namaLenMax = NAMA_LEN_MAX
+	namaLenMax = NAMA_MAX_LEN
 
 	valid = true;
 

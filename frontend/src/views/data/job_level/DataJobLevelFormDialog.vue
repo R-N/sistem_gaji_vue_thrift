@@ -100,11 +100,11 @@
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TJobLevelError, 
-	NAMA_LEN_MAX,
-	MONEY_LEN_MAX,
+	NAMA_MAX_LEN,
+	MONEY_MAX_LEN,
 } from "@/rpc/gen/data.job_level.errors_types";
 import { TJobLevelForm } from "@/rpc/gen/data.job_level.structs_types";
 
@@ -145,8 +145,8 @@ class DataJobLevelFormDialog extends WorkingComponent {
 	upahLembur2Rules = UPAH_LEMBUR_2_RULES
 	upahLembur3Rules = UPAH_LEMBUR_3_RULES
 
-	namaLenMax = NAMA_LEN_MAX
-	moneyLenMax = MONEY_LEN_MAX
+	namaLenMax = NAMA_MAX_LEN
+	moneyLenMax = MONEY_MAX_LEN
 
 	gajiPokok = 0
 	tunjanganJabatan = 0

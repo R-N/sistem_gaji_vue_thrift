@@ -17,7 +17,7 @@ class MxPerusahaan(MxAiId):
 
     @declared_attr
     def _nama(cls):
-        return Column("nama", String(perusahaan_constants.NAMA_LEN_MAX), unique=True, nullable=False)
+        return Column("nama", String(perusahaan_constants.NAMA_MAX_LEN), unique=True, nullable=False)
 
     # Relationships
 
@@ -90,7 +90,7 @@ class DbPerusahaanValidator:
     def validate_nama(nama):
         if not nama:
             raise TPerusahaanError(TPerusahaanErrorCode.NAMA_EMPTY)
-        if len(nama) > perusahaan_constants.NAMA_LEN_MAX:
+        if len(nama) > perusahaan_constants.NAMA_MAX_LEN:
             raise TPerusahaanError(TPerusahaanErrorCode.NAMA_TOO_LONG)
         if not DbPerusahaanValidator.NAMA_REGEX.match(nama):
             raise TPerusahaanError(TPerusahaanErrorCode.NAMA_INVALID)

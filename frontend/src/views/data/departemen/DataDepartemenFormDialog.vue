@@ -45,10 +45,10 @@
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TDepartemenError, 
-	NAMA_LEN_MAX 
+	NAMA_MAX_LEN 
 } from "@/rpc/gen/data.departemen.errors_types";
 import { TDepartemenForm } from "@/rpc/gen/data.departemen.structs_types";
 
@@ -74,7 +74,7 @@ class DataDepartemenFormDialog extends WorkingComponent {
 
 	namaRules = NAMA_RULES
 
-	namaLenMax = NAMA_LEN_MAX
+	namaLenMax = NAMA_MAX_LEN
 
 	valid = true;
 

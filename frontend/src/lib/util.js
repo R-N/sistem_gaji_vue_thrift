@@ -43,5 +43,32 @@ export function addEditFieldsBulk(arr, fields){
 	return arr;
 }
 export function isInt(value) {
-	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+	return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value));
+}
+export function isInteger(value) {
+	return isInt(value);
+}
+export function isStr(value){
+	return (typeof value === 'string' || value instanceof String);
+}
+export function isString(value){
+	return isStr(value);
+}
+export function isUndefined(value){
+	return (typeof value === 'undefined' || value === null);
+}
+export function toTitleCase(str) {
+	return str.replace(
+		/\w\S*/g,
+		text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+	);
+}
+export function toTitleCase2(str) {
+	return toTitleCase(str.replace(/_/g, ' ')).replace(/\s+/g, '');
+}
+export function isUnique(value, index, array) {
+	return array.indexOf(value) === index;
+}
+export function filterUnique(array) {
+	return array.filter(isUnique);
 }

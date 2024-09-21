@@ -10,7 +10,7 @@ enum TUserRole{
 	PENGAWAS,
 	SUPER_ADMIN
 }
-const map<TUserRole, string> T_USER_ROLE_STR = {
+const map<TUserRole, string> T_ROLE_STR = {
 	TUserRole.KARYAWAN: "Karyawan",
 	TUserRole.ADMIN_BIASA: "Admin Biasa",
 	TUserRole.ADMIN_UTAMA: "Admin Utama",
@@ -18,7 +18,7 @@ const map<TUserRole, string> T_USER_ROLE_STR = {
 	TUserRole.PENGAWAS: "Pengawas",
 	TUserRole.SUPER_ADMIN: "Super Admin"
 }
-const map<TUserRole, list<TUserRole>> T_USER_ROLE_DOUBLES = {
+const map<TUserRole, list<TUserRole>> T_ROLE_DOUBLES = {
 	TUserRole.KARYAWAN: [TUserRole.KARYAWAN, TUserRole.ADMIN_BIASA, TUserRole.ADMIN_UTAMA, TUserRole.ADMIN_AKUN, TUserRole.PENGAWAS, TUserRole.SUPER_ADMIN],
 	TUserRole.ADMIN_BIASA: [TUserRole.ADMIN_BIASA, TUserRole.ADMIN_UTAMA, TUserRole.SUPER_ADMIN],
 	TUserRole.ADMIN_UTAMA: [TUserRole.ADMIN_UTAMA, TUserRole.SUPER_ADMIN],

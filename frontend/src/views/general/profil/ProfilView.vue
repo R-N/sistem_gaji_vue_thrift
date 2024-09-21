@@ -145,10 +145,10 @@
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TUserError, 
-	NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
+	NAME_MAX_LEN, EMAIL_MAX_LEN, PASSWORD_MAX_LEN 
 } from "@/rpc/gen/user.user.errors_types";
 
 import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
@@ -186,9 +186,9 @@ class ProfilView extends BaseView {
 	emailRules = EMAIL_RULES
 	passwordRules = PASSWORD_RULES
 
-	nameLenMax = NAME_LEN_MAX
-	emailLenMax = EMAIL_LEN_MAX
-	passwordLenMax = PASSWORD_LEN_MAX
+	nameLenMax = NAME_MAX_LEN
+	emailLenMax = EMAIL_MAX_LEN
+	passwordLenMax = PASSWORD_MAX_LEN
 
 	emailEdit = ''
 	nameEdit = ''
@@ -233,7 +233,7 @@ class ProfilView extends BaseView {
 		return stores.auth.user.role;
 	}
 	get roleText(){
-		return T_USER_ROLE_STR[this.role];
+		return T_ROLE_STR[this.role];
 	}
 
 	beginPasswordEdit(){

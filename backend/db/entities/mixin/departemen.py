@@ -108,7 +108,7 @@ class DbDepartemenValidator:
     def validate_nama(nama):
         if not nama:
             raise TDepartemenError(TDepartemenErrorCode.NAMA_EMPTY)
-        if len(nama) > departemen_constants.NAMA_LEN_MAX:
+        if len(nama) > departemen_constants.NAMA_MAX_LEN:
             raise TDepartemenError(TDepartemenErrorCode.NAMA_TOO_LONG)
         if not DbDepartemenValidator.NAMA_REGEX.match(nama):
             raise TDepartemenError(TDepartemenErrorCode.NAMA_INVALID)

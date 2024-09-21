@@ -1,6 +1,8 @@
 namespace py file.file.errors
 namespace js file.file.errors
 
+const string FILE_NAME_REGEX_STR = "^(?!\\.)(?!com[0-9]$)(?!con$)(?!lpt[0-9]$)(?!nul$)(?!prn$)[^\\|*\\?\\\\:<>/$\"]*[^\\.\\|*\\?\\\\:<>/$\"]+$";
+
 enum TFileErrorCode{
 	ZERO,
 	FILE_NOT_FOUND,

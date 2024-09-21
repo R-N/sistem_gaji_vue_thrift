@@ -17,8 +17,8 @@ enum TJobLevelErrorCode{
     UPAH_LEMBUR_3_INVALID,
 }
 
-const i32 NAMA_LEN_MAX = 50;
-const i32 MONEY_LEN_MAX = 13;
+const i32 NAMA_MAX_LEN = 50;
+const i32 MONEY_MAX_LEN = 13;
 
 const string NAMA_REGEX_STR = "^[a-zA-Z0-9 \\.\\,\\&]+$";
 

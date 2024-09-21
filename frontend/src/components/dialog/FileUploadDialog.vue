@@ -42,7 +42,7 @@
 import stores from "@/store/stores";
 import vueDropzone from 'vue2-dropzone'
 
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
+import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { TFileError, TFileErrorCode, T_FILE_ERROR_STR } from "@/rpc/gen/file.file.errors_types";
 import { TUploadError } from "@/rpc/gen/file.upload.errors_types";
 

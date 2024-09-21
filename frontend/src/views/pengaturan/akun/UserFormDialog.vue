@@ -84,7 +84,7 @@ import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
 import { TEmailError } from '@/rpc/gen/email.errors_types';
 import { 
 	TUserError, 
-	USERNAME_LEN_MAX, NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
+	USERNAME_MAX_LEN, NAME_MAX_LEN, EMAIL_MAX_LEN, PASSWORD_MAX_LEN 
 } from "@/rpc/gen/user.user.errors_types";
 import { TUserRegistrationForm } from "@/rpc/gen/user.management.structs_types";
 
@@ -119,10 +119,10 @@ class UserFormDialog extends FormDialogBase {
 	passwordRules = PASSWORD_RULES
 	roleRules = ROLE_RULES
 
-	usernameLenMax = USERNAME_LEN_MAX
-	nameLenMax = NAME_LEN_MAX
-	emailLenMax = EMAIL_LEN_MAX
-	passwordLenMax = PASSWORD_LEN_MAX
+	usernameLenMax = USERNAME_MAX_LEN
+	nameLenMax = NAME_MAX_LEN
+	emailLenMax = EMAIL_MAX_LEN
+	passwordLenMax = PASSWORD_MAX_LEN
 
 	reset(){
 		this.username = ''

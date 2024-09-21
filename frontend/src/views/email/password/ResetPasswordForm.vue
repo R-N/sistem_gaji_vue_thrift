@@ -35,7 +35,7 @@
 
 <script>
 import { TLoginError } from '@/rpc/gen/user.auth.errors_types';
-import { TUserError, PASSWORD_LEN_MAX } from "@/rpc/gen/user.user.errors_types";
+import { TUserError, PASSWORD_MAX_LEN } from "@/rpc/gen/user.user.errors_types";
 import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
 import { TEmailError } from '@/rpc/gen/email.errors_types';
 
@@ -61,7 +61,7 @@ class ResetPasswordForm extends WorkingComponent {
 	passwordConfirm = ''
 	passwordVisible = false;
 	passwordRules = PASSWORD_RULES
-	passwordLenMax = PASSWORD_LEN_MAX
+	passwordLenMax = PASSWORD_MAX_LEN
 	
 	validateConfirm(passwordConfirm){
 		if (this.password === passwordConfirm) return true;

@@ -91,8 +91,8 @@ class SimpleInputDialog extends DialogBase {
 	@Prop({ default: false }) password;
 	@Prop({ default: false }) noInput;
 	@Prop(Function) onConfirm;
-	@Prop({ default: undefined }) rules;
-	@Prop({ default: undefined }) counter;
+	@Prop([Array, Function]) rules;
+	@Prop([Function, Number]) counter;
 	valid = true;
 	input = ''
 	inputConfirm = ''

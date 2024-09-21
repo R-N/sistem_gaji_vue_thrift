@@ -81,7 +81,7 @@ class DbJobLevelBaseValidator:
     def validate_nama(nama):
         if not nama:
             raise TJobLevelError(TJobLevelErrorCode.NAMA_EMPTY)
-        if len(nama) > job_level_constants.NAMA_LEN_MAX:
+        if len(nama) > job_level_constants.NAMA_MAX_LEN:
             raise TJobLevelError(TJobLevelErrorCode.NAMA_TOO_LONG)
         if not DbJobLevelBaseValidator.NAMA_REGEX.match(nama):
             raise TJobLevelError(TJobLevelErrorCode.NAMA_INVALID)

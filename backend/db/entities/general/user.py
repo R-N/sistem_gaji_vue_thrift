@@ -9,7 +9,7 @@ import rpc.gen.user.user.errors.constants as user_constants
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
 from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
 from rpc.gen.user.management.errors.ttypes import TUserManagementError, TUserManagementErrorCode
-from rpc.gen.user.user.types.constants import T_USER_ROLE_DOUBLES
+from rpc.gen.user.user.types.constants import T_ROLE_DOUBLES
 
 from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 import traceback
@@ -18,10 +18,10 @@ class DbUser(DbGeneralEntity):
 
     __tablename__ = 'users'
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    _username = Column("username", String(user_constants.USERNAME_LEN_MAX), unique=True, nullable=False)
+    _username = Column("username", String(user_constants.USERNAME_MAX_LEN), unique=True, nullable=False)
     _password = Column("password", String(83), nullable=True, default=None)
-    _name = Column("name", String(user_constants.NAME_LEN_MAX), nullable=False)
-    _email = Column("email", String(user_constants.EMAIL_LEN_MAX), unique=True, nullable=False)
+    _name = Column("name", String(user_constants.NAME_MAX_LEN), nullable=False)
+    _email = Column("email", String(user_constants.EMAIL_MAX_LEN), unique=True, nullable=False)
     _role = Column("role", Integer, nullable=False, default=TUserRole.ADMIN_BIASA)
     _verified = Column("verified", Boolean, nullable=False, default=False)
     _enabled = Column("enabled", Boolean, nullable=False, default=True)
@@ -186,7 +186,7 @@ class DbUserValidator:
             actor_role = actor_role["role"]
         if not hasattr(roles, "__iter__"):
             roles = [roles]
-        allowed_roles = {j for i in roles for j in T_USER_ROLE_DOUBLES[i]}
+        allowed_roles = {j for i in roles for j in T_ROLE_DOUBLES[i]}
         if actor_role not in allowed_roles:
             traceback.print_stack()
             if Exception:
@@ -197,7 +197,7 @@ class DbUserValidator:
     def validate_email(email):
         if not email:
             raise TUserError(TUserErrorCode.EMAIL_EMPTY)
-        if len(email) > user_constants.EMAIL_LEN_MAX:
+        if len(email) > user_constants.EMAIL_MAX_LEN:
             raise TUserError(TUserErrorCode.EMAIL_TOO_LONG)
         if not DbUserValidator.EMAIL_REGEX.match(email):
             raise TUserError(TUserErrorCode.EMAIL_INVALID)
@@ -205,9 +205,9 @@ class DbUserValidator:
     def validate_password(password):
         if not password:
             raise TUserError(TUserErrorCode.PASSWORD_EMPTY)
-        if len(password) < user_constants.PASSWORD_LEN_MIN:
+        if len(password) < user_constants.PASSWORD_MIN_LEN:
             raise TUserError(TUserErrorCode.PASSWORD_TOO_SHORT)
-        if len(password) > user_constants.PASSWORD_LEN_MAX:
+        if len(password) > user_constants.PASSWORD_MAX_LEN:
             raise TUserError(TUserErrorCode.PASSWORD_TOO_LONG)
         if not DbUserValidator.PASSWORD_REGEX.match(password):
             raise TUserError(TUserErrorCode.PASSWORD_INVALID)
@@ -215,7 +215,7 @@ class DbUserValidator:
     def validate_name(name):
         if not name:
             raise TUserError(TUserErrorCode.NAME_EMPTY)
-        if len(name) > user_constants.NAME_LEN_MAX:
+        if len(name) > user_constants.NAME_MAX_LEN:
             raise TUserError(TUserErrorCode.NAME_TOO_LONG)
         if not DbUserValidator.NAME_REGEX.match(name):
             raise TUserError(TUserErrorCode.NAME_INVALID)
@@ -223,7 +223,7 @@ class DbUserValidator:
     def validate_username(username):
         if not username:
             raise TUserError(TUserErrorCode.USERNAME_EMPTY)
-        if len(username) > user_constants.USERNAME_LEN_MAX:
+        if len(username) > user_constants.USERNAME_MAX_LEN:
             raise TUserError(TUserErrorCode.USERNAME_TOO_LONG)
         if not DbUserValidator.USERNAME_REGEX.match(username):
             raise TUserError(TUserErrorCode.USERNAME_INVALID)

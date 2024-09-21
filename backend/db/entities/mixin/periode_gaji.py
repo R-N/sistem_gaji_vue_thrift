@@ -23,7 +23,7 @@ class MxPeriodeGaji:
 
     @declared_attr
     def pengubah_nama(cls):
-        return Column(String(user_constants.NAME_LEN_MAX), nullable=False)
+        return Column(String(user_constants.NAME_MAX_LEN), nullable=False)
 
     @declared_attr
     def job_level_valid(cls):
