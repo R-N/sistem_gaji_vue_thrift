@@ -3,6 +3,7 @@ from .errors import parse_db_error
 from .index import connect_str, engine, session
 
 from .entities import DbGeneralEntity, DbStagingEntity, DbCommitedEntity, DbLaporanEntity
+from .validator import bind_rules, create_rules_fields
 from sqlalchemy.schema import CreateSchema
 
 import os

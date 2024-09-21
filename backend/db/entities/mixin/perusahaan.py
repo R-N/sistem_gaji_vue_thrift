@@ -1,13 +1,15 @@
 import re
 
 from sqlalchemy import Column, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from .general import MxAiId
 
 from rpc.gen.data.perusahaan.errors.ttypes import TPerusahaanError, TPerusahaanErrorCode
 import rpc.gen.data.perusahaan.errors.constants as perusahaan_constants
+from rpc.gen.data.perusahaan.errors.constants import T_PERUSAHAAN_ERROR_STR
+from ...validator import bind_rules, create_rules_fields
 
 
 class MxPerusahaan(MxAiId):
@@ -16,8 +18,8 @@ class MxPerusahaan(MxAiId):
     # Columns
 
     @declared_attr
-    def _nama(cls):
-        return Column("nama", String(perusahaan_constants.NAMA_MAX_LEN), unique=True, nullable=False)
+    def nama(cls):
+        return Column(String(perusahaan_constants.NAMA_MAX_LEN), unique=True, nullable=False)
 
     # Relationships
 
@@ -57,17 +59,9 @@ class MxPerusahaan(MxAiId):
 
     # nama
 
-    @declared_attr
-    def nama(cls):
-        @hybrid_property
-        def nama(self):
-            return self._nama
-
-        @nama.setter
-        def nama(self, nama):
-            DbPerusahaanValidator.validate_nama(nama)
-            self._nama = nama
-
+    @validates("nama")
+    def validate_nama(self, key, nama):
+        DbPerusahaanValidator.validate_nama(nama)
         return nama
 
     # Other methods
@@ -85,12 +79,15 @@ class MxPerusahaan(MxAiId):
         return DbPerusahaanValidator
 
 class DbPerusahaanValidator:
-    NAMA_REGEX = re.compile(perusahaan_constants.NAMA_REGEX_STR)
+    pass
 
-    def validate_nama(nama):
-        if not nama:
-            raise TPerusahaanError(TPerusahaanErrorCode.NAMA_EMPTY)
-        if len(nama) > perusahaan_constants.NAMA_MAX_LEN:
-            raise TPerusahaanError(TPerusahaanErrorCode.NAMA_TOO_LONG)
-        if not DbPerusahaanValidator.NAMA_REGEX.match(nama):
-            raise TPerusahaanError(TPerusahaanErrorCode.NAMA_INVALID)
+bind_rules(DbPerusahaanValidator, create_rules_fields(
+    TPerusahaanError,
+    ["NAMA"],
+    perusahaan_constants,
+    {}, 
+    TPerusahaanErrorCode, 
+    T_PERUSAHAAN_ERROR_STR, 
+    "PERUSAHAAN"
+))
+

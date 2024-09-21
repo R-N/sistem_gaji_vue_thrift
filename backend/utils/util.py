@@ -19,3 +19,6 @@ def get_cls_attr(cls, attr):
         if attr in cls.__dict__:
             return cls.__dict__[attr]
     raise AttributeError
+
+def to_title_case_2(s):
+    return s.replace("_", " ").title().replace(" ", "")

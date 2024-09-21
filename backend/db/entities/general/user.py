@@ -2,14 +2,18 @@ import re
 
 from .base import DbGeneralEntity
 from sqlalchemy import Column, Integer, String, Sequence, Boolean, orm
+from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from rpc.gen.user.user.types.ttypes import TUserRole
+import rpc.gen.user.user.types.ttypes as user_types
 import rpc.gen.user.user.errors.constants as user_constants
 from rpc.gen.user.user.errors.ttypes import TUserError, TUserErrorCode
+from rpc.gen.user.user.errors.constants import T_USER_ERROR_STR
 from rpc.gen.user.auth.errors.ttypes import TAuthError, TAuthErrorCode
 from rpc.gen.user.management.errors.ttypes import TUserManagementError, TUserManagementErrorCode
 from rpc.gen.user.user.types.constants import T_ROLE_DOUBLES
+from ...validator import bind_rules, create_rules_fields
 
 from utils.crypto import hash_bcrypt_sha256, verify_bcrypt_sha256
 import traceback
@@ -18,13 +22,13 @@ class DbUser(DbGeneralEntity):
 
     __tablename__ = 'users'
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    _username = Column("username", String(user_constants.USERNAME_MAX_LEN), unique=True, nullable=False)
-    _password = Column("password", String(83), nullable=True, default=None)
-    _name = Column("name", String(user_constants.NAME_MAX_LEN), nullable=False)
-    _email = Column("email", String(user_constants.EMAIL_MAX_LEN), unique=True, nullable=False)
-    _role = Column("role", Integer, nullable=False, default=TUserRole.ADMIN_BIASA)
-    _verified = Column("verified", Boolean, nullable=False, default=False)
-    _enabled = Column("enabled", Boolean, nullable=False, default=True)
+    username = Column("username", String(user_constants.USERNAME_MAX_LEN), unique=True, nullable=False)
+    password = Column("password", String(83), nullable=True, default=None)
+    name = Column("name", String(user_constants.NAME_MAX_LEN), nullable=False)
+    email = Column("email", String(user_constants.EMAIL_MAX_LEN), unique=True, nullable=False)
+    role = Column("role", Integer, nullable=False, default=TUserRole.ADMIN_BIASA)
+    verified = Column("verified", Boolean, nullable=False, default=False)
+    enabled = Column("enabled", Boolean, nullable=False, default=True)
     refresh_secret_2 = Column("refresh_secret_2", String(32), nullable=True, default=None)
     email_secret_2 = Column("email_secret_2", String(32), nullable=True, default=None)
 
@@ -40,17 +44,12 @@ class DbUser(DbGeneralEntity):
     # Properties and other methods associated with columns
 
     # password
-
-    @hybrid_property
-    def password(self):
-        return self._password
-
-    @password.setter
-    def password(self, password):
+    @validates("password")
+    def validate_password(self, key, password):
         DbUserValidator.validate_password(password)
         self.refresh_secret_2 = None
         self.email_secret_2 = None
-        self._password = hash_bcrypt_sha256(password)
+        return hash_bcrypt_sha256(password)
 
     @property
     def has_password(self):
@@ -65,63 +64,41 @@ class DbUser(DbGeneralEntity):
         if not has_password and self.has_password:
             raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
 
-    # name
+    # others
 
-    @hybrid_property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, name):
+    @validates("name")
+    def validate_name(self, key, name):
         DbUserValidator.validate_name(name)
-        self._name = name
+        return name
 
-    # role
-
-    @hybrid_property
-    def role(self):
-        return self._role
-
-    @role.setter
-    def role(self, role):
+    @validates("role")
+    def validate_role(self, key, role):
         DbUserValidator.validate_role(role)
-        self._role = role
         self.refresh_secret_2 = None
+        return role
 
-    # username
-
-    @hybrid_property
-    def username(self):
-        return self._username
-
-    @username.setter
-    def username(self, username):
+    @validates("username")
+    def validate_username(self, key, username):
         DbUserValidator.validate_username(username)
-        self._username = username
+        return username
 
-    # email
-
-    @hybrid_property
-    def email(self):
-        return self._email
-
-    @email.setter
-    def email(self, email):
+    @validates("email")
+    def validate_email(self, key, email):
         # if self.verified:
         #     raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
         DbUserValidator.validate_email(email)
         self.verified = False
         self.email_secret_2 = None
-        self._email = email
+        return email
 
-    # verified
+    @validates("enabled")
+    def validate_enabled(self, key, enabled):
+        self.refresh_secret_2 = None
+        self._enabled = enabled
+        return enabled
 
-    @hybrid_property
-    def verified(self):
-        return self._verified
-
-    @verified.setter
-    def verified(self, verified):
+    @validates("verified")
+    def validate_verified(self, key, verified):
         if self.verified and verified:
             raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
         if verified and not self.password:
@@ -130,23 +107,13 @@ class DbUser(DbGeneralEntity):
         self.email_secret_2 = None
         self.refresh_secret_2 = None
         self._verified = verified
+        return verified
 
     def require_verified(self, verified):
         if verified and not self.verified:
             raise TUserError(TUserErrorCode.UNVERIFIED)
         if not verified and self.verified:
             raise TUserError(TUserErrorCode.ALREADY_VERIFIED)
-
-    # enabled
-
-    @hybrid_property
-    def enabled(self):
-        return self._enabled
-
-    @enabled.setter
-    def enabled(self, enabled):
-        self.refresh_secret_2 = None
-        self._enabled = enabled
 
     # Other methods
 
@@ -162,23 +129,11 @@ class DbUser(DbGeneralEntity):
         return obj
 
     # Validator
-
     def validator():
         return DbUserValidator
 
 
 class DbUserValidator:
-    EMAIL_REGEX = re.compile(user_constants.EMAIL_REGEX_STR)
-    PASSWORD_REGEX = re.compile(user_constants.PASSWORD_REGEX_STR)
-    USERNAME_REGEX = re.compile(user_constants.USERNAME_REGEX_STR)
-    NAME_REGEX = re.compile(user_constants.NAME_REGEX_STR)
-
-    def validate_role(role):
-        if role is None:
-            raise TUserError(TUserErrorCode.ROLE_EMPTY)
-        if role not in TUserRole._VALUES_TO_NAMES:
-            raise TUserError(TUserErrorCode.ROLE_INVALID)
-
     def validate_actor_role(actor_role, roles, Exception=TAuthError, error_code=TAuthErrorCode.ROLE_INVALID):
         if hasattr(actor_role, "role"):
             actor_role = actor_role.role
@@ -194,36 +149,12 @@ class DbUserValidator:
             return False
         return True
 
-    def validate_email(email):
-        if not email:
-            raise TUserError(TUserErrorCode.EMAIL_EMPTY)
-        if len(email) > user_constants.EMAIL_MAX_LEN:
-            raise TUserError(TUserErrorCode.EMAIL_TOO_LONG)
-        if not DbUserValidator.EMAIL_REGEX.match(email):
-            raise TUserError(TUserErrorCode.EMAIL_INVALID)
-
-    def validate_password(password):
-        if not password:
-            raise TUserError(TUserErrorCode.PASSWORD_EMPTY)
-        if len(password) < user_constants.PASSWORD_MIN_LEN:
-            raise TUserError(TUserErrorCode.PASSWORD_TOO_SHORT)
-        if len(password) > user_constants.PASSWORD_MAX_LEN:
-            raise TUserError(TUserErrorCode.PASSWORD_TOO_LONG)
-        if not DbUserValidator.PASSWORD_REGEX.match(password):
-            raise TUserError(TUserErrorCode.PASSWORD_INVALID)
-
-    def validate_name(name):
-        if not name:
-            raise TUserError(TUserErrorCode.NAME_EMPTY)
-        if len(name) > user_constants.NAME_MAX_LEN:
-            raise TUserError(TUserErrorCode.NAME_TOO_LONG)
-        if not DbUserValidator.NAME_REGEX.match(name):
-            raise TUserError(TUserErrorCode.NAME_INVALID)
-
-    def validate_username(username):
-        if not username:
-            raise TUserError(TUserErrorCode.USERNAME_EMPTY)
-        if len(username) > user_constants.USERNAME_MAX_LEN:
-            raise TUserError(TUserErrorCode.USERNAME_TOO_LONG)
-        if not DbUserValidator.USERNAME_REGEX.match(username):
-            raise TUserError(TUserErrorCode.USERNAME_INVALID)
+bind_rules(DbUserValidator, create_rules_fields(
+    TUserError,
+	["USERNAME", "NAME", "PASSWORD", "EMAIL", "ROLE"],
+	user_constants,
+	user_types, 
+	TUserErrorCode, 
+	T_USER_ERROR_STR, 
+	"USER"
+))

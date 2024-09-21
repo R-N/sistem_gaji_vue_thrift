@@ -52,7 +52,6 @@ class CrudModel:
     def create_setters(self, setters):
         for field, _required_role in setters.items():
             def f(db_obj, value, actor=None, required_role=None, field=field):
-                print(field, value)
                 return self.set_field(field, db_obj, value, actor=actor, required_role=_required_role or required_role)
             f.name = f"set_{field}"
             setattr(self, f.name, f)
@@ -112,7 +111,6 @@ class CrudModel:
         return db_query
 
     def set_field(self, field, db_obj, value, actor=None, required_role=None):
-        print("set", field, value)
         required_role = required_role or self.get_required_role_setter(field)
         if required_role is not None:
             self.validate_actor_role(actor, required_role)

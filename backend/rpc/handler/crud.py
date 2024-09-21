@@ -43,7 +43,6 @@ class TCrudServiceHandler:
     def create_setters(self, setters):
         for field, required_role in setters.items():
             def f(auth_token, id, value, field=field):
-                print(field, value)
                 return self.set_field(field, auth_token, id, value, required_role=required_role)
             f.name = f"set_{field}"
             setattr(self, f.name, f)
@@ -76,7 +75,6 @@ class TCrudServiceHandler:
         return obj
     
     def set_field(self, field, auth_token, id, value, required_role=None):
-        print("set", field, value)
         if required_role is not None:
             actor = self.auth_model.require_role(auth_token, required_role)
         else:
