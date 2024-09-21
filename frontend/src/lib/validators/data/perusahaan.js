@@ -3,21 +3,24 @@ import {
 } from '@/rpc/gen/data.perusahaan.errors_types';
 import errors from '@/rpc/gen/data.perusahaan.errors_types';
 import types from '@/rpc/gen/user.user.types_types';
-import { createRules, createRulesBase, createRulesField as _createRulesField } from "@/lib/validators/common";
+import { createRulesField as _createRulesField, createRulesFields } from "@/lib/validators/common";
 
-
-export const createRulesField = (field) => createRules(
+export const createRulesField = (field) => _createRulesField(
 	field,
-	createRulesBase(
-		field,
-		errors,
-		types,
-		TPerusahaanErrorCode,
-		T_PERUSAHAAN_ERROR_STR,
-		"PERUSAHAAN",
-	),
-	TPerusahaanErrorCode,
-	T_PERUSAHAAN_ERROR_STR,
-	"PERUSAHAAN",
+	errors,
+	types, 
+	TPerusahaanErrorCode, 
+	T_PERUSAHAAN_ERROR_STR, 
+	"PERUSAHAAN"
 );
 export const NAMA_RULES = createRulesField("NAMA");
+
+const RULES = createRulesFields(
+	["NAMA"],
+	errors,
+	types, 
+	TPerusahaanErrorCode, 
+	T_PERUSAHAAN_ERROR_STR, 
+	"PERUSAHAAN"
+);
+export default RULES;
