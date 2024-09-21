@@ -1,20 +1,12 @@
 <template>
 	<main-card :title="title">
 		<template v-slot:toolbar-left>
-			<v-tooltip bottom v-if="create">
-				<template v-slot:activator="{ on, attrs }">
-					<v-btn 
-						icon 
-						@click.stop="create" 
-						v-bind="attrs" 
-						v-on="on"
-						:disabled="busy"
-					>
-						<v-icon size="32">mdi-plus</v-icon>
-					</v-btn>
-				</template>
-				<span>{{ createText }}</span>
-			</v-tooltip>
+			<icon-button
+				@click.stop="create" 
+				:disabled="busy"
+				icon="mdi-plus"
+				:text="createText"
+			/>
             <slot name="toolbar-left" :busy="busy"></slot>
 		</template>
 		<template v-slot:toolbar-right>
@@ -45,13 +37,15 @@ import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 
 import MainCard from '@/components/card/MainCard';
+import IconButton from '@/components/button/IconButton';
 
 let modelEvent = "change"
 
 @Component({
     name: "BaseCrudView",
   	components: {
-        MainCard
+        MainCard,
+		IconButton
   	}
 })
 class BaseCrudView extends BaseView {

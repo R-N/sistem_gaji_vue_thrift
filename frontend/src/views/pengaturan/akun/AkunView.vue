@@ -63,24 +63,14 @@
 						text-enable="Paksa verifikasi"
 					/>
 				</template>
-				<template v-slot:item.actions="{ item }">
-					<v-tooltip 
-						bottom
-					>
-						<template v-slot:activator="{ on, attrs }">
-							<v-btn 
-								icon 
-								@click.stop="prepareSetPassword(item)" 
-								class=""
-								v-bind="attrs"
-								v-on="on"
-								:disabled="busy"
-							>
-								<v-icon size="32" small>mdi-key-variant</v-icon>
-							</v-btn>
-						</template>
-						<span>Ubah password</span>
-					</v-tooltip>
+				<template v-slot:item.actions="{ item }" v-if="isSuperAdmin">
+					<icon-button
+						@click.stop="prepareSetPassword(item)" 
+						:disabled="busy"
+						icon="mdi-key-variant"
+						text="Ubah password"
+						v-if="isSuperAdmin"
+					/>
 					<confirmation-icon-button
 						icon="mdi-delete"
 						text="Hapus"
@@ -146,6 +136,7 @@ import { BaseCrudViewBase } from '@/views/BaseCrudViewBase';
 import ConfirmationIconButton from '@/components/button/ConfirmationIconButton';
 import EditableCellTextField from '@/components/form/editable_cell/EditableCellTextField';
 import EditableCellSelect from '@/components/form/editable_cell/EditableCellSelect';
+import IconButton from '@/components/button/IconButton';
 
 @Component({
   	name: "AkunView",
@@ -160,6 +151,7 @@ import EditableCellSelect from '@/components/form/editable_cell/EditableCellSele
 		EditableCellTextField,
 		EditableCellSelect,
 		BaseCrudView,
+		IconButton,
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_AKUN)
 })
