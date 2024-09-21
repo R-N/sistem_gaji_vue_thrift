@@ -82,7 +82,6 @@
 <script>
 import { TUserEmailError } from '@/rpc/gen/user.email.errors_types';
 import { TEmailError } from '@/rpc/gen/email.errors_types';
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TUserError, 
 	USERNAME_LEN_MAX, NAME_LEN_MAX, EMAIL_LEN_MAX, PASSWORD_LEN_MAX 
@@ -92,7 +91,7 @@ import { TUserRegistrationForm } from "@/rpc/gen/user.management.structs_types";
 import stores from "@/store/stores";
 import { USERNAME_RULES, PASSWORD_RULES, NAME_RULES, EMAIL_RULES, ROLE_RULES } from '@/lib/validators/user';
 
-import { Component, Prop, Watch, Model } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import { FormDialog } from '@/components/form/FormDialog'
 import { FormDialogBase } from '@/components/form/FormDialogBase'

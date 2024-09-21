@@ -121,15 +121,12 @@ import stores from "@/store/stores";
 import { EMAIL_RULES, PASSWORD_RULES } from '@/lib/validators/user';
 
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { BaseView } from '@/views/BaseView';
 
 import SimpleInputDialog from '@/components/dialog/SimpleInputDialog'
 import MainCard from '@/components/card/MainCard';
 import SyncCheckbox from '@/components/checkbox/SyncCheckbox';
-import EditableCell from '@/components/form/EditableCell';
 
 import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
-import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
 import { BaseCrudView } from '@/views/BaseCrudView';
 import { BaseCrudViewBase } from '@/views/BaseCrudViewBase';
 
@@ -144,9 +141,7 @@ import IconButton from '@/components/button/IconButton';
   		SimpleInputDialog,
   		MainCard,
   		SyncCheckbox,
-  		EditableCell,
   		UserFormDialog,
-		ConfirmationSlot,
 		ConfirmationIconButton,
 		EditableCellTextField,
 		EditableCellSelect,
