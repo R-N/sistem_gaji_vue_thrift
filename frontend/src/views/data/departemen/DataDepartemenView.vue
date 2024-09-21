@@ -112,7 +112,7 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
 
 import MainCard from '@/components/card/MainCard';
-import SyncCheckbox from '@/components/form/SyncCheckbox';
+import SyncCheckbox from '@/components/checkbox/SyncCheckbox';
 import EditableCell from '@/components/form/EditableCell';
 
 import DataDepartemenFormDialog from '@/views/data/departemen/DataDepartemenFormDialog';

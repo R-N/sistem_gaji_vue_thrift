@@ -5,21 +5,12 @@
         v-slot="{ ask }"
         :on-confirm="() => onConfirm()"
     >
-        <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-                <v-btn 
-                    icon 
-                    @click.stop="tryAsk(ask)" 
-                    class="" 
-                    v-bind="attrs" 
-                    v-on="on"
-                    :disabled="busy || disabled"
-                >
-                    <v-icon size="32" small>{{ icon }}</v-icon>
-                </v-btn>
-            </template>
-            <span>{{ text }}</span>
-        </v-tooltip>
+        <icon-button
+            @click.stop="tryAsk(ask)" 
+            :disabled="busy || disabled"
+            :icon="icon"
+            :text="text"
+        />
     </confirmation-slot>
 </template>
 
@@ -27,11 +18,13 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
 import WorkingComponent from '@/components/WorkingComponent';
+import IconButton from '@/components/button/IconButton';
 
 @Component({
   	name: "ConfirmationIconButton",
   	components: {
-        ConfirmationSlot
+        ConfirmationSlot,
+        IconButton
   	}
 })
 class ConfirmationIconButton extends WorkingComponent {

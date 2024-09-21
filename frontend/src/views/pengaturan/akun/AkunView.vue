@@ -43,52 +43,25 @@
 					<span v-else >{{ item.role }}</span>
 				</template>
 				<template v-slot:item.enabled="{ item }">
-					<v-tooltip 
-						v-if="mayEdit(item)"
-						bottom
-					>
-						<template v-slot:activator="{ on, attrs }">
-						    <sync-checkbox 
-						    	:input-value="item.enabled" 
-						    	@change="value => setEnabled(item, value)"
-						    	:confirm-text-maker="() => setEnabledConfirmText(item)"
-						    	readonly
-						    	v-bind="attrs" v-on="on"
-								:disabled="busy"
-					    	/>
-						</template>
-						<span>{{ item.enabled ? "Nonaktifkan" : "Aktifkan" }}</span>
-					</v-tooltip>
-					<span v-else>
-					    <v-simple-checkbox 
-					    	:value="item.enabled" 
-					    	disabled
-				    	/>
-				    </span>
+					<sync-checkbox 
+						:input-value="item.enabled" 
+						@change="value => setEnabled(item, value)"
+						:confirm-text-maker="() => setEnabledConfirmText(item)"
+						:disabled="busy || !mayEdit(item)"
+						text-disable="Nonaktifkan"
+						text-enable="Aktifkan"
+					/>
 				</template>
 				<template v-slot:item.verified="{ item }">
-					<v-tooltip 
-						v-if="isSuperAdmin"
-						bottom
-					>
-						<template v-slot:activator="{ on, attrs }">
-						    <sync-checkbox 
-						    	:input-value="item.verified" 
-						    	@change="value => setVerified(item, value)"
-						    	:confirm-text-maker="() => setVerifiedConfirmText(item)"
-						    	readonly
-						    	v-bind="attrs" v-on="on"
-								:disabled="busy"
-					    	/>
-						</template>
-						<span>{{ item.enabled ? "Batalkan verifikasi" : "Paksa verifikasi" }}</span>
-					</v-tooltip>
-					<span v-else>
-					    <v-simple-checkbox 
-					    	:value="item.verified" 
-					    	disabled
-				    	/>
-				    </span>
+					<sync-checkbox 
+						:input-value="item.verified" 
+						@change="value => setVerified(item, value)"
+						:confirm-text-maker="() => setVerifiedConfirmText(item)"
+						readonly
+						:disabled="busy || !isSuperAdmin"
+						text-disable="Batalkan verifikasi"
+						text-enable="Paksa verifikasi"
+					/>
 				</template>
 				<template v-slot:item.actions="{ item }">
 					<v-tooltip 
@@ -162,7 +135,7 @@ import { BaseView } from '@/views/BaseView';
 
 import SimpleInputDialog from '@/components/dialog/SimpleInputDialog'
 import MainCard from '@/components/card/MainCard';
-import SyncCheckbox from '@/components/form/SyncCheckbox';
+import SyncCheckbox from '@/components/checkbox/SyncCheckbox';
 import EditableCell from '@/components/form/EditableCell';
 
 import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
@@ -170,9 +143,9 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
 import { BaseCrudView } from '@/views/BaseCrudView';
 import { BaseCrudViewBase } from '@/views/BaseCrudViewBase';
 
-import ConfirmationIconButton from '@/components/form/buttons/ConfirmationIconButton';
-import EditableCellTextField from '@/components/form/editable_cells/EditableCellTextField';
-import EditableCellSelect from '@/components/form/editable_cells/EditableCellSelect';
+import ConfirmationIconButton from '@/components/button/ConfirmationIconButton';
+import EditableCellTextField from '@/components/form/editable_cell/EditableCellTextField';
+import EditableCellSelect from '@/components/form/editable_cell/EditableCellSelect';
 
 @Component({
   	name: "AkunView",

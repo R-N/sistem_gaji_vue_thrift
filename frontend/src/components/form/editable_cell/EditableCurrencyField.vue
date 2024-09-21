@@ -27,7 +27,7 @@
 <script>
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import EditableCell from '@/components/form/EditableCell';
-import EditableCellTextField from '@/components/form/editable_cells/EditableCellTextField';
+import EditableCellTextField from '@/components/form/editable_cell/EditableCellTextField';
 
 @Component({
   	name: "EditableCellCurrencyField",
