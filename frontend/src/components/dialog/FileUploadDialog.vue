@@ -50,6 +50,7 @@ import { emptyArray } from '@/lib/util';
 
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
+import { DialogBase } from '@/components/dialog/DialogBase';
 
 
 @Component({
@@ -58,7 +59,7 @@ import { WorkingComponent } from '@/components/WorkingComponent';
   		vueDropzone
   	}
 })
-class FileUploadDialog extends WorkingComponent {
+class FileUploadDialog extends DialogBase {
 	@Prop(Function) preUpload;
 	@Prop(Function) onUpload;
 	@Prop(Function) postUpload;
@@ -66,7 +67,6 @@ class FileUploadDialog extends WorkingComponent {
 	@Prop({ default: "Upload File" }) title;
 	@Prop({ default: "Silahkan pilih file untuk diupload" }) text;
 	@Prop({ default: "File" }) label;
-	@Model('change', { type: [Boolean, String, Object, Array] }) dialog;
 	@Prop({ default: true }) dropUpload;
 
 	file = null
@@ -78,17 +78,9 @@ class FileUploadDialog extends WorkingComponent {
 		return this.busy || !this.dialog;
 	}
 
-	get myDialog(){
-		return this.dialog;
-	}
-	set myDialog(value){
-		if(value == this.dialog) return;
-		if (!value){
-			this.file = null;
-			emptyArray(this.files);
-			this.busy = false;
-		}
-		this.$emit('change', value);
+	reset(){
+		this.file = null;
+		emptyArray(this.files);
 	}
 	close(){
 		if (typeof this.myDialog == "boolean" || this.myDialog instanceof Boolean){

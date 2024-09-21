@@ -94,7 +94,8 @@ import { USERNAME_RULES, PASSWORD_RULES, NAME_RULES, EMAIL_RULES, ROLE_RULES } f
 
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 
-import { FormDialog, FormDialogBase } from '@/components/form/FormDialog'
+import { FormDialog } from '@/components/form/FormDialog'
+import { FormDialogBase } from '@/components/form/FormDialogBase'
 
 @Component({
 	name: "UserFormDialog",

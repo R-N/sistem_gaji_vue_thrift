@@ -44,13 +44,15 @@
 
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
+import { BaseView } from '@/views/BaseView';
+import { DialogBase } from '@/components/dialog/DialogBase';
 
 @Component({
 	name: "FormDialog",
 	components: {
 	}
 })
-class FormDialog extends WorkingComponent {
+class FormDialog extends DialogBase {
 	@Prop({ default: false }) disabled;
 	@Model('change', { type: Boolean }) dialog;
 	@Prop({ default: "Batal" }) cancelText;
@@ -96,31 +98,7 @@ class FormDialog extends WorkingComponent {
 		this.$emit('submit', this.$refs.myForm);
 	}
 }
-@Component({
-	name: "FormDialogBase",
-	components: {
-	}
-})
-class FormDialogBase extends WorkingComponent {
-	@Model('change', { type: Boolean }) dialog;
-
-	close(){
-		this.busy = false;
-		this.myDialog = false;
-		this.$emit('close');
-	}
-	get myDialog(){
-		return this.dialog;
-	}
-	set myDialog(value){
-		if(value == this.dialog) return;
-		if (!value){
-			this.busy = false;
-		}
-		this.$emit('change', value);
-	}
-}
-export { FormDialog, FormDialogBase }
+export { FormDialog }
 export default FormDialog
 </script>
 

@@ -1,32 +1,10 @@
 <template>
-	<main-card title="Akun">
-		<template v-slot:toolbar-left>
-			<v-tooltip bottom>
-				<template v-slot:activator="{ on, attrs }">
-					<v-btn 
-						icon 
-						@click.stop="createDialog = true" 
-						v-bind="attrs" 
-						v-on="on"
-						:disabled="busy"
-					>
-						<v-icon size="32">mdi-plus</v-icon>
-					</v-btn>
-				</template>
-				<span>Buat</span>
-			</v-tooltip>
-		</template>
-		<template v-slot:toolbar-right>
-			<v-text-field
-				class="pt-0 mt-0"
-				v-model="search"
-				append-icon="mdi-magnify"
-				label="Search"
-				single-line
-				hide-details
-				:disabled="busy"
-			></v-text-field>
-		</template>
+	<base-crud-view 
+		title="Akun"
+		:create="() => createDialog=true"
+		create-text="Buat Akun"
+		v-model:search="search"
+	>
 		<template v-slot:default>
 			<v-data-table
 				class="backup-table"
@@ -160,7 +138,7 @@
 				:parent-busy="busy"
 			/>
 		</template>
-	</main-card>
+	</base-crud-view>
 </template>
 
 <script>
@@ -189,7 +167,8 @@ import EditableCell from '@/components/form/EditableCell';
 
 import UserFormDialog from '@/views/pengaturan/akun/UserFormDialog';
 import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
-import BaseCrudView from '@/views/BaseCrudView';
+import { BaseCrudView } from '@/views/BaseCrudView';
+import { BaseCrudViewBase } from '@/views/BaseCrudViewBase';
 
 import ConfirmationIconButton from '@/components/form/buttons/ConfirmationIconButton';
 import EditableCellTextField from '@/components/form/editable_cells/EditableCellTextField';
@@ -207,10 +186,11 @@ import EditableCellSelect from '@/components/form/editable_cells/EditableCellSel
 		ConfirmationIconButton,
 		EditableCellTextField,
 		EditableCellSelect,
+		BaseCrudView,
   	},
 	beforeRouteEnter: authRouter.routeRequireRoleNow(TUserRole.ADMIN_AKUN)
 })
-class AkunView extends BaseCrudView {
+class AkunView extends BaseCrudViewBase {
 	setPasswordDialog = false;
 	toSetPassword = null;
 	roles = []

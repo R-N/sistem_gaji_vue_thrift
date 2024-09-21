@@ -94,7 +94,10 @@
       "no-empty": "off",
       "no-prototype-builtins": "off",
       "vue/no-unused-vars": "off",
-      "no-useless-escape": "off"
+      "no-useless-escape": "off",
+      "vue/no-v-model-argument": "off",
+      "vue/valid-v-model": "off",
+      "no-extra-semi": "off"
     }
   },
   "browserslist": [

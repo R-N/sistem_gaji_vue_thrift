@@ -77,12 +77,12 @@
 import stores from '@/store/stores';
 
 import { Component, Prop, Model, Watch } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { DialogBase } from '@/components/dialog/DialogBase';
 
 @Component({
   	name: "SimpleInputDialog"
 })
-class SimpleInputDialog extends WorkingComponent {
+class SimpleInputDialog extends DialogBase {
 	@Prop({ default: "Ok" }) confirmText;
 	@Prop({ default: "Input Text" }) title;
 	@Prop({ default: "" }) text;
@@ -90,7 +90,6 @@ class SimpleInputDialog extends WorkingComponent {
 	@Prop({ default: "Input" }) label;
 	@Prop({ default: false }) password;
 	@Prop({ default: false }) noInput;
-	@Model('change', { type: [Boolean, String, Object, Array] }) dialog;
 	@Prop(Function) onConfirm;
 	@Prop({ default: undefined }) rules;
 	@Prop({ default: undefined }) counter;
@@ -99,27 +98,10 @@ class SimpleInputDialog extends WorkingComponent {
 	inputConfirm = ''
 	passwordVisible = false;
 
-	get myDialog(){
-		return this.dialog;
-	}
-	set myDialog(value){
-		if(value == this.dialog) return;
-		if (!value){
-			this.input = '';
-			this.busy = false;
-		}
-		this.$emit('change', value);
-	}
-
-	@Watch('myDialog', { immediate: false })
-	onDialogChange(val, oldVal){
-		if( this.$refs.myForm){
-			this.$refs.myForm.resetValidation();
-		}
-		this.input = ''
+	reset(){
+		this.input = '';
 		this.inputConfirm = ''
 	}
-
 
 	validateConfirm(inputConfirm){
 		if (this.input === inputConfirm) return true;
