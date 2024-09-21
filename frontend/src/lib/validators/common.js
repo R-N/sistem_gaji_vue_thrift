@@ -4,23 +4,26 @@ import { isInt, isStr, isUndefined, toTitleCase2, filterUnique } from '@/lib/uti
 export const createRulesFields = (fields, errors={}, types={}, TErrorCode={}, T_ERROR_STR={}, entity=null) => {
     let ret = {}
     fields.forEach(
-        (field) => ret[`${field}_RULES`] = createRules(
-            field,
-            createRulesBase(
-                field,
-                errors,
-                types,
-                TErrorCode,
-                T_ERROR_STR,
-                entity,
-            ),
-            TErrorCode,
-            T_ERROR_STR,
-            entity,
-        )
+        (field) => ret[`${field}_RULES`] = createRulesField(field, errors, types, TErrorCode, T_ERROR_STR, entity)
     );
     return ret;
 };
+
+
+export const createRulesField = (field, errors={}, types={}, TErrorCode={}, T_ERROR_STR={}, entity=null) => createRules(
+    field,
+    createRulesBase(
+        field,
+        errors,
+        types,
+        TErrorCode,
+        T_ERROR_STR,
+        entity,
+    ),
+    TErrorCode,
+    T_ERROR_STR,
+    entity,
+);
 
 const createRules = (field, rules={}, TErrorCode={}, T_ERROR_STR={}, entity=null, errors=null) => {
     TErrorCode = getTErrorCode(errors, entity, TErrorCode);
