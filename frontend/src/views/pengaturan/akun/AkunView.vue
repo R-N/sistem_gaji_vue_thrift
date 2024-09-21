@@ -16,7 +16,6 @@
 			>
 				<template v-slot:item.email="{ item }">
 					<editable-cell-text-field
-						v-if="mayEditEmail(item)"
 						name="email" 
 						type="email"
 						:counter="emailLenMax"
@@ -26,11 +25,9 @@
 						:rules="emailRules"
 						:disabled="!mayEditEmail(item) || busy"
 					/>
-					<span v-else >{{ item.email }}</span>
 				</template>
 				<template v-slot:item.role="{ item }">
 					<editable-cell-select
-						v-if="mayEdit(item)"
 						name="role" 
 						item-value="role"
 						item-title="text"
@@ -40,7 +37,6 @@
 						@change="(value) => setRole(item, value)"
 						:disabled="!mayEdit(item) || busy"
 					/>
-					<span v-else >{{ item.role }}</span>
 				</template>
 				<template v-slot:item.enabled="{ item }">
 					<sync-checkbox 
@@ -96,7 +92,7 @@
 			/>
 			<user-form-dialog
 				v-model="createDialog"
-				@register="user => { items.push(user) }"
+				@register="addItem"
 				:roles="roles"
 				:parent-busy="busy"
 			/>

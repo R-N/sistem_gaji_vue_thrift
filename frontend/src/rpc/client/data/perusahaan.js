@@ -1,32 +1,32 @@
 import TDataPerusahaanService from '@/rpc/gen/TDataPerusahaanService';
-import { TBaseClient } from '@/rpc/client/base';
 import { TUserRole } from '@/rpc/gen/user.user.types_types';
+import { TCrudClient } from '@/rpc/client/crud';
 
 
-class TDataPerusahaanClient extends TBaseClient{
+class TDataPerusahaanClient extends TCrudClient{
 	constructor(stores=null){
-		super(stores, TDataPerusahaanService, '/api/data/perusahaan');
+		super(
+			stores, 
+			TDataPerusahaanService, 
+			'/api/data/perusahaan',
+			{
+				fetch: TUserRole.ADMIN_UTAMA,
+				create: TUserRole.ADMIN_UTAMA,
+				delete: TUserRole.SUPER_ADMIN,
+			},
+			{
+				nama: TUserRole.SUPER_ADMIN,
+				enabled: TUserRole.ADMIN_UTAMA,
+			}
+		);
 	}
 
-	async fetch(query=null){
-		return await this.client.fetch(this.stores.auth.authToken, query);
-	}
-	async get(perusahaan_id){
-		return await this.client.get(this.stores.auth.authToken, perusahaan_id);
-	}
-
-	async create(form){
-		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		return await this.client.create(this.stores.auth.authToken, form);
-	}
-	async set_nama(perusahaan_id, new_nama){
-		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		await this.client.set_nama(this.stores.auth.authToken, perusahaan_id, new_nama);
-	}
-	async set_enabled(perusahaan_id, new_enabled){
-		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		await this.client.set_enabled(this.stores.auth.authToken, perusahaan_id, new_enabled);
-	}
+	// async fetch(query=null){
+	// 	let items = await super.fetch(query);
+	// 	// let enabledItems = items.filter((x) => x.enabled);
+    //     // await this.stores.settings.setPerusahaans(enabledItems);
+	// 	return items;
+	// }
 }
 
 const dataPerusahaanClient = new TDataPerusahaanClient();

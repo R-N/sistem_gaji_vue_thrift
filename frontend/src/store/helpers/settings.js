@@ -6,7 +6,7 @@ class SettingsHelper extends StoreUser{
 		super(stores);
 	}
 
-	async fetchPerusahaan(){
+	async fetchPerusahaans(){
 		this.stores.helper.auth.requireLogin();
 		let query = new TPerusahaanQuery({enabled: true});
         let perusahaans = await this.stores.client.data.perusahaan.fetch(query);
@@ -14,8 +14,8 @@ class SettingsHelper extends StoreUser{
         return perusahaans;
 	}
 
-    async initSettings(){
-        await this.fetchPerusahaan();
+    async getSettings(){
+        await this.fetchPerusahaans();
         return true;
     }
 }

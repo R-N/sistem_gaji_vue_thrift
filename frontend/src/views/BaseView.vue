@@ -9,15 +9,6 @@ import { WorkingComponent } from '@/components/WorkingComponent';
 })
 class BaseView extends WorkingComponent {
 
-	get isSuperAdmin(){
-		return authStore.isSuperAdmin;
-	}
-	get isLoggedIn(){
-		return authStore.isLoggedIn;
-	}
-	get userRole(){
-		return authStore.role;
-	}
 }
 
 export { BaseView }

@@ -2,7 +2,7 @@
 	<main-card :title="title">
 		<template v-slot:toolbar-left>
 			<icon-button
-				@click.stop="create" 
+				@click="create"
 				:disabled="busy"
 				icon="mdi-plus"
 				:text="createText"

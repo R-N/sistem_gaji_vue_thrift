@@ -27,6 +27,10 @@ class BaseCrudViewBase extends BaseView {
         return `Apa Anda yakin ingin menghapus ${this.itemNameLower} '${item[this.nameField]}'?`;
     }
 
+    addItem(item){
+        this.items.push(item);
+    }
+
     async _askDelete(item, ask){
         if (ask)
             ask();

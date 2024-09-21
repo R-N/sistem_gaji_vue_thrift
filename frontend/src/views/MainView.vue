@@ -76,13 +76,6 @@ class MainView extends BaseView{
 		return appStore.breadcrumbs;
 	}
 
-
-	get isLoggedIn(){
-		return authStore.isLoggedIn;
-	}
-	get serverReachable(){
-		return appStore.serverReachable;
-	}
 }
 export { MainView }
 export default MainView

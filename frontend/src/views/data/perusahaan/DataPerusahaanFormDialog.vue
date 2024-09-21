@@ -1,51 +1,29 @@
 <template>
-	<v-dialog
-		v-model="myDialog"
+	<form-dialog
 		max-width="400"
-		:persistent="busy"
+		:parent-busy="busy"
+		@submit="create"
+		title="Buat Perusahaan"
+		:disabled="disabled"
+		:reset="reset"
+		v-model="myDialog"
 	>
-		<v-card class="">
-		    <v-form ref="myForm" v-model="valid" @submit.prevent="create" class="p-2" :disabled="!interactable">
-				<v-card-title class="headline">Buat Perusahaan</v-card-title>
-				<v-card-text>
-			    	<v-text-field 
-			    		name="nama"
-			    		class="bigger-input" 
-			    		label="Nama" 
-			    		v-model="nama" 
-			    		:disabled="!interactable" 
-			    		required
-			    		:rules="namaRules"
-						:counter="namaLenMax"
-		    		/>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn
-							color="green darken-1"
-							text
-							@click.stop="close()"
-							:disabled="!interactable"
-						>
-							Batal
-						</v-btn>
-						<v-btn
-							type="submit"
-							color="green darken-1"
-							text
-							:disabled="!interactable"
-							:loading="busy"
-						>
-							Ok
-						</v-btn>
-					</v-card-actions>
-				</v-card-text>
-		    </v-form>
-		</v-card>
-	</v-dialog>
+        <template v-slot:fields="{ interactable, busy }">
+			<v-text-field 
+				name="nama"
+				class="bigger-input" 
+				label="Nama" 
+				v-model="nama" 
+				:disabled="!interactable" 
+				required
+				:rules="namaRules"
+				:counter="namaLenMax"
+			/>
+		</template>
+	</form-dialog>
 </template>
 
 <script>
-import { TUserRole, T_USER_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TPerusahaanError, 
 	NAMA_LEN_MAX 
@@ -56,19 +34,19 @@ import stores from "@/store/stores";
 import { NAMA_RULES } from '@/lib/validators/data/perusahaan';
 
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
+import { FormDialog } from '@/components/form/FormDialog'
+import { FormDialogBase } from '@/components/form/FormDialogBase'
 
 import CardTitle from '@/components/card/CardTitle'
 
 @Component({
 	name: "DataPerusahaanFormDialog",
 	components: {
-		CardTitle
+		FormDialog
 	}
 })
-class DataPerusahaanFormDialog extends WorkingComponent {
+class DataPerusahaanFormDialog extends FormDialogBase {
 	@Prop({ default: false }) disabled;
-	@Model('change', { type: Boolean }) dialog;
 	nama = ''
 
 	namaRules = NAMA_RULES
@@ -77,32 +55,8 @@ class DataPerusahaanFormDialog extends WorkingComponent {
 
 	valid = true;
 
-	@Watch('myDialog')
-	onDialogChange(val, oldVal){
-		if( this.$refs.myForm){
-			this.$refs.myForm.resetValidation();
-		}
+	reset(){
 		this.nama = ''
-	}
-
-	close(){
-		this.busy = false;
-		this.myDialog = false;
-	}
-
-	get interactable(){
-		return !this.disabled && !this.busy;
-	}
-
-	get myDialog(){
-		return this.dialog;
-	}
-	set myDialog(value){
-		if(value == this.dialog) return;
-		if (!value){
-			this.busy = false;
-		}
-		this.$emit('change', value);
 	}
 
 	async create(){

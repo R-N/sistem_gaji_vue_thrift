@@ -176,7 +176,6 @@ class DataJobLevelView extends BaseView {
 	async setNama(jobLevel, nama){
 		const view = this;
 		view.busy=true;
-		console.log("Set nama to: " + nama);
 		try{
 			await stores.client.data.jobLevel.set_nama(jobLevel.id, nama);
 			jobLevel.nama = nama;

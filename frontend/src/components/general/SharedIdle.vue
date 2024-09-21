@@ -29,7 +29,6 @@ class SharedIdle extends Vue {
 	@Watch('sharedUserPresent')
 	onSharedUserPresent(val, oldVal) {
 		if (val != oldVal && val && this.syncedIdle) {
-			console.log("Present");
 			this.syncedIdle = false;
 		}
 	}

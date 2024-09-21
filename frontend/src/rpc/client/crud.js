@@ -24,10 +24,10 @@ class TCrudClient extends TBaseClient{
         this.setters = setters;
 
         for (const [field, required_role] of Object.entries(this.setters)) {
-            f = (id, new_value) => this.set_field(field, id, new_value, required_role);
-            f.name = `set_${field}`;
-            this[f.name] = f;
-            f.name = "TCrudClient." + f.name;
+            let f = (id, new_value) => this.set_field(field, id, new_value, required_role);
+            // f.name = `set_${field}`;
+            this[`set_${field}`] = f;
+            // f.name = "TCrudClient." + f.name;
         }
     }
 
@@ -75,7 +75,6 @@ class TCrudClient extends TBaseClient{
 		await this.client[action](this.stores.auth.authToken, value);
 	}
 	async set_field(field, id, value, required_role=null){
-        console.log("set " + field + " " + value)
         if(required_role)
 		    this.stores.helper.auth.requireRole(required_role);
         else

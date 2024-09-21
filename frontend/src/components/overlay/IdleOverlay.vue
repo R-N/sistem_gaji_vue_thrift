@@ -33,8 +33,6 @@ class IdleOverlay extends Vue {
 
 
 	mounted(){
-		console.log("logoutWait: " + this.logoutWait);
-		console.log("idleWait: " + this.idleWait);
 	}
 
 	get logoutCountdownMinutes(){
@@ -71,7 +69,6 @@ class IdleOverlay extends Vue {
 	}
 
 	startCountdown(){
-		console.log("Starting countdown");
 		this.stopCountdown();
 		this.logoutCountdown = this.logoutWait;
 		const comp = this;
@@ -81,7 +78,6 @@ class IdleOverlay extends Vue {
 	}
 	@Watch('idle')
 	onIdle(val, oldVal){
-		console.log("Idle: " + val);
 		if (val != oldVal){
 			if (val && this.isLoggedIn){
 				this.startCountdown();

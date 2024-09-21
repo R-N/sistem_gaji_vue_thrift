@@ -16,7 +16,7 @@
                 :value="value"
                 @change="value => valueEdit = value"
                 :disabled="busy || disabled"
-            ></v-select>
+            />
         </template>
         <template v-slot:default>
             <span>{{ value[itemTitle] }}</span>

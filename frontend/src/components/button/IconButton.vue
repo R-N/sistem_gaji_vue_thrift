@@ -7,6 +7,7 @@
                 v-bind="attrs" 
                 v-on="on"
                 :disabled="disabled"
+				@click="$emit('click', $event)" 
             >
                 <v-icon size="32" small>{{ icon }}</v-icon>
             </v-btn>

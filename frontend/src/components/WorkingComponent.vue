@@ -1,20 +1,17 @@
 
 <script>
-import { appStore } from '@/store/stores';
+import { appStore, authStore } from '@/store/stores';
 
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { MyComponent } from '@/components/MyComponent'
 
 
 @Component({
 	name: "WorkingComponent"
 })
-class WorkingComponent extends Vue {
+class WorkingComponent extends MyComponent {
 	@Prop({ default: false }) parentBusy
 	selfBusy = false
-
-	log(x){
-		console.log(x);
-	}
 
 	get busy(){
 		return this.selfBusy || this.parentBusy || appStore.routerBusy || appStore.tabBusy || appStore.authBusy || appStore.globalBusy

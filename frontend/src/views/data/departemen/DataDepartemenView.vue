@@ -178,7 +178,6 @@ class DataDepartemenView extends BaseView {
 	async setNama(departemen, nama){
 		const view = this;
 		view.busy=true;
-		console.log("Set nama to: " + nama);
 		try{
 			await stores.client.data.departemen.set_nama(departemen.id, nama);
 			departemen.nama = nama;

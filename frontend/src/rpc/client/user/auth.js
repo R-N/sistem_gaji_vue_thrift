@@ -18,7 +18,7 @@ class TUserAuthClient extends TBaseClient{
 			await this.stores.auth.setTokens(tokens);
 			await this.stores.helper.auth.setAuthRefresher();
 			let profile = await this.stores.client.user.profile.get_user();
-			await this.stores.helper.settings.initSettings();
+			await this.stores.helper.settings.getSettings();
 			return profile;
 		}finally{
 			await this.stores.app.setAuthBusy(false);

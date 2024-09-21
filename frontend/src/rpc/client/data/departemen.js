@@ -17,7 +17,6 @@ class TDataDepartemenClient extends TBaseClient{
 
 	async create(form){
 		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		console.log(form);
 		return await this.client.create(this.stores.auth.authToken, form);
 	}
 	async set_nama(departemen_id, new_nama){

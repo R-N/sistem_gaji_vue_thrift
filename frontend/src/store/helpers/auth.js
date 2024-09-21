@@ -41,6 +41,7 @@ class AuthHelper extends StoreUser{
 		try{
 			await this.stores.client.user.auth.refresh_auth();
 			await this.stores.client.user.profile.get_user();
+			await this.stores.helper.settings.getSettings();
 			await this.setAuthRefresher();
 			return true;
 		}catch(error){
@@ -57,9 +58,11 @@ class AuthHelper extends StoreUser{
 	async setAuthRefresher(){
 		if (!this.stores.auth.authRefresher){
 			const cli = this.stores.client.user.auth;
+			const cli2 = this.stores.helper.settings;
 			var authRefresher = window.setInterval(async function(){
 				try{
 					await cli.refresh_auth();
+					await cli2.getSettings();
 				}catch(error){
 					cli.logout();
 					if (error instanceof TAuthError){

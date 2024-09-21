@@ -7,7 +7,7 @@ import { RouterUser } from '@/router/user';
 class AuthRouter extends RouterUser{
 	constructor(stores=null, router=null){
 		super(stores, router);
-		console.log(router);
+		(router);
 	}
 
 	dialogRequireLogin(){

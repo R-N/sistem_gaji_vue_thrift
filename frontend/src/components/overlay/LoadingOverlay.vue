@@ -40,7 +40,6 @@ class LoadingOverlay extends WorkingComponent {
 	mayRefreshTimer = null;
 
 	mounted(){
-		console.log("mayRefreshWait: " + this.mayRefreshWait);
 		this.setTimer(this.busy);
 	}
 
@@ -53,7 +52,6 @@ class LoadingOverlay extends WorkingComponent {
 
 	@Watch('busy')
 	onBusyChanged(val, oldVal){
-		console.log("Busy changed: " + val);
 		if (val != oldVal){
 			this.setTimer(val);
 		}

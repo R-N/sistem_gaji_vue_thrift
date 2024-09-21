@@ -14,10 +14,10 @@
 		>
 			<div class="d-flex align-center justify-space-between">
 				<span class="flex-grow-1">
-					<slot v-if="!disabled && editing" name="editing" :readonly="disabled || busy || !editing" :editing="editing">Edit</slot>
-					<slot v-else name="default">Hello</slot>
+					<slot v-if="editing && !(disabled || busy)" name="editing" :readonly="disabled || busy || !editing" :disabled="disabled || busy || !editing" :editing="editing"></slot>
+					<slot v-else name="default"></slot>
 				</span>
-				<span  class="flex-grow-0 flex-shrink-0" v-if="!disabled">
+				<span class="flex-grow-0 flex-shrink-0" v-if="!(disabled || busy)">
 					<span v-if="editing">
 						<v-tooltip bottom key="submit">
 							<template v-slot:activator="{ on, attrs }">
