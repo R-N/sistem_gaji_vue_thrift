@@ -2,6 +2,7 @@
 	<base-crud-view 
 		title="Perusahaan"
 		:create="() => createDialog=true"
+		:fetch="fetch"
 		create-text="Buat Akun"
 		v-model:search="search"
 	>
@@ -17,7 +18,7 @@
 				<template v-slot:item.name="{ item }">
 					<editable-cell-text-field
 						name="name"
-						:counter="nameLenMax"
+						:counter="nameMaxLen"
 						:confirm-text-maker="(value) => setFieldConfirmText('name', item, value)"
 						:value="item.name" 
 						@change="(value) => setName(item, value)"
@@ -84,7 +85,7 @@ import EditableCellTextField from '@/components/form/editable_cell/EditableCellT
 })
 class DataPerusahaanView extends BaseCrudViewBase {
 	createDialog = false;
-	nameLenMax = NAME_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
 	nameRules = NAME_RULES
 
 	get nameField(){ return "name"; }

@@ -6,9 +6,12 @@
         :confirm-text-maker="() => confirmTextMaker(valueEdit)"
         :parent-busy="parentBusy"
         :disabled="disabled"
+        :title="title"
     >
         <template v-slot:editing>
             <v-select
+                class="bigger-input"
+                :label="label"
                 :name="name"
                 :items="items"
                 :item-title="itemTitle"
@@ -19,7 +22,7 @@
             />
         </template>
         <template v-slot:default>
-            <span>{{ value[itemTitle] }}</span>
+            <span class="bigger-input">{{ value[itemTitle] }}</span>
         </template>
     </editable-cell>
 </template>
@@ -39,6 +42,8 @@ const defaultValue = () => {
   	}
 })
 class EditableCellSelect extends WorkingComponent {
+	@Prop(String) label;
+	@Prop(String) title;
 	@Prop(String) name;
 	@Prop([String, Object]) value;
 	@Prop([String, Function]) confirmTextMaker; 

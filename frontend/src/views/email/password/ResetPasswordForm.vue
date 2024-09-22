@@ -16,7 +16,7 @@
 			    @click:append="() => { passwordVisible = !passwordVisible }"
 			    :type="passwordVisible ? 'text' : 'password'"
 	    		:rules="passwordRules"
-	    		:counter="passwordLenMax"
+	    		:counter="passwordMaxLen"
     		/>
 			<v-text-field 
 				class="bigger-input" 
@@ -25,7 +25,7 @@
 				:disabled="busy" 
 				type="password"
 				required
-				:counter="passwordLenMax"
+				:counter="passwordMaxLen"
 				:rules="confirmRules"
 			/>
 	    	<v-btn raised color="primary" type="submit" class="text-center w-100 mx-0" :disabled="busy" :loading="busy">Simpan</v-btn>
@@ -61,7 +61,7 @@ class ResetPasswordForm extends WorkingComponent {
 	passwordConfirm = ''
 	passwordVisible = false;
 	passwordRules = PASSWORD_RULES
-	passwordLenMax = PASSWORD_MAX_LEN
+	passwordMaxLen = PASSWORD_MAX_LEN
 	
 	validateConfirm(passwordConfirm){
 		if (this.password === passwordConfirm) return true;

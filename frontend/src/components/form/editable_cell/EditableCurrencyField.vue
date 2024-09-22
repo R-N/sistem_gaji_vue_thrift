@@ -6,9 +6,12 @@
         :confirm-text-maker="confirmTextMaker"
         :parent-busy="parentBusy"
         :disabled="disabled"
+        :title="title"
     >
         <template v-slot:editing>
             <v-currency-field
+                class="bigger-input"
+                :label="label"
                 :name="name" 
                 v-model="valueEdit" 
                 :rules="rules"
@@ -19,7 +22,7 @@
             />
         </template>
         <template v-slot:default>
-            <span>{{ value }}</span>
+            <span class="bigger-input">{{ value }}</span>
         </template>
     </editable-cell>
 </template>

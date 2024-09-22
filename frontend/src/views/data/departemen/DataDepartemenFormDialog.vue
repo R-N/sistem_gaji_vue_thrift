@@ -16,7 +16,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="nameRules"
-						:counter="nameLenMax"
+						:counter="nameMaxLen"
 		    		/>
 					<v-card-actions>
 						<v-spacer></v-spacer>
@@ -74,7 +74,7 @@ class DataDepartemenFormDialog extends WorkingComponent {
 
 	nameRules = NAME_RULES
 
-	nameLenMax = NAME_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
 
 	valid = true;
 

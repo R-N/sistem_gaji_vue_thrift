@@ -5,7 +5,7 @@
 		@submit="register"
 		title="Buat Akun"
 		:disabled="disabled"
-		:reset="reset"
+		:on-reset="reset"
 		v-model="myDialog"
 	>
         <template v-slot:fields="{ interactable, busy }">
@@ -17,7 +17,7 @@
 				:disabled="!interactable" 
 				required
 				:rules="usernameRules"
-				:counter="usernameLenMax"
+				:counter="usernameMaxLen"
 			/>
 			<v-text-field 
 				name="name"
@@ -27,7 +27,7 @@
 				:disabled="!interactable" 
 				required
 				:rules="nameRules"
-				:counter="nameLenMax"
+				:counter="nameMaxLen"
 			/>
 			<v-text-field 
 				name="email"
@@ -38,7 +38,7 @@
 				required
 				:rules="emailRules"
 				type="email"
-				:counter="emailLenMax"
+				:counter="emailMaxLen"
 			/>
 			<v-select
 				class="bigger-input" 
@@ -62,7 +62,7 @@
 				@click:append="() => { passwordVisible = !passwordVisible }"
 				:type="passwordVisible ? 'text' : 'password'"
 				:rules="passwordRules"
-				:counter="passwordLenMax"
+				:counter="passwordMaxLen"
 			/>
 			<v-text-field 
 				v-if="false"
@@ -72,7 +72,7 @@
 				:disabled="!interactable" 
 				type="password"
 				required
-				:counter="passwordLenMax"
+				:counter="passwordMaxLen"
 				:rules="confirmRules"
 			/>
         </template>
@@ -119,10 +119,10 @@ class UserFormDialog extends FormDialogBase {
 	passwordRules = PASSWORD_RULES
 	roleRules = ROLE_RULES
 
-	usernameLenMax = USERNAME_MAX_LEN
-	nameLenMax = NAME_MAX_LEN
-	emailLenMax = EMAIL_MAX_LEN
-	passwordLenMax = PASSWORD_MAX_LEN
+	usernameMaxLen = USERNAME_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
+	emailMaxLen = EMAIL_MAX_LEN
+	passwordMaxLen = PASSWORD_MAX_LEN
 
 	reset(){
 		this.username = ''

@@ -6,19 +6,23 @@
         :confirm-text-maker="() => confirmTextMaker(valueEdit)"
         :parent-busy="parentBusy"
         :disabled="disabled"
+        :title="title"
     >
         <template v-slot:editing>
             <v-text-field 
+                class="bigger-input"
                 :name="name" 
                 v-model="valueEdit" 
                 :rules="rules"
                 :counter="counter"
                 :type="type"
                 :disabled="busy || disabled"
+                :required="required"
+                :label="label"
             />
         </template>
         <template v-slot:default>
-            <span>{{ value }}</span>
+            <span class="bigger-input">{{ value }}</span>
         </template>
     </editable-cell>
 </template>
@@ -35,6 +39,8 @@ import WorkingComponent from '@/components/WorkingComponent';
   	}
 })
 class EditableCellTextField extends WorkingComponent {
+	@Prop(String) title;
+	@Prop(String) label;
 	@Prop(String) name;
 	@Prop(String) type;
 	@Prop(String) value;
@@ -42,6 +48,7 @@ class EditableCellTextField extends WorkingComponent {
 	@Prop([String, Function]) confirmTextMaker; 
 	@Prop({ default: false }) disabled;
 	@Prop([Function, Array]) rules; 
+	@Prop({default: true}) required; 
 
     valueEdit = '';
 

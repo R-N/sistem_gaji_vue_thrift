@@ -2,6 +2,7 @@
 	<base-crud-view 
 		title="Akun"
 		:create="() => createDialog=true"
+		:fetch="fetch"
 		create-text="Buat Akun"
 		v-model:search="search"
 	>
@@ -18,7 +19,7 @@
 					<editable-cell-text-field
 						name="email" 
 						type="email"
-						:counter="emailLenMax"
+						:counter="emailMaxLen"
 						:confirm-text-maker="(value) => setFieldConfirmText('email', item, value)"
 						:value="item.email" 
 						@change="(value) => setEmail(item, value)"
@@ -81,12 +82,12 @@
 			<simple-input-dialog 
 				v-if="isSuperAdmin"
 				v-model="setPasswordDialog" 
-				:on-confirm="setPassword"
+				:on-submit="setPassword"
 				title="Ubah Password"
 				:text="setPasswordText"
 				label="Password Baru" 
 				:password="true"
-				:counter="passwordLenMax"
+				:counter="passwordMaxLen"
 				:rules="passwordRules"
 				:disabled="busy"
 			/>
@@ -158,8 +159,8 @@ class AkunView extends BaseCrudViewBase {
 	selfRoleDownWarning = " Selain itu, jika Anda bukan Admin Akun maupun Super Admin, Anda tidak bisa mengakses halaman ini."
 	emailRules = EMAIL_RULES
 	passwordRules = PASSWORD_RULES
-	emailLenMax = EMAIL_MAX_LEN
-	passwordLenMax = PASSWORD_MAX_LEN
+	emailMaxLen = EMAIL_MAX_LEN
+	passwordMaxLen = PASSWORD_MAX_LEN
 
 	get nameField(){ return "username"; }
     get itemNameLower(){ return 'akun'; }
@@ -297,7 +298,8 @@ class AkunView extends BaseCrudViewBase {
 		return `Masukkan password baru untuk user '${this.toSetPassword.username}'`
 	}
 	async setPassword(password){
-		return await this.setField("password", this.toSetPassword, password);
+		await this.setField("password", this.toSetPassword, password);
+		this.setPasswordDialog = false;
 	}
 }
 export { AkunView } 

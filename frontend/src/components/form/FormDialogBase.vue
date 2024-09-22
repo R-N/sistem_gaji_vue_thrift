@@ -10,12 +10,6 @@ import { DialogBase } from '@/components/dialog/DialogBase';
 	}
 })
 class FormDialogBase extends DialogBase {
-
-	close(){
-		this.busy = false;
-		this.myDialog = false;
-		this.$emit('close');
-	}
 }
 export { FormDialogBase }
 export default FormDialogBase

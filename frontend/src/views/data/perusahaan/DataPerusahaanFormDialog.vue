@@ -5,7 +5,7 @@
 		@submit="create"
 		title="Buat Perusahaan"
 		:disabled="disabled"
-		:reset="reset"
+		:on-reset="reset"
 		v-model="myDialog"
 	>
         <template v-slot:fields="{ interactable, busy }">
@@ -17,7 +17,7 @@
 				:disabled="!interactable" 
 				required
 				:rules="nameRules"
-				:counter="nameLenMax"
+				:counter="nameMaxLen"
 			/>
 		</template>
 	</form-dialog>
@@ -51,7 +51,7 @@ class DataPerusahaanFormDialog extends FormDialogBase {
 
 	nameRules = NAME_RULES
 
-	nameLenMax = NAME_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
 
 	valid = true;
 

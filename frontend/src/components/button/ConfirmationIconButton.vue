@@ -2,15 +2,19 @@
     <confirmation-slot
         class="text-center justify-center justify-self-center"
         :confirmTextMaker="confirmTextMaker"
-        v-slot="{ ask }"
+        
         :on-confirm="() => onConfirm()"
     >
-        <icon-button
-            @click.stop="tryAsk(ask)" 
-            :disabled="busy || disabled"
-            :icon="icon"
-            :text="text"
-        />
+		<template v-slot="{ ask }">
+            <icon-button
+                @click.stop="tryAsk(ask)" 
+                :disabled="busy || disabled"
+                :icon="icon"
+                :text="text"
+                :size="size"
+                :small="small"
+            />
+        </template>
     </confirmation-slot>
 </template>
 
@@ -28,6 +32,8 @@ import IconButton from '@/components/button/IconButton';
   	}
 })
 class ConfirmationIconButton extends WorkingComponent {
+    @Prop({default: 32}) size;
+    @Prop({default: true}) small;
     @Prop(String) icon;
     @Prop(String) text;
 	@Prop([String, Function]) confirmTextMaker; 

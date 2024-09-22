@@ -4,7 +4,7 @@
 		<simple-input-dialog 
 			v-if="confirmTextMaker && confirmDialog"
 			v-model="confirmDialog" 
-			:on-confirm="emitConfirm"
+			:on-submit="emitConfirm"
 			:on-cancel="onCancel"
 			title="Konfirmasi"
 			:text="confirmText"
@@ -34,8 +34,9 @@ class ConfirmationSlot extends Vue {
 	emitConfirm(){
 		if(this.onConfirm){
 			this.onConfirm();
+		}else{
+			this.$emit('confirm');
 		}
-		this.$emit('confirm');
 	}
 	ask(){
 		if(!this.confirmTextMaker){

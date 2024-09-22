@@ -46,59 +46,23 @@ import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
 import { BaseView } from '@/views/BaseView';
 import { DialogBase } from '@/components/dialog/DialogBase';
+import { FormDialogBase } from '@/components/form/FormDialogBase';
 
 @Component({
 	name: "FormDialog",
 	components: {
 	}
 })
-class FormDialog extends DialogBase {
+class FormDialog extends FormDialogBase {
+	@Prop(Function) onCancel;
+	@Prop(Function) onSubmit;
+    @Prop(Function) onReset;
+    @Prop(Function) onValidate;
 	@Prop({ default: false }) disabled;
-	@Model('change', { type: Boolean }) dialog;
 	@Prop({ default: "Batal" }) cancelText;
 	@Prop({ default: "Ok" }) confirmText;
 	@Prop({ default: 400 }) maxWidth;
 	@Prop({ default: "Form" }) title;
-    @Prop(Function) reset;
-
-	valid = true;
-
-	get form(){ return this.$refs.myForm; }
-
-	@Watch('myDialog')
-	onDialogChange(val, oldVal){
-		if( this.$refs.myForm){
-			this.$refs.myForm.resetValidation();
-		}
-        if (this.reset)
-            this.reset();
-	}
-
-	close(){
-		this.busy = false;
-		this.myDialog = false;
-		this.$emit('close');
-	}
-
-	get interactable(){
-		return !this.disabled && !this.busy;
-	}
-
-	get myDialog(){
-		return this.dialog;
-	}
-	set myDialog(value){
-		if(value == this.dialog) return;
-		if (!value){
-			this.busy = false;
-		}
-		this.$emit('change', value);
-	}
-	async submit(){
-		this.$refs.myForm.validate();
-		if(!this.valid) return;
-		this.$emit('submit', this.$refs.myForm);
-	}
 }
 export { FormDialog }
 export default FormDialog

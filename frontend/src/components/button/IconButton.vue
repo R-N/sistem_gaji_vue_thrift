@@ -9,7 +9,7 @@
                 :disabled="disabled"
 				@click="$emit('click', $event)" 
             >
-                <v-icon size="32" small>{{ icon }}</v-icon>
+                <v-icon :size="size" :small="small">{{ icon }}</v-icon>
             </v-btn>
         </template>
         <span>{{ text }}</span>
@@ -27,6 +27,8 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
   	}
 })
 class IconButton extends Vue {
+    @Prop({default: 32}) size;
+    @Prop({default: true}) small;
     @Prop(String) icon;
     @Prop(String) text;
     @Prop({default: false}) disabled;

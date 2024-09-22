@@ -12,6 +12,9 @@
 			v-model="valid"
 			:disabled="busy"
 		>
+			<div class="d-flex align-left justify-space-between" v-if="title">
+				<span class="font-weight-bold">{{ title }}</span>
+			</div>
 			<div class="d-flex align-center justify-space-between">
 				<span class="flex-grow-1">
 					<slot v-if="editing && !(disabled || busy)" name="editing" :readonly="disabled || busy || !editing" :disabled="disabled || busy || !editing" :editing="editing"></slot>
@@ -83,6 +86,7 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
   	}
 })
 class EditableCell extends WorkingComponent {
+	@Prop(String) title;
 	@Prop(Function) onFinish;
 	@Prop(Function) onEdit;
 	@Prop(Function) onCancel;

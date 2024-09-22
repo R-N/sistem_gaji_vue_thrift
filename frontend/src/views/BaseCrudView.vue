@@ -6,6 +6,14 @@
 				:disabled="busy"
 				icon="mdi-plus"
 				:text="createText"
+				:small="false"
+			/>
+			<icon-button
+				@click="fetch"
+				:disabled="busy"
+				icon="mdi-refresh"
+				:text="refreshText"
+				:small="false"
 			/>
             <slot name="toolbar-left" :busy="busy"></slot>
 		</template>
@@ -51,7 +59,9 @@ let modelEvent = "change"
 class BaseCrudView extends BaseView {
     @Prop({default: 'Crud'}) title;
     @Prop({default: 'Buat'}) createText;
+    @Prop({default: 'Refresh'}) refreshText;
     @Prop(Function) create;
+    @Prop(Function) fetch;
 	@Model(modelEvent, { type: [String, Object] }) search;
 	
 	get mySearch(){

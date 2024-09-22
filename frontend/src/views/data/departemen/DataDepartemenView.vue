@@ -50,7 +50,7 @@
 								name="name" 
 								v-model="item.nameEdit" 
 								:rules="nameRules"
-								:counter="nameLenMax"
+								:counter="nameMaxLen"
 								type="text"
 								:disabled="busy"
 							/>
@@ -131,7 +131,7 @@ class DataDepartemenView extends BaseView {
 	createDialog = false;
 	search = ''
 	departemen = []
-	nameLenMax = NAME_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
 	nameRules = NAME_RULES
 
 	get headers(){

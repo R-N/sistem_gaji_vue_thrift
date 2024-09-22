@@ -16,7 +16,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="nameRules"
-						:counter="nameLenMax"
+						:counter="nameMaxLen"
 		    		/>
 			    	<v-currency-field
 			    		name="gaji-pokok"
@@ -26,7 +26,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="gajiPokokRules"
-						:counter="moneyLenMax"
+						:counter="moneyMaxLen"
 						hide-spin-buttons
 		    		/>
 			    	<v-currency-field
@@ -37,7 +37,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="tunjanganJabatanRules"
-						:counter="moneyLenMax"
+						:counter="moneyMaxLen"
 						hide-spin-buttons
 		    		/>
 			    	<v-currency-field
@@ -48,7 +48,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="upahLembur1Rules"
-						:counter="moneyLenMax"
+						:counter="moneyMaxLen"
 						hide-spin-buttons
 		    		/>
 			    	<v-currency-field
@@ -59,7 +59,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="upahLembur2Rules"
-						:counter="moneyLenMax"
+						:counter="moneyMaxLen"
 						hide-spin-buttons
 		    		/>
 			    	<v-currency-field
@@ -70,7 +70,7 @@
 			    		:disabled="!interactable" 
 			    		required
 			    		:rules="upahLembur3Rules"
-						:counter="moneyLenMax"
+						:counter="moneyMaxLen"
 						hide-spin-buttons
 		    		/>
 					<v-card-actions>
@@ -145,8 +145,8 @@ class DataJobLevelFormDialog extends WorkingComponent {
 	upahLembur2Rules = UPAH_LEMBUR_2_RULES
 	upahLembur3Rules = UPAH_LEMBUR_3_RULES
 
-	nameLenMax = NAME_MAX_LEN
-	moneyLenMax = MONEY_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
+	moneyMaxLen = MONEY_MAX_LEN
 
 	gajiPokok = 0
 	tunjanganJabatan = 0

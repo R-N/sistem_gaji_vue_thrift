@@ -6,72 +6,39 @@
 					<img class="bg" v-lazy="require('@/assets/img/avatar.png')"/>
 				</v-col>
 				<v-col lg="6">
-					<editable-cell 
-						@edit="nameEdit = name"
-						@cancel="nameEdit = name"
-						@finish="setName()"
-						:change-detector="() => name != nameEdit"
+					<editable-cell-text-field
+						name="name" 
+						title="Nama"
+						:counter="nameMaxLen"
 						:confirm-text-maker="setNameConfirmText"
-						read-only-mode="true"
-						:parent-busy="busy"
-					>
-						<template v-slot:editing="{ readonly }">
-							<v-text-field 
-								class="bigger-input"
-								name="name" 
-								v-model="nameEdit" 
-								:rules="nameRules"
-								:counter="nameLenMax"
-								type="email"
-								label="Nama"
-								:readonly="readonly"
-								required
-								:disabled="busy"
-							/>
-						</template>
-					</editable-cell>
-					<editable-cell 
-						@edit="emailEdit = email"
-						@cancel="emailEdit = email"
-						@finish="setEmail()"
-						:change-detector="() => email != emailEdit"
+						:value="name" 
+						@change="setName()"
+						:rules="nameRules"
+						:disabled="busy"
+					/>
+					<editable-cell-text-field
+						name="email" 
+						title="Email"
+						:counter="emailMaxLen"
 						:confirm-text-maker="setEmailConfirmText"
-						read-only-mode="true"
-						:parent-busy="busy"
-					>
-						<template v-slot:editing="{ readonly }">
-							<v-text-field 
-								class="bigger-input"
-								name="email" 
-								v-model="emailEdit" 
-								:rules="emailRules"
-								:counter="emailLenMax"
-								type="email"
-								label="Email"
-								:readonly="readonly"
-								required
-								:disabled="busy"
-							/>
-						</template>
-					</editable-cell>
-					<div class="d-flex flex-grow-1">
-						<v-text-field 
-							class="bigger-input"
-							label="Username"
-							readonly
-							:value="username"
-							:disabled="busy"
-						/>
-					</div>
-					<div class="d-flex flex-grow-1">
-						<v-text-field 
-							class="bigger-input"
-							label="Role"
-							readonly
-							:value="roleText"
-							:disabled="busy"
-						/>
-					</div>
+						:value="email" 
+						@change="setEmail()"
+						:rules="emailRules"
+						:disabled="busy"
+						type="email"
+					/>
+					<editable-cell-text-field
+						name="username" 
+						title="Username"
+						:value="username"
+						:disabled="true"
+					/>
+					<editable-cell-text-field
+						name="role" 
+						title="Role"
+						:value="roleText"
+						:disabled="true"
+					/>
 					<v-form 
 						ref="passwordForm" 
 						v-model="passwordValid"
@@ -82,11 +49,10 @@
 							<div class="d-flex flex-column" v-if="passwordEditing">
 									<div class="d-flex flex-grow-1">
 										<v-text-field 
-											class="bigger-input"
 											name="password_old" 
 											v-model="passwordOld" 
 											:rules="[ v => !!v || 'Password lama harus diisi' ]"
-											:counter="passwordLenMax"
+											:counter="passwordMaxLen"
 											label="Password Lama"
 											required
 										    :append-icon="passwordOldVisible ? 'mdi-eye' : 'mdi-eye-off'"
@@ -101,7 +67,7 @@
 											name="password_new" 
 											v-model="passwordEdit" 
 											:rules="passwordRules"
-											:counter="passwordLenMax"
+											:counter="passwordMaxLen"
 											label="Password"
 											required
 										    :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
@@ -115,7 +81,7 @@
 											class="bigger-input"
 											v-model="passwordConfirm" 
 											:rules="confirmRules"
-											:counter="passwordLenMax"
+											:counter="passwordMaxLen"
 											label="Konfirmasi Password"
 											required
 											type="password"
@@ -165,19 +131,19 @@ import { BaseView } from '@/views/BaseView';
 
 import {SlideYUpTransition, SlideXLeftTransition, FadeTransition, CollapseTransition} from 'vue2-transitions'
 import MainCard from '@/components/card/MainCard';
-import EditableCell from '@/components/form/EditableCell';
 import SimpleInputDialog from '@/components/dialog/SimpleInputDialog'
+import EditableCellTextField from '@/components/form/editable_cell/EditableCellTextField';
 
 @Component({
   	name: "ProfilView",
   	components: {
   		MainCard,
-  		EditableCell,
   		SlideYUpTransition,
   		CollapseTransition,
   		SlideXLeftTransition,
   		FadeTransition,
-  		SimpleInputDialog
+  		SimpleInputDialog,
+		EditableCellTextField
   	},
 	beforeRouteEnter: authRouter.routeRequireLoginNow()
 })
@@ -186,9 +152,9 @@ class ProfilView extends BaseView {
 	emailRules = EMAIL_RULES
 	passwordRules = PASSWORD_RULES
 
-	nameLenMax = NAME_MAX_LEN
-	emailLenMax = EMAIL_MAX_LEN
-	passwordLenMax = PASSWORD_MAX_LEN
+	nameMaxLen = NAME_MAX_LEN
+	emailMaxLen = EMAIL_MAX_LEN
+	passwordMaxLen = PASSWORD_MAX_LEN
 
 	emailEdit = ''
 	nameEdit = ''

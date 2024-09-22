@@ -5,7 +5,7 @@
 			<v-card-text v-if="item.text">{{ item.text }}</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn ref="closeButton" color="green darken-1" text @click="item = null" :disabled="!item">{{ close }}</v-btn>
+				<v-btn ref="closeButton" color="green darken-1" text @click="item = null" :disabled="!item">{{ closeText }}</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -19,8 +19,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 })
 class DialogStack extends Vue {
 	@Prop(Array) items
-
-	close="Tutup";
+	@Prop({default: "Tutup"}) closeText;
 
 	get item(){
 		if (this.items.length == 0) return null;
