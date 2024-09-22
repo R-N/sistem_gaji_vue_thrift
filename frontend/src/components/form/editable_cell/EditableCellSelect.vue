@@ -36,37 +36,37 @@ const defaultValue = () => {
     return {"value": 0, "title": ""}
 }
 @Component({
-  	name: "EditableCellSelect",
-  	components: {
+    name: "EditableCellSelect",
+    components: {
         EditableCell
-  	}
+    }
 })
 class EditableCellSelect extends WorkingComponent {
-	@Prop(String) label;
-	@Prop(String) title;
-	@Prop(String) name;
-	@Prop([String, Object]) value;
-	@Prop([String, Function]) confirmTextMaker; 
-	@Prop({ default: false }) disabled;
+    @Prop(String) label;
+    @Prop(String) title;
+    @Prop(String) name;
+    @Prop([String, Object]) value;
+    @Prop([String, Function]) confirmTextMaker; 
+    @Prop({ default: false }) disabled;
 
-	@Prop({default: defaultValue}) value;
-	@Prop({default: []}) items;
-	@Prop({default: "value"}) itemValue;
-	@Prop({default: "title"}) itemTitle;
+    @Prop({default: defaultValue}) value;
+    @Prop({default: []}) items;
+    @Prop({default: "value"}) itemValue;
+    @Prop({default: "title"}) itemTitle;
     @Prop(Function) onFinish;
 
     valueEdit = '';
 
-	finish(){
-		this.$emit('change', this.valueEdit);
+    finish(){
+        this.$emit('change', this.valueEdit);
         if (this.onFinish){
             this.busy = true;
-            this.onFinish(this.valueEdit);
+            this.onFinish(this.valueEdit, this.releaseBusy);
             this.busy = false;
         } else{
-            this.$emit('finish', this.valueEdit);
+            this.$emit('finish', this.valueEdit, this.releaseBusy);
         }
-	}
+    }
 }
 export { EditableCellSelect } 
 export default EditableCellSelect

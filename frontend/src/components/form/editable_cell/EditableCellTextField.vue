@@ -57,10 +57,10 @@ class EditableCellTextField extends WorkingComponent {
         this.$emit('change', this.valueEdit);
         if (this.onFinish){
             this.busy = true;
-            this.onFinish(this.valueEdit);
+            this.onFinish(this.valueEdit, this.releaseBusy);
             this.busy = false;
         } else{
-            this.$emit('finish', this.valueEdit);
+            this.$emit('finish', this.valueEdit, this.releaseBusy);
         }
     }
 }

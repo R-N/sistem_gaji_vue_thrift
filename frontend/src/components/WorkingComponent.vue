@@ -7,43 +7,47 @@ import { MyComponent } from '@/components/MyComponent'
 
 
 @Component({
-	name: "WorkingComponent"
+    name: "WorkingComponent"
 })
 class WorkingComponent extends MyComponent {
-	@Prop({ default: false }) parentBusy
-	selfBusy = false
+    @Prop({ default: false }) parentBusy
+    selfBusy = false
 
-	get busy(){
-		return this.selfBusy || this.parentBusy || appStore.routerBusy || appStore.tabBusy || appStore.authBusy || appStore.globalBusy
-	}
+    get busy(){
+        return this.selfBusy || this.parentBusy || appStore.routerBusy || appStore.tabBusy || appStore.authBusy || appStore.globalBusy
+    }
 
-	set busy(busy){
-		this.selfBusy = busy;
-	}
+    set busy(busy){
+        this.selfBusy = busy;
+    }
 
-	get globalBusy(){
-		return appStore.globalBusy;
-	}
+    releaseBusy(busy){
+        this.busy = false;
+    }
 
-	set globalBusy(busy){
-		appStore.setGlobalBusy(busy);
-	}
+    get globalBusy(){
+        return appStore.globalBusy;
+    }
 
-	get authBusy(){
-		return appStore.authBusy;
-	}
+    set globalBusy(busy){
+        appStore.setGlobalBusy(busy);
+    }
 
-	set authBusy(busy){
-		appStore.setAuthBusy(busy);
-	}
+    get authBusy(){
+        return appStore.authBusy;
+    }
 
-	get tabBusy(){
-		return appStore.tabBusy;
-	}
+    set authBusy(busy){
+        appStore.setAuthBusy(busy);
+    }
 
-	set tabBusy(busy){
-		appStore.setTabBusy(busy);
-	}
+    get tabBusy(){
+        return appStore.tabBusy;
+    }
+
+    set tabBusy(busy){
+        appStore.setTabBusy(busy);
+    }
 }
 export { WorkingComponent }
 export default WorkingComponent
