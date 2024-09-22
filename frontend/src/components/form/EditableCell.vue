@@ -2,7 +2,7 @@
 	<confirmation-slot
 		:confirmTextMaker="confirmTextMaker"
 		v-slot="{ ask }"
-		:on-confirm="onConfirmFinish"
+		:on-confirm="onConfirm"
 		class="d-flex flex-grow-1"
 	>
 		<v-form 
@@ -40,7 +40,7 @@
 							<template v-slot:activator="{ on, attrs }">
 								<v-btn 
 									icon 
-									@click.stop="cancelEdit();" 
+									@click.stop="cancelEdit" 
 									v-bind="attrs" 
 									v-on="on"
 									:disabled="busy"
@@ -56,7 +56,7 @@
 							<template v-slot:activator="{ on, attrs }">
 								<v-btn 
 									icon 
-									@click.stop="beginEdit();" 
+									@click.stop="beginEdit" 
 									v-bind="attrs" 
 									v-on="on"
 									:disabled="busy"
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 import WorkingComponent from '@/components/WorkingComponent';
 
 import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
@@ -88,21 +88,32 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot'
 class EditableCell extends WorkingComponent {
 	@Prop(String) title;
 	@Prop(Function) onFinish;
-	@Prop(Function) onEdit;
-	@Prop(Function) onCancel;
+	@Prop(Function) onReset;
 	@Prop([String, Function]) confirmTextMaker; 
 	@Prop(Function) changeDetector;
 	@Prop({ default: false }) disabled;
 	confirmDialog=false;
-	editing=false;
 	valid=true;
+	editing=false;
+	// @Model("change", {default: false}) edit;
 
+	// get editing(){
+	// 	return this.edit;
+	// }
+	// set editing(value){
+	// 	if(value == this.edit) return;
+	// 	this.resetValidation();
+	// 	this.busy = false;
+	// 	this.$emit('change', value);
+	// }
+	
 	async beginEdit(){
 		if(this.onEdit)
 			await this.onEdit();
 		else
 			this.$emit("edit");
 		this.editing = true;
+		this.reset();
 	}
 	async cancelEdit(){
 		this.editing = false;
@@ -110,22 +121,30 @@ class EditableCell extends WorkingComponent {
 			await this.onCancel();
 		else
 			this.$emit("cancel");
-		this.$refs.myForm.resetValidation();
+		this.reset();
+	}
+
+	reset(){
+		this.resetValidation();
+		if (this.onReset)
+			this.onReset(this.getForm());
+		else
+			this.$emit("reset");
 	}
 	async finishEdit(ask=null){
+		this.validate();
 		if(!this.valid) return;
 		if(this.changeDetector && !this.changeDetector()){
 			await this.cancelEdit();
 			return;
 		}
 		if(!this.confirmTextMaker || !ask){
-			await this.onConfirmFinish();
+			await this.onConfirm();
 			return;
-		}else{
-			ask();
 		}
+		await ask(this.onConfirm);
 	}
-	async onConfirmFinish(){
+	async onConfirm(){
 		//this.$emit("submit", e);
 		let form = this.$refs.myForm.$el;
 		let formData = Object.fromEntries(new FormData(form).entries());
@@ -134,6 +153,31 @@ class EditableCell extends WorkingComponent {
 		else
 			this.$emit("finish", formData);
 		this.editing = false;
+	}
+	getForm(){
+		return this.$refs.myForm;
+	}
+	getValue(){
+		let val = this.getForm();
+		if (!val)
+			val = this.$event;
+		return val;
+	}
+	validate(){
+		if(this.getForm()){
+			this.getForm().validate();
+		}
+		if(this.onValidate)
+			this.onValidate(this.getForm());
+		else
+			this.$emit('validate', this.getForm());
+		return true;
+	}
+	async resetValidation(){
+		if(this.getForm()){
+			this.getForm().resetValidation();
+		}
+		this.valid = true;
 	}
 }
 export { EditableCell } 

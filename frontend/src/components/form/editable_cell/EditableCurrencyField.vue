@@ -1,24 +1,24 @@
 <template>
     <editable-cell 
-        @edit="valueEdit = value"
-        @finish="emitChange()"
+        :on-reset="() => valueEdit = value"
+        :on-finish="finish"
         :change-detector="() => value != valueEdit"
-        :confirm-text-maker="confirmTextMaker"
-        :parent-busy="parentBusy"
+        :confirm-text-maker="() => confirmTextMaker(valueEdit)"
+        :parent-busy="busy"
         :disabled="disabled"
         :title="title"
     >
         <template v-slot:editing>
-            <v-currency-field
+            <v-currency-field 
                 class="bigger-input"
-                :label="label"
                 :name="name" 
                 v-model="valueEdit" 
                 :rules="rules"
                 :counter="counter"
                 :type="type"
                 :disabled="busy || disabled"
-                hide-spin-buttons
+                :required="required"
+                :label="label"
             />
         </template>
         <template v-slot:default>

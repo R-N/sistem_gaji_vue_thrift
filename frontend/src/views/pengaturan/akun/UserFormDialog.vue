@@ -2,7 +2,7 @@
 	<form-dialog
 		max-width="400"
 		:parent-busy="busy"
-		@submit="register"
+		:on-submit="register"
 		title="Buat Akun"
 		:disabled="disabled"
 		:on-reset="reset"

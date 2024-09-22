@@ -1,10 +1,10 @@
 <template>
     <editable-cell 
-        @edit="valueEdit = value"
-        @finish="emitChange()"
+        :on-reset="() => valueEdit = value"
+        :on-finish="finish"
         :change-detector="() => value != valueEdit"
         :confirm-text-maker="() => confirmTextMaker(valueEdit)"
-        :parent-busy="parentBusy"
+        :parent-busy="busy"
         :disabled="disabled"
         :title="title"
     >
@@ -33,28 +33,36 @@ import EditableCell from '@/components/form/EditableCell';
 import WorkingComponent from '@/components/WorkingComponent';
 
 @Component({
-  	name: "EditableCellTextField",
-  	components: {
+      name: "EditableCellTextField",
+      components: {
         EditableCell
-  	}
+      }
 })
 class EditableCellTextField extends WorkingComponent {
-	@Prop(String) title;
-	@Prop(String) label;
-	@Prop(String) name;
-	@Prop(String) type;
-	@Prop(String) value;
-	@Prop(Number) counter;
-	@Prop([String, Function]) confirmTextMaker; 
-	@Prop({ default: false }) disabled;
-	@Prop([Function, Array]) rules; 
-	@Prop({default: true}) required; 
+    @Prop(String) title;
+    @Prop(String) label;
+    @Prop(String) name;
+    @Prop(String) type;
+    @Prop(String) value;
+    @Prop(Number) counter;
+    @Prop([String, Function]) confirmTextMaker; 
+    @Prop({ default: false }) disabled;
+    @Prop([Function, Array]) rules; 
+    @Prop({default: true}) required; 
+    @Prop(Function) onFinish;
 
     valueEdit = '';
 
-	emitChange(){
-		this.$emit('change', this.valueEdit);
-	}
+    finish(){
+        this.$emit('change', this.valueEdit);
+        if (this.onFinish){
+            this.busy = true;
+            this.onFinish(this.valueEdit);
+            this.busy = false;
+        } else{
+            this.$emit('finish', this.valueEdit);
+        }
+    }
 }
 export { EditableCellTextField } 
 export default EditableCellTextField

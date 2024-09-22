@@ -19,6 +19,7 @@
 <script>
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
+import MyComponent from '@/components/MyComponent';
 
 @Component({
   	name: "IconButton",
@@ -26,7 +27,7 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
         ConfirmationSlot
   	}
 })
-class IconButton extends Vue {
+class IconButton extends MyComponent {
     @Prop({default: 32}) size;
     @Prop({default: true}) small;
     @Prop(String) icon;

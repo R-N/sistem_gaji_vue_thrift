@@ -2,8 +2,8 @@
     <confirmation-slot
         class="text-center justify-center justify-self-center"
         :confirmTextMaker="confirmTextMaker"
-        
         :on-confirm="() => onConfirm()"
+        :parent-busy="busy"
     >
 		<template v-slot="{ ask }">
             <icon-button

@@ -85,11 +85,12 @@
 import { authStore, clientStore, appStore, settingsStore } from "@/store/stores";
 
 import { Vue, Component, Prop, PropSync } from 'vue-property-decorator';
+import MyComponent from "@/components/MyComponent";
 
 @Component({
 	name: "TopNavBar"
 })
-class TopNavBar extends Vue {
+class TopNavBar extends MyComponent {
 	@PropSync('drawer', { type: Boolean }) syncedDrawer;
 	notifs = [
 		{ text: 'Notif 1' },

@@ -1,6 +1,6 @@
 
 <script>
-import { appStore, authStore } from '@/store/stores';
+import { appStore, authStore, settingsStore } from '@/store/stores';
 
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
@@ -21,6 +21,12 @@ class MyComponent extends Vue {
 	}
 	get userRole(){
 		return authStore.role;
+	}
+	get perusahaanId(){
+		return settingsStore.perusahaanId;
+	}
+	get perusahaanName(){
+		return settingsStore.perusahaanName;
 	}
 	get serverReachable(){
 		return appStore.serverReachable;

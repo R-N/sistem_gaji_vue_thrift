@@ -21,7 +21,7 @@
 						:counter="nameMaxLen"
 						:confirm-text-maker="(value) => setFieldConfirmText('name', item, value)"
 						:value="item.name" 
-						@change="(value) => setName(item, value)"
+						:on-finish="(value) => setName(item, value)"
 						:rules="nameRules"
 						:disabled="!isSuperAdmin || busy"
 					/>
@@ -29,7 +29,7 @@
 				<template v-slot:item.enabled="{ item }">
 					<sync-checkbox 
 						:input-value="item.enabled" 
-						@change="value => setEnabled(item, value)"
+						:on-change="value => setEnabled(item, value)"
 						:confirm-text-maker="() => setEnabledConfirmText(item)"
 						readonly
 						textDisable="Nonaktifkan"
@@ -48,24 +48,21 @@
 </template>
 
 <script>
-import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
+import { TUserRole } from "@/rpc/gen/user.user.types_types";
 import { 
 	TPerusahaanError, 
 	NAME_MAX_LEN 
 } from "@/rpc/gen/data.perusahaan.errors_types";
 import { TPerusahaanQuery } from '@/rpc/gen/data.perusahaan.structs_types';
 
-import { router } from "@/router/index";
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
 import { NAME_RULES } from '@/lib/validators/data/perusahaan';
 
-import { Component, Prop, Watch } from 'vue-property-decorator';
-import { BaseView } from '@/views/BaseView';
+import { Component } from 'vue-property-decorator';
 
 import MainCard from '@/components/card/MainCard';
 import SyncCheckbox from '@/components/checkbox/SyncCheckbox';
-import EditableCell from '@/components/form/EditableCell';
 
 import DataPerusahaanFormDialog from '@/views/data/perusahaan/DataPerusahaanFormDialog';
 import { BaseCrudView } from '@/views/BaseCrudView';
@@ -89,7 +86,7 @@ class DataPerusahaanView extends BaseCrudViewBase {
 	nameRules = NAME_RULES
 
 	get nameField(){ return "name"; }
-    get itemNameLower(){ return 'perusahaan'; }
+    get itemName(){ return 'Perusahaan'; }
     get client(){ return stores.client.data.perusahaan; }
     get query(){ return new TPerusahaanQuery(); }
 	get breadcrumbs(){

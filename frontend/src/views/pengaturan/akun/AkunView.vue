@@ -22,7 +22,7 @@
 						:counter="emailMaxLen"
 						:confirm-text-maker="(value) => setFieldConfirmText('email', item, value)"
 						:value="item.email" 
-						@change="(value) => setEmail(item, value)"
+						:on-finish="(value) => setEmail(item, value)"
 						:rules="emailRules"
 						:disabled="!mayEditEmail(item) || busy"
 					/>
@@ -35,14 +35,14 @@
 						:value="rolesDict[item.role]"
 						:items="roles"
 						:confirm-text-maker="(value) => setRoleConfirmText(item, value)"
-						@change="(value) => setRole(item, value)"
+						:on-finish="(value) => setRole(item, value)"
 						:disabled="!mayEdit(item) || busy"
 					/>
 				</template>
 				<template v-slot:item.enabled="{ item }">
 					<sync-checkbox 
 						:input-value="item.enabled" 
-						@change="value => setEnabled(item, value)"
+						:on-change="value => setEnabled(item, value)"
 						:confirm-text-maker="() => setEnabledConfirmText(item)"
 						:disabled="busy || !mayEdit(item)"
 						text-disable="Nonaktifkan"
@@ -52,7 +52,7 @@
 				<template v-slot:item.verified="{ item }">
 					<sync-checkbox 
 						:input-value="item.verified" 
-						@change="value => setVerified(item, value)"
+						:on-change="value => setVerified(item, value)"
 						:confirm-text-maker="() => setVerifiedConfirmText(item)"
 						readonly
 						:disabled="busy || !isSuperAdmin"
@@ -116,7 +116,7 @@ import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
 import { EMAIL_RULES, PASSWORD_RULES } from '@/lib/validators/user';
 
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
 import SimpleInputDialog from '@/components/dialog/SimpleInputDialog'
 import MainCard from '@/components/card/MainCard';
@@ -163,7 +163,7 @@ class AkunView extends BaseCrudViewBase {
 	passwordMaxLen = PASSWORD_MAX_LEN
 
 	get nameField(){ return "username"; }
-    get itemNameLower(){ return 'akun'; }
+    get itemName(){ return 'Akun'; }
     get client(){ return stores.client.user.management; }
     get query(){ return new TUserQuery(); }
 	get breadcrumbs(){

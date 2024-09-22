@@ -2,7 +2,7 @@
 	<form-dialog
 		max-width="400"
 		:parent-busy="busy"
-		@submit="create"
+		:on-submit="create"
 		title="Buat Perusahaan"
 		:disabled="disabled"
 		:on-reset="reset"
@@ -33,11 +33,9 @@ import { TPerusahaanForm } from "@/rpc/gen/data.perusahaan.structs_types";
 import stores from "@/store/stores";
 import { NAME_RULES } from '@/lib/validators/data/perusahaan';
 
-import { Component, Prop, Watch, Model } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { FormDialog } from '@/components/form/FormDialog'
 import { FormDialogBase } from '@/components/form/FormDialogBase'
-
-import CardTitle from '@/components/card/CardTitle'
 
 @Component({
 	name: "DataPerusahaanFormDialog",

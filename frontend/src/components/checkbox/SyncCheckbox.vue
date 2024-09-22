@@ -2,7 +2,8 @@
 	<confirmation-slot
 		class="d-flex text-center justify-center justify-self-center"
 		:confirmTextMaker="confirmTextMaker"
-		:on-confirm="emitChange"
+		:on-confirm="change"
+		:parent-busy="busy"
 	>
 		<template v-slot="{ ask }">
 			<v-tooltip bottom :disabled="disabled || !text">
@@ -11,7 +12,7 @@
 						:name="name"
 						:input-value="inputValue"
 						:value="value"
-						@click.prevent.capture="if(!disabled) ask()"
+						@click.prevent.capture="() => tryAsk(ask)"
 						readonly
 						class="text-center justify-center justify-self-center"
 						:disabled="disabled"
@@ -26,6 +27,7 @@
 <script>
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
+import { WorkingComponent } from '@/components/WorkingComponent';
 
 @Component({
   	name: "SyncCheckbox",
@@ -33,7 +35,7 @@ import ConfirmationSlot from '@/components/dialog/ConfirmationSlot';
   		ConfirmationSlot
   	}
 })
-class SyncCheckbox extends Vue {
+class SyncCheckbox extends WorkingComponent {
 	@Prop(String) name;
 	@Prop(String) value;
 	@Prop({ default: false }) inputValue;
@@ -41,12 +43,29 @@ class SyncCheckbox extends Vue {
 	@Prop({ default: false }) disabled;
 	@Prop(String) textEnable;
 	@Prop(String) textDisable;
+	@Prop(Function) onChange;
+	@Prop({default: true}) ask;
+
+	async tryAsk(ask){
+		if (!this.disabled){
+			if (this.ask)
+				await ask();
+			else
+				await this.change();
+		}
+	}
 
 	get text(){
 		return this.inputValue ? this.textDisable :this. textEnable;
 	}
-	emitChange(){
-		this.$emit('change', !this.inputValue)
+	async change(){
+        if (this.onChange){
+            this.busy = true;
+            await this.onChange(!this.inputValue);
+            this.busy = false;
+        } else{
+            this.$emit('change', !this.inputValue);
+        }
 	}
 }
 export { SyncCheckbox } 

@@ -105,10 +105,10 @@ class DialogBase extends BaseView {
 		if(this.onSubmit){
 			this.busy = true;
 			await this.onSubmit(this.getValue());
-			this.busy = false;
 		}else{
 			this.$emit('submit', this.getValue());
 		}
+		this.close();
 	}
 	async submit(){
 		return await this._submit();

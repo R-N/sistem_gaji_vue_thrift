@@ -1,51 +1,30 @@
 <template>
-	<v-dialog
-		v-model="myDialog"
+	<form-dialog
 		max-width="400"
-		:persistent="busy"
+		:parent-busy="busy"
+		:on-submit="create"
+		title="Buat Departemen"
+		:disabled="disabled"
+		:on-reset="reset"
+		v-model="myDialog"
 	>
-		<v-card class="">
-		    <v-form ref="myForm" v-model="valid" @submit.prevent="create" class="p-2" :disabled="!interactable">
-				<v-card-title class="headline">Buat Departemen</v-card-title>
-				<v-card-text>
-			    	<v-text-field 
-			    		name="name"
-			    		class="bigger-input" 
-			    		label="Nama" 
-			    		v-model="name" 
-			    		:disabled="!interactable" 
-			    		required
-			    		:rules="nameRules"
-						:counter="nameMaxLen"
-		    		/>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn
-							color="green darken-1"
-							text
-							@click.stop="close()"
-							:disabled="!interactable"
-						>
-							Batal
-						</v-btn>
-						<v-btn
-							type="submit"
-							color="green darken-1"
-							text
-							:disabled="!interactable"
-							:loading="busy"
-						>
-							Ok
-						</v-btn>
-					</v-card-actions>
-				</v-card-text>
-		    </v-form>
-		</v-card>
-	</v-dialog>
+        <template v-slot:fields="{ interactable, busy }">
+			<input name="perusahaan_id" type="hidden" :value="perusahaanId" >
+			<v-text-field 
+				name="name"
+				class="bigger-input" 
+				label="Nama" 
+				v-model="name" 
+				:disabled="!interactable" 
+				required
+				:rules="nameRules"
+				:counter="nameMaxLen"
+			/>
+		</template>
+	</form-dialog>
 </template>
 
 <script>
-import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TDepartemenError, 
 	NAME_MAX_LEN 
@@ -55,21 +34,18 @@ import { TDepartemenForm } from "@/rpc/gen/data.departemen.structs_types";
 import stores from "@/store/stores";
 import { NAME_RULES } from '@/lib/validators/data/departemen';
 
-import { Component, Prop, Watch, Model } from 'vue-property-decorator';
-import { WorkingComponent } from '@/components/WorkingComponent';
-
-import CardTitle from '@/components/card/CardTitle'
+import { Component, Prop } from 'vue-property-decorator';
+import { FormDialog } from '@/components/form/FormDialog'
+import { FormDialogBase } from '@/components/form/FormDialogBase'
 
 @Component({
 	name: "DataDepartemenFormDialog",
 	components: {
-		CardTitle
+		FormDialog
 	}
 })
-class DataDepartemenFormDialog extends WorkingComponent {
+class DataDepartemenFormDialog extends FormDialogBase {
 	@Prop({ default: false }) disabled;
-	@Model('change', { type: Boolean }) dialog;
-
 	name = ''
 
 	nameRules = NAME_RULES
@@ -78,46 +54,17 @@ class DataDepartemenFormDialog extends WorkingComponent {
 
 	valid = true;
 
-	@Watch('myDialog')
-	onDialogChange(val, oldVal){
-		if( this.$refs.myForm){
-			this.$refs.myForm.resetValidation();
-		}
+	reset(){
 		this.name = ''
 	}
 
-	close(){
-		this.busy = false;
-		this.myDialog = false;
-	}
-
-	get interactable(){
-		return !this.disabled && !this.busy;
-	}
-
-	get myDialog(){
-		return this.dialog;
-	}
-	set myDialog(value){
-		if(value == this.dialog) return;
-		if (!value){
-			this.busy = false;
-		}
-		this.$emit('change', value);
-	}
-
-	setPerusahaan(value){
-		this.perusahaan = value;
-	}
-
 	async create(){
-		this.$refs.myForm.validate();
 		if(!this.valid) return;
 		const view = this;
 		view.busy = true;
 		let form = new TDepartemenForm({
 			name: this.name,
-			perusahaan_id: stores.settings.perusahaanId,
+			perusahaan_id: this.perusahaanId,
 		});
 		try{
 			let departemen = await stores.client.data.departemen.create(form);

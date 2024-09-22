@@ -1,16 +1,26 @@
 import { 
 	TDepartemenErrorCode, T_DEPARTEMEN_ERROR_STR,
-	NAME_MAX_LEN, 
-	NAME_REGEX_STR
 } from '@/rpc/gen/data.departemen.errors_types';
-import { T_ROLE_STR } from '@/rpc/gen/user.user.types_types';
-import { isInt } from '@/lib/util'
+import errors from '@/rpc/gen/data.departemen.errors_types';
+import types from '@/rpc/gen/user.user.types_types';
+import { createRulesField as _createRulesField, createRulesFields } from "@/lib/validators/common";
 
+export const createRulesField = (field) => _createRulesField(
+	field,
+	errors,
+	types, 
+	TDepartemenErrorCode, 
+	T_DEPARTEMEN_ERROR_STR, 
+	"DEPARTEMEN"
+);
+export const NAME_RULES = createRulesField("NAME");
 
-export const NAME_REGEX = new RegExp(NAME_REGEX_STR);
-
-export const NAME_RULES = [
-	v => !!v || T_DEPARTEMEN_ERROR_STR[TDepartemenErrorCode.NAME_EMPTY],
-	v => v.length <= NAME_MAX_LEN || T_DEPARTEMEN_ERROR_STR[TDepartemenErrorCode.NAME_TOO_LONG],
-	v => NAME_REGEX.test(v) || T_DEPARTEMEN_ERROR_STR[TDepartemenErrorCode.NAME_INVALID]
-]
+const RULES = createRulesFields(
+	["NAME"],
+	errors,
+	types, 
+	TDepartemenErrorCode, 
+	T_DEPARTEMEN_ERROR_STR, 
+	"DEPARTEMEN"
+);
+export default RULES;

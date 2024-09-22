@@ -16,7 +16,7 @@ class BaseCrudViewBase extends BaseView {
     items = []
 
     get nameField() { return "name"; }
-    get itemNameLower(){ return 'item'; }
+    get itemName(){ return 'Item'; }
     get client(){ return null; }
     get headers(){ return []; }
     get breadcrumbs() { return []; }
@@ -24,7 +24,7 @@ class BaseCrudViewBase extends BaseView {
     get filteredErrors() { return []; }
 
     _deleteConfirmText(item){
-        return `Apa Anda yakin ingin menghapus ${this.itemNameLower} '${item[this.nameField]}'?`;
+        return `Apa Anda yakin ingin menghapus ${this.itemName.toLowerCase()} '${item[this.nameField]}'?`;
     }
 
     addItem(item){
@@ -84,7 +84,7 @@ class BaseCrudViewBase extends BaseView {
             oldValue = alias[oldValue];
             newValue = alias[newValue];
         }
-        return `Apa Anda yakin ingin mengubah ${fieldName} ${this.itemNameLower} '${item[this.nameField]}' dari '${oldValue}' menjadi '${newValue}'?`
+        return `Apa Anda yakin ingin mengubah ${fieldName} ${this.itemName.toLowerCase()} '${item[this.nameField]}' dari '${oldValue}' menjadi '${newValue}'?`
     }
     async _setField(fieldName, item, value, releaseBusy=true){
         const view = this;
@@ -110,7 +110,7 @@ class BaseCrudViewBase extends BaseView {
 
     _toggleFieldConfirmText(fieldName, disable, enable, item){
         let action = item[fieldName] ? disable : enable;
-        return `Apa Anda yakin ingin ${action} ${this.itemNameLower} '${item[this.nameField]}'?`;
+        return `Apa Anda yakin ingin ${action} ${this.itemName.toLowerCase()} '${item[this.nameField]}'?`;
     }
 
     async _toggleField(toggleName, item, enabled){

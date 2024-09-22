@@ -4,11 +4,12 @@
 		<simple-input-dialog 
 			v-if="confirmTextMaker && confirmDialog"
 			v-model="confirmDialog" 
-			:on-submit="emitConfirm"
+			:on-submit="confirm"
 			:on-cancel="onCancel"
 			title="Konfirmasi"
 			:text="confirmText"
 			no-input="true"
+			:parent-busy="busy"
 		/>
 	</span>
 </template>
@@ -17,6 +18,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 
 import SimpleInputDialog from '@/components/dialog/SimpleInputDialog';
+import { WorkingComponent } from '@/components/WorkingComponent';
 
 @Component({
   	name: "ConfirmationSlot",
@@ -24,23 +26,26 @@ import SimpleInputDialog from '@/components/dialog/SimpleInputDialog';
   		SimpleInputDialog
   	}
 })
-class ConfirmationSlot extends Vue {
+class ConfirmationSlot extends WorkingComponent {
 	@Prop([String, Function]) confirmTextMaker; 
 	@Prop(Function) onConfirm;
 	@Prop(Function) onCancel; 
 	confirmText = '';
 	confirmDialog = false;
 
-	emitConfirm(){
+	confirm(){
 		if(this.onConfirm){
+			this.busy = true;
 			this.onConfirm();
 		}else{
 			this.$emit('confirm');
 		}
+		this.confirmDialog = false;
+		this.busy = false;
 	}
 	ask(){
 		if(!this.confirmTextMaker){
-			this.emitConfirm();
+			this.confirm();
 		}else{
 			if (this.confirmTextMaker instanceof Function){
 				this.confirmText = this.confirmTextMaker();

@@ -1,10 +1,10 @@
 <template>
     <editable-cell 
-        @edit="valueEdit = value"
-        @finish="emitChange()"
+        :on-reset="() => valueEdit = value"
+        :on-finish="finish"
         :change-detector="() => value[itemValue] != valueEdit[itemValue]"
         :confirm-text-maker="() => confirmTextMaker(valueEdit)"
-        :parent-busy="parentBusy"
+        :parent-busy="busy"
         :disabled="disabled"
         :title="title"
     >
@@ -17,7 +17,7 @@
                 :item-title="itemTitle"
                 :item-value="itemValue"
                 :value="value"
-                @change="value => valueEdit = value"
+                :on-change="value => valueEdit = value"
                 :disabled="busy || disabled"
             />
         </template>
@@ -53,15 +53,19 @@ class EditableCellSelect extends WorkingComponent {
 	@Prop({default: []}) items;
 	@Prop({default: "value"}) itemValue;
 	@Prop({default: "title"}) itemTitle;
+    @Prop(Function) onFinish;
 
     valueEdit = '';
 
-    mounted(){
-    }
-
-
-	emitChange(){
+	finish(){
 		this.$emit('change', this.valueEdit);
+        if (this.onFinish){
+            this.busy = true;
+            this.onFinish(this.valueEdit);
+            this.busy = false;
+        } else{
+            this.$emit('finish', this.valueEdit);
+        }
 	}
 }
 export { EditableCellSelect } 

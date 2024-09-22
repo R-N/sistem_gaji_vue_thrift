@@ -74,11 +74,12 @@
 </template>
 <script>
 import { Vue, Component, Prop, PropSync } from 'vue-property-decorator';
+import MyComponent from "@/components/MyComponent";
 
 @Component({
 	name: "SideNavDrawer"
 })
-class SideNavDrawer extends Vue {
+class SideNavDrawer extends MyComponent {
 	@PropSync('drawer', { type: Boolean }) syncedDrawer;
 	items = [
 		{ icon: 'mdi-home', text: 'Beranda', to: { name: 'beranda' } },

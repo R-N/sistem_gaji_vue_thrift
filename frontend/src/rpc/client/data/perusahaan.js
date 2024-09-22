@@ -20,13 +20,6 @@ class TDataPerusahaanClient extends TCrudClient{
 			}
 		);
 	}
-
-	// async fetch(query=null){
-	// 	let items = await super.fetch(query);
-	// 	// let enabledItems = items.filter((x) => x.enabled);
-    //     // await this.stores.settings.setPerusahaans(enabledItems);
-	// 	return items;
-	// }
 }
 
 const dataPerusahaanClient = new TDataPerusahaanClient();
