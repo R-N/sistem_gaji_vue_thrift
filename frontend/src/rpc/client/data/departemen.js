@@ -19,9 +19,9 @@ class TDataDepartemenClient extends TBaseClient{
 		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
 		return await this.client.create(this.stores.auth.authToken, form);
 	}
-	async set_nama(departemen_id, new_nama){
+	async set_name(departemen_id, new_name){
 		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);
-		await this.client.set_nama(this.stores.auth.authToken, departemen_id, new_nama);
+		await this.client.set_name(this.stores.auth.authToken, departemen_id, new_name);
 	}
 	async set_enabled(departemen_id, new_enabled){
 		this.stores.helper.auth.requireRole(TUserRole.SUPER_ADMIN);

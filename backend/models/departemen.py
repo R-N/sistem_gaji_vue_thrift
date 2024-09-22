@@ -13,8 +13,8 @@ class DepartemenModel:
 
     def parse_error(self, parsed):
         if isinstance(parsed, UniqueError):
-            if parsed.column == "nama":
-                raise TDepartemenError(TDepartemenErrorCode.NAMA_ALREADY_EXISTS)
+            if parsed.column == "name":
+                raise TDepartemenError(TDepartemenErrorCode.NAME_ALREADY_EXISTS)
 
     def commit(self):
         try:
@@ -28,7 +28,7 @@ class DepartemenModel:
         if query:
             if query.perusahaan_id:
                 db_query = db_query.filter(DbDepartemen.perusahaan_id == query.perusahaan_id)
-        db_query = db_query.order_by(DbDepartemen.enabled.desc(), DbDepartemen.nama.asc())
+        db_query = db_query.order_by(DbDepartemen.enabled.desc(), DbDepartemen.name.asc())
         if query:
             if query.enabled is not None:
                 db_query = db_query.filter(DbDepartemen.enabled == query.enabled)
@@ -45,7 +45,7 @@ class DepartemenModel:
 
     def create(self, form):
         departemen = DbDepartemen()
-        departemen.nama = form.nama
+        departemen.name = form.name
         departemen.perusahaan_id = form.perusahaan_id
 
         db.session.add(departemen)
@@ -55,7 +55,7 @@ class DepartemenModel:
         departemen.enabled = enabled
         db.session.add(departemen)
 
-    def set_nama(self, departemen, nama):
-        departemen.nama = nama
+    def set_name(self, departemen, name):
+        departemen.name = name
         db.session.add(departemen)
 

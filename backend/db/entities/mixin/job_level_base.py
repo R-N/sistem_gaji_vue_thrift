@@ -12,8 +12,8 @@ class MxJobLevelBase(MxAiId):
     __tablename__ = 'job_level'
 
     @declared_attr
-    def _nama(cls):
-        return Column("nama", String(50), unique=True, nullable=False)
+    def _name(cls):
+        return Column("name", String(50), unique=True, nullable=False)
 
     @declared_attr
     def jabatan(cls):
@@ -23,9 +23,9 @@ class MxJobLevelBase(MxAiId):
     def mx_init(
         self,
         id,
-        nama
+        name
     ):
-        self.nama = nama
+        self.name = name
         self.id_init(id)
     '''
 
@@ -33,36 +33,36 @@ class MxJobLevelBase(MxAiId):
         pass
 
     def mx_repr(self):
-        return "id=%r, nama=%r" % (self.id, self.nama)
+        return "id=%r, name=%r" % (self.id, self.name)
 
     def mx_init_repr(self):
         return {
-            'nama': self.nama,
+            'name': self.name,
             'id': self.id
         }
 
     # Properties and other methods associated with columns
 
-    # nama
+    # name
 
     @declared_attr
-    def nama(cls):
+    def name(cls):
         @hybrid_property
-        def nama(self):
-            return self._nama
+        def name(self):
+            return self._name
 
-        @nama.setter
-        def nama(self, nama):
-            DbJobLevelBaseValidator.validate_nama(nama)
-            self._nama = nama
+        @name.setter
+        def name(self, name):
+            DbJobLevelBaseValidator.validate_name(name)
+            self._name = name
 
-        return nama
+        return name
 
     # Other methods
 
     def fill_base(self, obj):
         obj.id = self.id
-        obj.nama = self.nama
+        obj.name = self.name
         obj.enabled = self.enabled
 
         return obj
@@ -76,12 +76,12 @@ class MxJobLevelBase(MxAiId):
         return DbJobLevelBaseValidator
 
 class DbJobLevelBaseValidator:
-    NAMA_REGEX = re.compile(job_level_constants.NAMA_REGEX_STR)
+    NAME_REGEX = re.compile(job_level_constants.NAME_REGEX_STR)
 
-    def validate_nama(nama):
-        if not nama:
-            raise TJobLevelError(TJobLevelErrorCode.NAMA_EMPTY)
-        if len(nama) > job_level_constants.NAMA_MAX_LEN:
-            raise TJobLevelError(TJobLevelErrorCode.NAMA_TOO_LONG)
-        if not DbJobLevelBaseValidator.NAMA_REGEX.match(nama):
-            raise TJobLevelError(TJobLevelErrorCode.NAMA_INVALID)
+    def validate_name(name):
+        if not name:
+            raise TJobLevelError(TJobLevelErrorCode.NAME_EMPTY)
+        if len(name) > job_level_constants.NAME_MAX_LEN:
+            raise TJobLevelError(TJobLevelErrorCode.NAME_TOO_LONG)
+        if not DbJobLevelBaseValidator.NAME_REGEX.match(name):
+            raise TJobLevelError(TJobLevelErrorCode.NAME_INVALID)

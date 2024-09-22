@@ -9,7 +9,7 @@ class MxJabatanBase(MxAiId):
     __tablename__ = 'jabatan'
 
     @declared_attr
-    def nama(cls):
+    def name(cls):
         return Column(String(50), unique=True, nullable=False)
 
     @declared_attr
@@ -45,9 +45,9 @@ class MxJabatanBase(MxAiId):
         self,
         id,
         job_level_id,
-        nama
+        name
     ):
-        self.nama = nama
+        self.name = name
         self.job_level_id = job_level_id
         self.id_init(id)
     '''
@@ -56,11 +56,11 @@ class MxJabatanBase(MxAiId):
         pass
 
     def mx_repr(self):
-        return "id=%r, job_level_id=%r, nama=%r" % (self.id, self.job_level_id, self.nama)
+        return "id=%r, job_level_id=%r, name=%r" % (self.id, self.job_level_id, self.name)
 
     def mx_init_repr(self):
         return {
             'job_level_id': self.job_level_id,
-            'nama': self.nama,
+            'name': self.name,
             'id': self.id
         }

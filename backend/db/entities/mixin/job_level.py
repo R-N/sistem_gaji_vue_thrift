@@ -82,8 +82,8 @@ class MxJobLevel(MxJobLevelBase, MxJobLevelLembur):
             return self._tunjangan_jabatan
 
         @tunjangan_jabatan.setter
-        def tunjangan_jabatan(self, nama):
-            DbJobLevelLemburValidator.validate_upah_lembur(nama)
+        def tunjangan_jabatan(self, name):
+            DbJobLevelLemburValidator.validate_upah_lembur(name)
             self._tunjangan_jabatan = tunjangan_jabatan
 
         return tunjangan_jabatan

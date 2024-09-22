@@ -13,7 +13,7 @@ class MxPengaturanBase:
         return Column(Integer, primary_key=True)
 
     @declared_attr
-    def mengetahui_nama(cls):
+    def mengetahui_name(cls):
         return Column(String(50), nullable=False)
 
     @declared_attr
@@ -34,10 +34,10 @@ class MxPengaturanBase:
     '''
     def mx_init(
         self,
-        nama_mengetahui,
+        name_mengetahui,
         perusahaan_id=1
     ):
-        self.nama_mengetahui = nama_mengetahui
+        self.name_mengetahui = name_mengetahui
         self.perusahaan_id = perusahaan_id
     '''
 
@@ -50,12 +50,12 @@ class MxPengaturanBase:
     '''
     def mx_repr(self):
         return "TODO" % (
-            self.id, self.nama,
+            self.id, self.name,
         )
     '''
 
     def mx_init_repr(self):
         return {
-            'nama_mengetahui': self.nama_mengetahui,
+            'name_mengetahui': self.name_mengetahui,
             'perusahaan_id': self.perusahaan_id
         }

@@ -13,8 +13,8 @@ class MxDepartemen(MxAiId):
     __tablename__ = 'departemen'
 
     @declared_attr
-    def _nama(cls):
-        return Column("nama", String(50), nullable=False)
+    def _name(cls):
+        return Column("name", String(50), nullable=False)
 
     @declared_attr
     def perusahaan_id(cls):
@@ -49,10 +49,10 @@ class MxDepartemen(MxAiId):
         self,
         id,
         perusahaan_id,
-        nama
+        name
     ):
         self.perusahaan_id = perusahaan_id
-        self.nama = nama
+        self.name = name
         self.id_init(id)
     '''
 
@@ -60,37 +60,37 @@ class MxDepartemen(MxAiId):
         pass
 
     def mx_repr(self):
-        return "id=%r, perusahaan_id=%r, nama=%r" % (self.id, self.perusahaan_id, self.nama)
+        return "id=%r, perusahaan_id=%r, name=%r" % (self.id, self.perusahaan_id, self.name)
 
     def mx_init_repr(self):
         return {
             'perusahaan_id': self.perusahaan_id,
-            'nama': self.nama,
+            'name': self.name,
             'id': self.id
         }
 
     # Properties and other methods associated with columns
 
-    # nama
+    # name
 
     @declared_attr
-    def nama(cls):
+    def name(cls):
         @hybrid_property
-        def nama(self):
-            return self._nama
+        def name(self):
+            return self._name
 
-        @nama.setter
-        def nama(self, nama):
-            DbDepartemenValidator.validate_nama(nama)
-            self._nama = nama
+        @name.setter
+        def name(self, name):
+            DbDepartemenValidator.validate_name(name)
+            self._name = name
 
-        return nama
+        return name
 
     # Other methods
 
     def fill(self, obj):
         obj.id = self.id
-        obj.nama = self.nama
+        obj.name = self.name
         obj.enabled = self.enabled
         obj.perusahaan_id = self.perusahaan_id
 
@@ -103,12 +103,12 @@ class MxDepartemen(MxAiId):
 
 
 class DbDepartemenValidator:
-    NAMA_REGEX = re.compile(departemen_constants.NAMA_REGEX_STR)
+    NAME_REGEX = re.compile(departemen_constants.NAME_REGEX_STR)
 
-    def validate_nama(nama):
-        if not nama:
-            raise TDepartemenError(TDepartemenErrorCode.NAMA_EMPTY)
-        if len(nama) > departemen_constants.NAMA_MAX_LEN:
-            raise TDepartemenError(TDepartemenErrorCode.NAMA_TOO_LONG)
-        if not DbDepartemenValidator.NAMA_REGEX.match(nama):
-            raise TDepartemenError(TDepartemenErrorCode.NAMA_INVALID)
+    def validate_name(name):
+        if not name:
+            raise TDepartemenError(TDepartemenErrorCode.NAME_EMPTY)
+        if len(name) > departemen_constants.NAME_MAX_LEN:
+            raise TDepartemenError(TDepartemenErrorCode.NAME_TOO_LONG)
+        if not DbDepartemenValidator.NAME_REGEX.match(name):
+            raise TDepartemenError(TDepartemenErrorCode.NAME_INVALID)

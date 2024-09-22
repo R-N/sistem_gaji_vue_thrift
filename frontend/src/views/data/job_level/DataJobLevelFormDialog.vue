@@ -9,14 +9,14 @@
 				<v-card-title class="headline">Buat Job Level</v-card-title>
 				<v-card-text>
 			    	<v-text-field 
-			    		name="nama"
+			    		name="name"
 			    		class="bigger-input" 
 			    		label="Nama" 
-			    		v-model="nama" 
+			    		v-model="name" 
 			    		:disabled="!interactable" 
 			    		required
-			    		:rules="namaRules"
-						:counter="namaLenMax"
+			    		:rules="nameRules"
+						:counter="nameLenMax"
 		    		/>
 			    	<v-currency-field
 			    		name="gaji-pokok"
@@ -103,14 +103,14 @@
 import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TJobLevelError, 
-	NAMA_MAX_LEN,
+	NAME_MAX_LEN,
 	MONEY_MAX_LEN,
 } from "@/rpc/gen/data.job_level.errors_types";
 import { TJobLevelForm } from "@/rpc/gen/data.job_level.structs_types";
 
 import stores from "@/store/stores";
 import { 
-	NAMA_RULES, 
+	NAME_RULES, 
 	GAJI_POKOK_RULES, 
 	TUNJANGAN_JABATAN_RULES, 
 	UPAH_LEMBUR_RULES, 
@@ -134,9 +134,9 @@ import CardTitle from '@/components/card/CardTitle'
 class DataJobLevelFormDialog extends WorkingComponent {
 	@Prop({ default: false }) disabled;
 	@Model('change', { type: Boolean }) dialog;
-	nama = ''
+	name = ''
 
-	namaRules = NAMA_RULES
+	nameRules = NAME_RULES
 	gajiPokokRules = GAJI_POKOK_RULES
 	tunjanganJabatanRules = TUNJANGAN_JABATAN_RULES
 	upahLemburRules = UPAH_LEMBUR_RULES
@@ -145,7 +145,7 @@ class DataJobLevelFormDialog extends WorkingComponent {
 	upahLembur2Rules = UPAH_LEMBUR_2_RULES
 	upahLembur3Rules = UPAH_LEMBUR_3_RULES
 
-	namaLenMax = NAMA_MAX_LEN
+	nameLenMax = NAME_MAX_LEN
 	moneyLenMax = MONEY_MAX_LEN
 
 	gajiPokok = 0
@@ -161,7 +161,7 @@ class DataJobLevelFormDialog extends WorkingComponent {
 		if( this.$refs.myForm){
 			this.$refs.myForm.resetValidation();
 		}
-		this.nama = '';
+		this.name = '';
 		this.gajiPokok = 0;
 		this.tunjanganJabatan = 0;
 		this.upahLembur1 = 0;
@@ -195,7 +195,7 @@ class DataJobLevelFormDialog extends WorkingComponent {
 		const view = this;
 		view.busy = true;
 		let form = new TJobLevelForm({
-			nama: this.nama,
+			name: this.name,
 			gaji_pokok: this.gajiPokok,
 			tunjangan_jabatan: this.tunjanganJabatan,
 			upah_lembur_1: this.upahLembur1,

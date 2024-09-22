@@ -10,7 +10,7 @@ class MxTunjanganKhusus(MxAiId):
     __tablename__ = 'tunjangan_khusus'
 
     @declared_attr
-    def nama(cls):
+    def name(cls):
         return Column(String(50), unique=True, nullable=False)
 
     @declared_attr
@@ -37,10 +37,10 @@ class MxTunjanganKhusus(MxAiId):
     def mx_init(
         self,
         id,
-        nama,
+        name,
         nilai
     ):
-        self.nama = nama
+        self.name = name
         self.nilai = nilai
         self.id_init(id)
     '''
@@ -49,11 +49,11 @@ class MxTunjanganKhusus(MxAiId):
         pass
 
     def mx_repr(self):
-        return "id=%r, nama=%r, nilai=%r" % (self.id, self.nama, self.nilai)
+        return "id=%r, name=%r, nilai=%r" % (self.id, self.name, self.nilai)
 
     def mx_init_repr(self):
         return {
-            'nama': self.nama,
+            'name': self.name,
             'nilai': self.nilai,
             'id': self.id
         }

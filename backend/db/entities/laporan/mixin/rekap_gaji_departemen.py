@@ -26,8 +26,8 @@ class MxRekapGajiDepartemen:
     total_angsuran_bank_pot = Column(Integer, nullable=False, default=0)
     total_absen_pot = Column(Integer, nullable=False, default=0)
 
-    # nama_mengetahui = get_cls_attr(MxKaryawan, 'nama_mengetahui').fget(True)
-    # nama_pembuat = get_cls_attr(MxKaryawan, 'pengubah_nama').fget(True)
+    # name_mengetahui = get_cls_attr(MxKaryawan, 'name_mengetahui').fget(True)
+    # name_pembuat = get_cls_attr(MxKaryawan, 'pengubah_name').fget(True)
 
     '''
     def mx_init(

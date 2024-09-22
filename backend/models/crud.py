@@ -13,14 +13,19 @@ load_dotenv()
 # MODELS MAY NOT USE THRIFT STRUCTS
 
 class CrudModel:
-    def __init__(self, DbClass, TError, TErrorCode, name_field="nama", actions={}, setters={}):
+    def __init__(self, DbClass, TError, TErrorCode, entity, name_field="name", actions={}, setters={}):
         self.DbClass = DbClass
         self.TError = TError
         self.TErrorCode = TErrorCode
+        self.entity = entity
         self.name_field = name_field
         self.actions = actions
         self.setters = setters
         self.create_setters(setters)
+
+    def parse_error(self, parsed):
+        if isinstance(parsed, UniqueError):
+            raise self.TError(getattr(self.TErrorCode, f"{parsed.column}_ALREADY_EXISTS"))
 
     def commit(self):
         try:
@@ -63,7 +68,10 @@ class CrudModel:
             self.validate_actor_role(actor, required_role)
         db_obj = db.session.query(self.DbClass).filter(self.DbClass.id == id).scalar()
         if not db_obj:
-            raise self.TError(self.TErrorCode.NOT_FOUND)
+            if hasattr(self.TErrorCode, "NOT_FOUND"):
+                raise self.TError(self.TErrorCode.NOT_FOUND)
+            else:
+                raise self.TError(getattr(self.TErrorCode, f"{self.entity.upper()}_NOT_FOUND"))
         return db_obj
 
     def get(self, id, actor=None, required_role=None):

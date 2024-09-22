@@ -38,10 +38,10 @@ service TDataJobLevelService{
 		2: data.job_level.errors.TJobLevelError job_level_error
 	);
 
-	void set_nama(
+	void set_name(
 		1: string auth_token,
 		2: i32 job_level_id,
-		3: string nama
+		3: string name
 	) throws (
 		1: user.auth.errors.TAuthError auth_error,
 		2: data.job_level.errors.TJobLevelError job_level_error

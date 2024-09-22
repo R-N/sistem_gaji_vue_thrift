@@ -31,10 +31,10 @@ class TDataJobLevelServiceHandler(TDataJobLevelService.Iface):
         self.job_level_model.set_enabled(job_level, enabled)
         self.job_level_model.commit()
 
-    def set_nama(self, auth_token, job_level_id, nama):
+    def set_name(self, auth_token, job_level_id, name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
         job_level = self.job_level_model.get(job_level_id)
-        self.job_level_model.set_nama(job_level, nama)
+        self.job_level_model.set_name(job_level, name)
         self.job_level_model.commit()
 
     def set_gaji_pokok(self, auth_token, job_level_id, gaji_pokok):

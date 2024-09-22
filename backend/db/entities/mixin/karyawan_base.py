@@ -12,7 +12,7 @@ class MxKaryawanBase:
         return Column(Integer, primary_key=True, nullable=False)
 
     @declared_attr
-    def nama(cls):
+    def name(cls):
         return Column(String(50), nullable=False)
 
     @declared_attr
@@ -78,13 +78,13 @@ class MxKaryawanBase:
     def mx_init(
         self,
         no_induk,
-        nama,
+        name,
         email,
         subdepartemen_id,
         jabatan_id
     ):
         self.no_induk = no_induk
-        self.nama = nama
+        self.name = name
         self.email = email
         self.subdepartemen_id = subdepartemen_id
         self.jabatan_id = jabatan_id
@@ -94,12 +94,12 @@ class MxKaryawanBase:
         pass
 
     def mx_repr(self):
-        return "no_induk=%r, nama=%r, subdepartemen_id=%r, jabatan_id=%r" % (self.no_induk, self.nama, self.subdepartemen_id, self.jabatan_id)
+        return "no_induk=%r, name=%r, subdepartemen_id=%r, jabatan_id=%r" % (self.no_induk, self.name, self.subdepartemen_id, self.jabatan_id)
 
     def mx_init_repr(self):
         return {
             'no_induk': self.no_induk,
-            'nama': self.nama,
+            'name': self.name,
             'email': self.email,
             'subdepartemen_id': self.subdepartemen_id,
             'jabatan_id': self.jabatan_id

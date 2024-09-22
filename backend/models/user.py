@@ -27,6 +27,7 @@ class UserModel(CrudModel):
             DbUser, 
             TUserError, 
             TUserErrorCode, 
+            "USER",
             name_field="name", 
             actions={
                 "get": TUserRole.ADMIN_AKUN,

@@ -36,30 +36,30 @@
 				:search="search"
 				:loading="busy"
 			>
-				<template v-slot:item.nama="{ item }">
+				<template v-slot:item.name="{ item }">
 					<editable-cell 
 						v-if="isSuperAdmin"
-						@edit="item.namaEdit = item.nama"
-						@finish="setNama(item, item.namaEdit)"
-						:change-detector="() => item.nama != item.namaEdit"
-						:confirm-text-maker="() => setNamaConfirmText(item)"
+						@edit="item.nameEdit = item.name"
+						@finish="setName(item, item.nameEdit)"
+						:change-detector="() => item.name != item.nameEdit"
+						:confirm-text-maker="() => setNameConfirmText(item)"
 						:parent-busy="busy"
 					>
 						<template v-slot:editing>
 							<v-text-field 
-								name="nama" 
-								v-model="item.namaEdit" 
-								:rules="namaRules"
-								:counter="namaLenMax"
+								name="name" 
+								v-model="item.nameEdit" 
+								:rules="nameRules"
+								:counter="nameLenMax"
 								type="text"
 								:disabled="busy"
 							/>
 						</template>
 						<template v-slot:default>
-							<span>{{ item.nama }}</span>
+							<span>{{ item.name }}</span>
 						</template>
 					</editable-cell>
-					<span v-else >{{ item.nama }}</span>
+					<span v-else >{{ item.name }}</span>
 				</template>
 				<template v-slot:item.enabled="{ item }">
 					<v-tooltip 
@@ -99,14 +99,14 @@
 import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TJobLevelError, 
-	NAMA_MAX_LEN 
+	NAME_MAX_LEN 
 } from "@/rpc/gen/data.job_level.errors_types";
 import { TJobLevelQuery } from '@/rpc/gen/data.job_level.structs_types';
 
 import { router } from "@/router/index";
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
-import { NAMA_RULES } from '@/lib/validators/data/job_level';
+import { NAME_RULES } from '@/lib/validators/data/job_level';
 
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
@@ -131,12 +131,12 @@ class DataJobLevelView extends BaseView {
 	createDialog = false;
 	search = ''
 	jobLevel = []
-	namaLenMax = NAMA_MAX_LEN
-	namaRules = NAMA_RULES
+	nameLenMax = NAME_MAX_LEN
+	nameRules = NAME_RULES
 
 	get headers(){
 		let headers = [
-			{ text: 'Nama', value: 'nama' },
+			{ text: 'Nama', value: 'name' },
 			{ text: 'Aktif', value: 'enabled', align: 'center' }
 		]
 		return headers;
@@ -168,17 +168,17 @@ class DataJobLevelView extends BaseView {
 			view.busy = false;
 		}
 	}
-	setNamaConfirmText(jobLevel){
-		return "Apa Anda yakin ingin mengubah nama untuk job level '" 
-			+ jobLevel.nama + "' menjadi '" 
-			+ jobLevel.namaEdit + "'?"
+	setNameConfirmText(jobLevel){
+		return "Apa Anda yakin ingin mengubah name untuk job level '" 
+			+ jobLevel.name + "' menjadi '" 
+			+ jobLevel.nameEdit + "'?"
 	}
-	async setNama(jobLevel, nama){
+	async setName(jobLevel, name){
 		const view = this;
 		view.busy=true;
 		try{
-			await stores.client.data.jobLevel.set_nama(jobLevel.id, nama);
-			jobLevel.nama = nama;
+			await stores.client.data.jobLevel.set_name(jobLevel.id, name);
+			jobLevel.name = name;
 		} catch (error) {
 			view.showError(error);
 		} finally {
@@ -189,7 +189,7 @@ class DataJobLevelView extends BaseView {
 	setEnabledConfirmText(jobLevel){
 		let action = jobLevel.enabled ? 'menonaktifkan' : 'mengaktifkan';
 		return "Apa Anda yakin ingin " + action 
-			+ " job level '" + jobLevel.nama + "'?";
+			+ " job level '" + jobLevel.name + "'?";
 	}
 	async setEnabled(jobLevel, enabled){
 		const view = this;

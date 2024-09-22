@@ -63,6 +63,8 @@ class FormDialog extends DialogBase {
 
 	valid = true;
 
+	get form(){ return this.$refs.myForm; }
+
 	@Watch('myDialog')
 	onDialogChange(val, oldVal){
 		if( this.$refs.myForm){

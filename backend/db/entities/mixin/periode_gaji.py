@@ -22,7 +22,7 @@ class MxPeriodeGaji:
     # TODO: Is it possible to have relationship to other schema?
 
     @declared_attr
-    def pengubah_nama(cls):
+    def pengubah_name(cls):
         return Column(String(user_constants.NAME_MAX_LEN), nullable=False)
 
     @declared_attr
@@ -54,7 +54,7 @@ class MxPeriodeGaji:
         self,
         periode,
         pengubah_id=0,
-        pengubah_nama="Init",
+        pengubah_name="Init",
         terakhir_diubah=None,
         job_level_valid=None,
         tunjangan_khusus_valid=None,
@@ -66,7 +66,7 @@ class MxPeriodeGaji:
         terakhir_diubah = terakhir_diubah or date.today()
         self.periode = periode
         self.pengubah_id = pengubah_id
-        self.pengubah_nama = pengubah_nama
+        self.pengubah_name = pengubah_name
         self.terakhir_diubah = terakhir_diubah
         self.job_level_valid = job_level_valid
         self.tunjangan_khusus_valid = tunjangan_khusus_valid
@@ -86,7 +86,7 @@ class MxPeriodeGaji:
         return {
             'periode': self.periode,
             'pengubah_id': self.pengubah_id,
-            'pengubah_nama': self.pengubah_nama,
+            'pengubah_name': self.pengubah_name,
             'terakhir_diubah': self.terakhir_diubah,
             'job_level_valid': self.job_level_valid,
             'tunjangan_khusus_valid': self.tunjangan_khusus_valid,

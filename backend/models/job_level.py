@@ -13,8 +13,8 @@ class JobLevelModel:
 
     def parse_error(self, parsed):
         if isinstance(parsed, UniqueError):
-            if parsed.column == "nama":
-                raise TJobLevelError(TJobLevelErrorCode.NAMA_ALREADY_EXISTS)
+            if parsed.column == "name":
+                raise TJobLevelError(TJobLevelErrorCode.NAME_ALREADY_EXISTS)
 
     def commit(self):
         try:
@@ -25,7 +25,7 @@ class JobLevelModel:
 
     def fetch(self, query=None):
         db_query = db.session.query(DbJobLevel)
-        db_query = db_query.order_by(DbJobLevel.enabled.desc(), DbJobLevel.nama.asc())
+        db_query = db_query.order_by(DbJobLevel.enabled.desc(), DbJobLevel.name.asc())
         if query:
             if query.enabled is not None:
                 db_query = db_query.filter(DbJobLevel.enabled == query.enabled)
@@ -42,7 +42,7 @@ class JobLevelModel:
 
     def create(self, form):
         job_level = DbJobLevel()
-        job_level.nama = form.nama
+        job_level.name = form.name
 
         db.session.add(job_level)
         return job_level
@@ -51,8 +51,8 @@ class JobLevelModel:
         job_level.enabled = enabled
         db.session.add(job_level)
 
-    def set_nama(self, job_level, nama):
-        job_level.nama = nama
+    def set_name(self, job_level, name):
+        job_level.name = name
         db.session.add(job_level)
 
     def set_gaji_pokok(self, job_level, gaji_pokok):

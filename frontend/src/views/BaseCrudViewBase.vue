@@ -15,7 +15,7 @@ class BaseCrudViewBase extends BaseView {
     search = ''
     items = []
 
-    get nameField() { return "nama"; }
+    get nameField() { return "name"; }
     get itemNameLower(){ return 'item'; }
     get client(){ return null; }
     get headers(){ return []; }
@@ -69,12 +69,12 @@ class BaseCrudViewBase extends BaseView {
                 view.busy = false;
         }
     }
-    _setNamaConfirmText(item, newValue){
-        return setFieldConfirmText("nama", item, newValue);
+    _setNameConfirmText(item, newValue){
+        return setFieldConfirmText("name", item, newValue);
     }
 
-    async _setNama(item, newValue){
-        return await this.setField("nama", item, newValue);
+    async _setName(item, newValue){
+        return await this.setField("name", item, newValue);
     }
 
     _setFieldConfirmText(fieldName, item, newValue, alias=null){
@@ -145,12 +145,12 @@ class BaseCrudViewBase extends BaseView {
     async fetch(releaseBusy=true){
         return await this._fetch(releaseBusy=true);
     }
-    setNamaConfirmText(item){
-        return this._setNamaConfirmText(item);
+    setNameConfirmText(item){
+        return this._setNameConfirmText(item);
     }
 
-    async setNama(item, nama){
-        return await this._setNama(item, nama);
+    async setName(item, name){
+        return await this._setName(item, name);
     }
 
     setFieldConfirmText(fieldName, item, newValue, alias=null){

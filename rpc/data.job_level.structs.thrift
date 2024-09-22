@@ -4,7 +4,7 @@ namespace js data.job_level.structs
 struct TJobLevel{
 	1: i32 id;
 	2: bool enabled;
-	3: string nama;
+	3: string name;
     4: optional i32 gaji_pokok;
     5: optional i32 tunjangan_jabatan;
     6: optional i32 upah_lembur_1;
@@ -13,7 +13,7 @@ struct TJobLevel{
 }
 
 struct TJobLevelForm{
-	1: string nama;
+	1: string name;
     2: optional i32 gaji_pokok;
     3: optional i32 tunjangan_jabatan;
     4: optional i32 upah_lembur_1;

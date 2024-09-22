@@ -14,14 +14,14 @@
 				:search="search"
 				:loading="busy"
 			>
-				<template v-slot:item.nama="{ item }">
+				<template v-slot:item.name="{ item }">
 					<editable-cell-text-field
-						name="nama"
-						:counter="namaLenMax"
-						:confirm-text-maker="(value) => setFieldConfirmText('nama', item, value)"
-						:value="item.nama" 
-						@change="(value) => setNama(item, value)"
-						:rules="namaRules"
+						name="name"
+						:counter="nameLenMax"
+						:confirm-text-maker="(value) => setFieldConfirmText('name', item, value)"
+						:value="item.name" 
+						@change="(value) => setName(item, value)"
+						:rules="nameRules"
 						:disabled="!isSuperAdmin || busy"
 					/>
 				</template>
@@ -50,14 +50,14 @@
 import { TUserRole, T_ROLE_STR, T_ROLE_DOUBLES } from "@/rpc/gen/user.user.types_types";
 import { 
 	TPerusahaanError, 
-	NAMA_MAX_LEN 
+	NAME_MAX_LEN 
 } from "@/rpc/gen/data.perusahaan.errors_types";
 import { TPerusahaanQuery } from '@/rpc/gen/data.perusahaan.structs_types';
 
 import { router } from "@/router/index";
 import { authRouter } from '@/router/routers/auth';
 import stores from "@/store/stores";
-import { NAMA_RULES } from '@/lib/validators/data/perusahaan';
+import { NAME_RULES } from '@/lib/validators/data/perusahaan';
 
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { BaseView } from '@/views/BaseView';
@@ -84,10 +84,10 @@ import EditableCellTextField from '@/components/form/editable_cell/EditableCellT
 })
 class DataPerusahaanView extends BaseCrudViewBase {
 	createDialog = false;
-	namaLenMax = NAMA_MAX_LEN
-	namaRules = NAMA_RULES
+	nameLenMax = NAME_MAX_LEN
+	nameRules = NAME_RULES
 
-	get nameField(){ return "nama"; }
+	get nameField(){ return "name"; }
     get itemNameLower(){ return 'perusahaan'; }
     get client(){ return stores.client.data.perusahaan; }
     get query(){ return new TPerusahaanQuery(); }
@@ -100,7 +100,7 @@ class DataPerusahaanView extends BaseCrudViewBase {
 	}
 	get headers(){
 		let headers = [
-			{ text: 'Nama', value: 'nama' },
+			{ text: 'Nama', value: 'name' },
 			{ text: 'Aktif', value: 'enabled', align: 'center' }
 		]
 		return headers;

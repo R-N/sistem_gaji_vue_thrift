@@ -13,10 +13,10 @@ export const createRulesField = (field) => _createRulesField(
 	T_PERUSAHAAN_ERROR_STR, 
 	"PERUSAHAAN"
 );
-export const NAMA_RULES = createRulesField("NAMA");
+export const NAME_RULES = createRulesField("NAME");
 
 const RULES = createRulesFields(
-	["NAMA"],
+	["NAME"],
 	errors,
 	types, 
 	TPerusahaanErrorCode, 

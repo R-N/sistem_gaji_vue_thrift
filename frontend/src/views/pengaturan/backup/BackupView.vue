@@ -123,7 +123,7 @@
 				v-model="createDialog" 
 				:on-confirm="createBackup"
 				title="Buat Backup"
-				text="Silahkan masukkan nama backup"
+				text="Silahkan masukkan name backup"
 				label="Nama backup"
 				:rules="fileNameRules"
 			/>

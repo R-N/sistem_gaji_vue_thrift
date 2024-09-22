@@ -35,7 +35,7 @@ class TUserManagementServiceHandler(TUserManagementService.Iface, TCrudServiceHa
     def create(self, auth_token, form):
         actor = self.auth_model.require_role(auth_token, TUserRole.ADMIN_AKUN)
         db_user = self.model.create(form, actor=actor)
-        self.email_model.send_welcome(db_user)
+        #self.email_model.send_welcome(db_user)
         self.model.commit()
         user = db_user.fill(TUser())
         return user

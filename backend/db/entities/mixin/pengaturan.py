@@ -89,7 +89,7 @@ class MxPengaturan(MxPengaturanBase):
     '''
     def mx_repr(self):
         return "TODO" % (
-            self.id, self.nama,
+            self.id, self.name,
         )
     '''
 

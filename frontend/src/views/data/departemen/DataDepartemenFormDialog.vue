@@ -9,14 +9,14 @@
 				<v-card-title class="headline">Buat Departemen</v-card-title>
 				<v-card-text>
 			    	<v-text-field 
-			    		name="nama"
+			    		name="name"
 			    		class="bigger-input" 
 			    		label="Nama" 
-			    		v-model="nama" 
+			    		v-model="name" 
 			    		:disabled="!interactable" 
 			    		required
-			    		:rules="namaRules"
-						:counter="namaLenMax"
+			    		:rules="nameRules"
+						:counter="nameLenMax"
 		    		/>
 					<v-card-actions>
 						<v-spacer></v-spacer>
@@ -48,12 +48,12 @@
 import { TUserRole, T_ROLE_STR } from "@/rpc/gen/user.user.types_types";
 import { 
 	TDepartemenError, 
-	NAMA_MAX_LEN 
+	NAME_MAX_LEN 
 } from "@/rpc/gen/data.departemen.errors_types";
 import { TDepartemenForm } from "@/rpc/gen/data.departemen.structs_types";
 
 import stores from "@/store/stores";
-import { NAMA_RULES } from '@/lib/validators/data/departemen';
+import { NAME_RULES } from '@/lib/validators/data/departemen';
 
 import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 import { WorkingComponent } from '@/components/WorkingComponent';
@@ -70,11 +70,11 @@ class DataDepartemenFormDialog extends WorkingComponent {
 	@Prop({ default: false }) disabled;
 	@Model('change', { type: Boolean }) dialog;
 
-	nama = ''
+	name = ''
 
-	namaRules = NAMA_RULES
+	nameRules = NAME_RULES
 
-	namaLenMax = NAMA_MAX_LEN
+	nameLenMax = NAME_MAX_LEN
 
 	valid = true;
 
@@ -83,7 +83,7 @@ class DataDepartemenFormDialog extends WorkingComponent {
 		if( this.$refs.myForm){
 			this.$refs.myForm.resetValidation();
 		}
-		this.nama = ''
+		this.name = ''
 	}
 
 	close(){
@@ -116,7 +116,7 @@ class DataDepartemenFormDialog extends WorkingComponent {
 		const view = this;
 		view.busy = true;
 		let form = new TDepartemenForm({
-			nama: this.nama,
+			name: this.name,
 			perusahaan_id: stores.settings.perusahaanId,
 		});
 		try{

@@ -22,7 +22,7 @@ enum TUserErrorCode{
 	PASSWORD_TOO_SHORT,
 	USERNAME_ALREADY_EXISTS,
 	EMAIL_ALREADY_EXISTS,
-	NOT_FOUND,
+	USER_NOT_FOUND,
 	UNVERIFIED,
 	ALREADY_VERIFIED
 }
@@ -47,18 +47,18 @@ const map<TUserErrorCode, string> T_USER_ERROR_STR = {
 	TUserErrorCode.STATUS_EMPTY: "Status harus dipilih",
 	TUserErrorCode.USERNAME_INVALID: "Username tidak valid. Username hanya boleh berisi huruf, angka, titik, dan garis bawah.",
 	TUserErrorCode.PASSWORD_INVALID: "Password tidak valid. Password harus terdiri dari huruf kecil, huruf besar, angka, dan simbol.",
-	TUserErrorCode.NAME_INVALID: "Nama tidak valid. Nama hanya boleh berisi huruf, angka, spasi, titik, dan koma.",
+	TUserErrorCode.NAME_INVALID: "Nama tidak valid. Name hanya boleh berisi huruf, angka, spasi, titik, dan koma.",
 	TUserErrorCode.EMAIL_INVALID: "Email tidak valid",
 	TUserErrorCode.ROLE_INVALID: "Role tidak valid",
 	TUserErrorCode.STATUS_INVALID: "Status tidak valid",
 	TUserErrorCode.USERNAME_TOO_LONG: "Username terlalu panjang. Username maksimal 50 karakter",
 	TUserErrorCode.PASSWORD_TOO_LONG: "Password terlalu panjang. Password maksimal 20 karakter",
-	TUserErrorCode.NAME_TOO_LONG: "Nama terlalu panjang. Nama maksimal 50 karakter.",
+	TUserErrorCode.NAME_TOO_LONG: "Nama terlalu panjang. Name maksimal 50 karakter.",
 	TUserErrorCode.EMAIL_TOO_LONG: "Email terlalu panjang. Email maksimal 50 karakter.",
 	TUserErrorCode.PASSWORD_TOO_SHORT: "Password terlalu pendek. Password minimal 8 karakter",
 	TUserErrorCode.USERNAME_ALREADY_EXISTS: "Username sudah digunakan",
 	TUserErrorCode.EMAIL_ALREADY_EXISTS: "Email sudah digunakan",
-	TUserErrorCode.NOT_FOUND: "User tidak ditemukan",
+	TUserErrorCode.USER_NOT_FOUND: "User tidak ditemukan",
 	TUserErrorCode.UNVERIFIED: "Akun belum terverifikasi",
 	TUserErrorCode.ALREADY_VERIFIED: "Akun telah terverifikasi"
 };

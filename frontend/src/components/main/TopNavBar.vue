@@ -10,7 +10,7 @@
 			style="width: 300px"
 			class="ml-0 pl-4"
 		>
-			<span class="hidden-sm-and-down">Sistem Gaji {{ perusahaanNama }}</span>
+			<span class="hidden-sm-and-down">Sistem Gaji {{ perusahaanName }}</span>
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<v-menu
@@ -102,8 +102,8 @@ class TopNavBar extends Vue {
 		if (authStore.authToken && authStore.user) return authStore.user.name;
 		return '';
 	}
-	get perusahaanNama(){
-		return settingsStore.perusahaanNama;
+	get perusahaanName(){
+		return settingsStore.perusahaanName;
 	}
 	async logout(){
 		const view = this;

@@ -9,7 +9,7 @@ class MxSubdepartemen(MxAiId):
 
 
     @declared_attr
-    def nama(cls):
+    def name(cls):
         return Column(String(50), nullable=False)
 
     @declared_attr
@@ -45,9 +45,9 @@ class MxSubdepartemen(MxAiId):
         self,
         id,
         departemen_id,
-        nama
+        name
     ):
-        self.nama = nama
+        self.name = name
         self.departemen_id = departemen_id
         self.id_init(id)
     '''
@@ -56,12 +56,12 @@ class MxSubdepartemen(MxAiId):
         pass
 
     def mx_repr(self):
-        return "id=%r, departemen_id=%r, nama=%r" % (self.id, self.departemen_id, self.nama)
+        return "id=%r, departemen_id=%r, name=%r" % (self.id, self.departemen_id, self.name)
 
 
     def mx_init_repr(self):
         return {
             'departemen_id': self.departemen_id,
-            'nama': self.nama,
+            'name': self.name,
             'id': self.id
         }

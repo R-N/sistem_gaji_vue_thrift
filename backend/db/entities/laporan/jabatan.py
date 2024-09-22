@@ -7,19 +7,19 @@ from utils.util import get_cls_attr
 
 class DbJabatan(MxPkPeriode, MxJabatanBase, DbLaporanEntity):
 
-    job_level_nama = get_cls_attr(MxJobLevel, 'nama').fget(True)
+    job_level_name = get_cls_attr(MxJobLevel, 'name').fget(True)
 
     '''
     def __init__(
         self,
-        job_level_nama,
+        job_level_name,
         periode,
         *args,
         **kwargs
     ):
         self.mx_init(*args, **kwargs)
         self.periode_init(periode)
-        self.job_level_nama = job_level_nama
+        self.job_level_name = job_level_name
     '''
 
     def __repr__(self):

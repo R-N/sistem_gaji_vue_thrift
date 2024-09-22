@@ -4,11 +4,11 @@ namespace js data.perusahaan.structs
 struct TPerusahaan{
 	1: i32 id;
 	2: bool enabled;
-	3: string nama;
+	3: string name;
 }
 
 struct TPerusahaanForm{
-	1: string nama;
+	1: string name;
 }
 
 struct TPerusahaanQuery{

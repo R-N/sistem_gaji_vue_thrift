@@ -15,7 +15,7 @@ class TDataPerusahaanClient extends TCrudClient{
 				delete: TUserRole.SUPER_ADMIN,
 			},
 			{
-				nama: TUserRole.SUPER_ADMIN,
+				name: TUserRole.SUPER_ADMIN,
 				enabled: TUserRole.ADMIN_UTAMA,
 			}
 		);

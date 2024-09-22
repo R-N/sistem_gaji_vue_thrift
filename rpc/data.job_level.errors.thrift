@@ -3,10 +3,10 @@ namespace js data.job_level.errors
 
 enum TJobLevelErrorCode{
 	ZERO,
-	NAMA_EMPTY,
-	NAMA_INVALID,
-	NAMA_TOO_LONG,
-	NAMA_ALREADY_EXISTS,
+	NAME_EMPTY,
+	NAME_INVALID,
+	NAME_TOO_LONG,
+	NAME_ALREADY_EXISTS,
 	JOB_LEVEL_NOT_FOUND,
     GAJI_POKOK_INVALID,
     TUNJANGAN_JABATAN_INVALID,
@@ -17,16 +17,16 @@ enum TJobLevelErrorCode{
     UPAH_LEMBUR_3_INVALID,
 }
 
-const i32 NAMA_MAX_LEN = 50;
+const i32 NAME_MAX_LEN = 50;
 const i32 MONEY_MAX_LEN = 13;
 
-const string NAMA_REGEX_STR = "^[a-zA-Z0-9 \\.\\,\\&]+$";
+const string NAME_REGEX_STR = "^[a-zA-Z0-9 \\.\\,\\&]+$";
 
 const map<TJobLevelErrorCode, string> T_JOB_LEVEL_ERROR_STR = {
-	TJobLevelErrorCode.NAMA_EMPTY: "Nama job level tidak boleh kosong",
-	TJobLevelErrorCode.NAMA_INVALID: "Nama job level tidak valid. Nama job level hanya boleh berisi huruf, angka, spasi, titik, koma, dan &.",
-	TJobLevelErrorCode.NAMA_TOO_LONG: "Nama job level terlalu panjang. Nama maksimal 50 karakter.",
-	TJobLevelErrorCode.NAMA_ALREADY_EXISTS: "Nama job level sudah digunakan.",
+	TJobLevelErrorCode.NAME_EMPTY: "Nama job level tidak boleh kosong",
+	TJobLevelErrorCode.NAME_INVALID: "Nama job level tidak valid. Name job level hanya boleh berisi huruf, angka, spasi, titik, koma, dan &.",
+	TJobLevelErrorCode.NAME_TOO_LONG: "Nama job level terlalu panjang. Name maksimal 50 karakter.",
+	TJobLevelErrorCode.NAME_ALREADY_EXISTS: "Nama job level sudah digunakan.",
 	TJobLevelErrorCode.JOB_LEVEL_NOT_FOUND: "Job level tidak ditemukan.",
 	TJobLevelErrorCode.GAJI_POKOK_INVALID: "Gaji pokok tidak valid. Gaji pokok harus berupa bilangan bulat non-negatif.",
 	TJobLevelErrorCode.TUNJANGAN_JABATAN_INVALID: "Tunjangan jabatan tidak valid. Tunjangan jabatan harus berupa bilangan bulat non-negatif.",

@@ -18,29 +18,29 @@ class DbKaryawan(
 ):
 
     perusahaan_id = get_cls_attr(MxDepartemen, 'perusahaan_id').fget(True)
-    perusahaan_nama = get_cls_attr(MxPerusahaan, 'nama').fget(True)
+    perusahaan_name = get_cls_attr(MxPerusahaan, 'name').fget(True)
     departemen_id = get_cls_attr(MxSubdepartemen, 'departemen_id').fget(True)
-    departemen_nama = get_cls_attr(MxDepartemen, 'nama').fget(True)
-    subdepartemen_nama = get_cls_attr(MxSubdepartemen, 'nama').fget(True)
+    departemen_name = get_cls_attr(MxDepartemen, 'name').fget(True)
+    subdepartemen_name = get_cls_attr(MxSubdepartemen, 'name').fget(True)
     job_level_id = get_cls_attr(MxJabatan, 'job_level_id').fget(True)
-    job_level_nama = get_cls_attr(MxJobLevel, 'nama').fget(True)
-    jabatan_nama = get_cls_attr(MxJabatan, 'nama').fget(True)
+    job_level_name = get_cls_attr(MxJobLevel, 'name').fget(True)
+    jabatan_name = get_cls_attr(MxJabatan, 'name').fget(True)
 
     __table_args__ = get_cls_attr(MxKaryawan, '__table_args__').fget(True) + get_cls_attr(MxJabatan, '__table_args__').fget(True) + get_cls_attr(MxSubdepartemen, '__table_args__').fget(True) + get_cls_attr(MxDepartemen, '__table_args__').fget(True)
 
     '''
     def __init__(
         self,
-        perusahaan_nama,
+        perusahaan_name,
         periode,
         *args,
         **kwargs
     ):
         self.periode_init(periode)
         self.no_induk = no_induk
-        self.nama = nama
+        self.name = name
         self.perusahaan_id = perusahaan_id
-        self.perusahaan_nama = perusahaan_nama
+        self.perusahaan_name = perusahaan_name
     '''
 
     def __repr__(self):

@@ -38,10 +38,10 @@ service TDataDepartemenService{
 		2: data.departemen.errors.TDepartemenError departemen_error
 	);
 
-	void set_nama(
+	void set_name(
 		1: string auth_token,
 		2: i32 departemen_id,
-		3: string nama
+		3: string name
 	) throws (
 		1: user.auth.errors.TAuthError auth_error,
 		2: data.departemen.errors.TDepartemenError departemen_error

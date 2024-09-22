@@ -32,9 +32,9 @@ class SettingsStore extends VuexModule {
 
 	@MutationAction({ mutate: ['perusahaans', 'perusahaansDict', 'perusahaanId'] })
 	async setPerusahaans(perusahaans){
-		let perusahaansDict = Object.fromEntries(perusahaans.map(x => [x.id, x.nama]));
+		let perusahaansDict = Object.fromEntries(perusahaans.map(x => [x.id, x.name]));
 		let perusahaanId = this.perusahaanId;
-		if (!perusahaanId){
+		if (!perusahaanId && perusahaans.length > 0){
 			perusahaanId = perusahaans[0].id;
 		}
 		return {
@@ -43,7 +43,7 @@ class SettingsStore extends VuexModule {
 			perusahaanId,
 		};
 	}
-	get perusahaanNama(){
+	get perusahaanName(){
 		return this.perusahaansDict[this.perusahaanId];
 	}
 }

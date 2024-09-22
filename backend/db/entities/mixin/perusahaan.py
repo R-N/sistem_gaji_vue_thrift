@@ -18,8 +18,8 @@ class MxPerusahaan(MxAiId):
     # Columns
 
     @declared_attr
-    def nama(cls):
-        return Column(String(perusahaan_constants.NAMA_MAX_LEN), unique=True, nullable=False)
+    def name(cls):
+        return Column(String(perusahaan_constants.NAME_MAX_LEN), unique=True, nullable=False)
 
     # Relationships
 
@@ -37,9 +37,9 @@ class MxPerusahaan(MxAiId):
     def mx_init(
         self,
         id,
-        nama
+        name
     ):
-        self.nama = nama
+        self.name = name
         self.id_init(id)
     '''
 
@@ -47,28 +47,28 @@ class MxPerusahaan(MxAiId):
         pass
 
     def mx_base_repr(self):
-        return "id=%r, nama=%r" % (self.id, self.nama,)
+        return "id=%r, name=%r" % (self.id, self.name,)
 
     def mx_init_repr(self):
         return {
-            'nama': self.nama,
+            'name': self.name,
             'id': self.id
         }
 
     # Properties and other methods associated with columns
 
-    # nama
+    # name
 
-    @validates("nama")
-    def validate_nama(self, key, nama):
-        DbPerusahaanValidator.validate_nama(nama)
-        return nama
+    @validates("name")
+    def validate_name(self, key, name):
+        DbPerusahaanValidator.validate_name(name)
+        return name
 
     # Other methods
 
     def fill(self, obj):
         obj.id = self.id
-        obj.nama = self.nama
+        obj.name = self.name
         obj.enabled = self.enabled
 
         return obj
@@ -83,7 +83,7 @@ class DbPerusahaanValidator:
 
 bind_rules(DbPerusahaanValidator, create_rules_fields(
     TPerusahaanError,
-    ["NAMA"],
+    ["NAME"],
     perusahaan_constants,
     {}, 
     TPerusahaanErrorCode, 

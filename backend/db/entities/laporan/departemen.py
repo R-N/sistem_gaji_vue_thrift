@@ -12,19 +12,19 @@ class DbDepartemen(
     MxDepartemen,
     DbLaporanEntity
 ):
-    perusahaan_nama = get_cls_attr(MxPerusahaan, 'nama').fget(True)
+    perusahaan_name = get_cls_attr(MxPerusahaan, 'name').fget(True)
 
     '''
     def __init__(
         self,
         periode,
         *args,
-        perusahaan_nama,
+        perusahaan_name,
         **kwargs
     ):
         MxDepartemen.mx_init(self, *args, **kwargs)
         self.periode_init(periode)
-        self.perusahaan_nama = perusahaan_nama
+        self.perusahaan_name = perusahaan_name
     '''
 
     def __repr__(self):

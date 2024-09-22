@@ -5,7 +5,7 @@ from ..mixin import MxAngsuran, MxPkPeriode, MxJenisAngsuran
 from utils.util import get_cls_attr
 
 class DbAngsuran(MxPkPeriode, MxAngsuran, DbLaporanEntity):
-    jenis_angsuran_nama = get_cls_attr(MxJenisAngsuran, 'nama').fget(True)
+    jenis_angsuran_name = get_cls_attr(MxJenisAngsuran, 'name').fget(True)
     jenis_angsuran_jenis = get_cls_attr(MxJenisAngsuran, 'jenis').fget(True)
 
     '''
@@ -13,13 +13,13 @@ class DbAngsuran(MxPkPeriode, MxAngsuran, DbLaporanEntity):
         self,
         periode,
         *args,
-        jenis_angsuran_nama,
+        jenis_angsuran_name,
         jenis_angsuran_jenis,
         **kwargs
     ):
         self.mx_init(*args, **kwargs)
         self.periode_init(periode)
-        self.jenis_angsuran_nama = jenis_angsuran_nama
+        self.jenis_angsuran_name = jenis_angsuran_name
         self.jenis_angsuran_jenis = jenis_angsuran_jenis
     '''
 

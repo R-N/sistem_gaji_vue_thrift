@@ -33,8 +33,8 @@ class TDataDepartemenServiceHandler(TDataDepartemenService.Iface):
         self.departemen_model.set_enabled(departemen, enabled)
         self.departemen_model.commit()
 
-    def set_nama(self, auth_token, departemen_id, nama):
+    def set_name(self, auth_token, departemen_id, name):
         auth_payload = self.auth_model.require_role(auth_token, TUserRole.ADMIN_UTAMA)
         departemen = self.departemen_model.get(departemen_id)
-        self.departemen_model.set_nama(departemen, nama)
+        self.departemen_model.set_name(departemen, name)
         self.departemen_model.commit()

@@ -279,7 +279,7 @@ class ProfilView extends BaseView {
 	}
 
 	setNameConfirmText(){
-		return "Apa Anda yakin ingin mengubah nama menjadi '" 
+		return "Apa Anda yakin ingin mengubah name menjadi '" 
 			+ this.nameEdit + "'?"
 	}
 	async setName(){
