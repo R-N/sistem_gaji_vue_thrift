@@ -21,8 +21,8 @@ db.create_schemas()
 db.create_tables()
 
 from server.frontend import init as init_frontend, get_ip, MY_IP
-from server.thrift import init as init_thrift
-from server.backup import init as init_backup
+from server.thrift.routes import init as init_thrift
+from server.thrift.backup import init as init_backup
 from server.report import init as init_report
 
 
