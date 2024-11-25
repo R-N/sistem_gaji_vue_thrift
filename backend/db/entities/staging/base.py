@@ -6,4 +6,4 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DbStagingEntity = declarative_base(metadata=MetaData(schema=os.getenv("DB_STAGING", "staging")))
+DbStagingEntity = declarative_base(metadata=MetaData(schema=os.getenv("DB_STAGING", "sistem_gaji_staging")))

@@ -6,4 +6,4 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DbLaporanEntity = declarative_base(metadata=MetaData(schema=os.getenv("DB_LAPORAN", "laporan")))
+DbLaporanEntity = declarative_base(metadata=MetaData(schema=os.getenv("DB_LAPORAN", "sistem_gaji_laporan")))

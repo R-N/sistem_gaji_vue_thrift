@@ -12,10 +12,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_schemas(engine=engine):
-    DB_GENERAL = os.getenv("DB_GENERAL", "general")
-    DB_COMMITED = os.getenv("DB_COMMITED", "commited")
-    DB_LAPORAN = os.getenv("DB_LAPORAN", "laporan")
-    DB_STAGING = os.getenv("DB_STAGING", "staging")
+    DB_GENERAL = os.getenv("DB_GENERAL", "sistem_gaji_general")
+    DB_COMMITED = os.getenv("DB_COMMITED", "sistem_gaji_commited")
+    DB_LAPORAN = os.getenv("DB_LAPORAN", "sistem_gaji_laporan")
+    DB_STAGING = os.getenv("DB_STAGING", "sistem_gaji_staging")
     schemas = [DB_GENERAL, DB_COMMITED, DB_LAPORAN, DB_STAGING]
     with engine.connect() as conn:
         for schema_name in schemas:
