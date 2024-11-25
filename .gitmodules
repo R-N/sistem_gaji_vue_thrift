@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/R-N/sistem_gaji_vue_thrift_backend
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/R-N/sistem_gaji_vue_thrift_frontend
