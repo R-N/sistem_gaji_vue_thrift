@@ -1,7 +1,5 @@
-@echo on
+@echo off
 setlocal enabledelayedexpansion
-
-git submodule foreach --recursive "echo Submodule: $name && git status"
 
 :: Check if a commit message is provided
 if "%1"=="" (
@@ -14,14 +12,10 @@ if "%1"=="" (
 :: Store the commit message
 set "COMMIT_MESSAGE=%1"
 
-:: Log file
-set LOG_FILE=debug_log.txt
-echo Debugging started... > "%LOG_FILE%"
-
 :: Pull updates, add changes, commit, and push in each submodule
-git submodule foreach --recursive "git pull origin $(git rev-parse --abbrev-ref HEAD) >> \"debug_log.txt\" 2>&1 && git add . >> \"debug_log.txt\" 2>&1 && git commit -m \"!COMMIT_MESSAGE!\" >> \"debug_log.txt\" 2>&1 && git push >> \"debug_log.txt\" 2>&1 || echo Failed to push changes for the submodule: $name >> \"debug_log.txt\""
+git submodule foreach --recursive "git pull origin $(git rev-parse --abbrev-ref HEAD) && git add -A && git commit -am \"!COMMIT_MESSAGE!\" && git push || echo Failed to push changes for the submodule: $name"
 
 :: Final message
-echo All submodules have been processed. >> "%LOG_FILE%"
+echo All submodules have been processed.
 pause
 endlocal
