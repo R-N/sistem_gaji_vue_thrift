@@ -1,7 +1,0 @@
-.git/
-*.bat
-**.bat
-*/__pycache__
-**/__pycache__
-venv/
-docker_base/

@@ -1,4 +1,0 @@
-
-
-def init(app):
-	pass

@@ -11,3 +11,4 @@ bin/*
 !/**/.gitkeep
 
 /db/
+debug_log.txt
