@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "Pre push hook triggered."
+
+# Call your custom script
+./push_sub.bat
+
+# Check if the script ran successfully
+if [ $? -ne 0 ]; then
+    echo "ERROR: push_sub.bat failed."
+    exit 1
+fi

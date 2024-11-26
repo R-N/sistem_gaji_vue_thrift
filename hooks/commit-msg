@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo "Commit hook triggered."
+
+# The commit message file is passed as an argument
+COMMIT_MSG_FILE=$1
+
+# Read the commit message from the file
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Print the commit message to ensure it's read correctly
+echo "Commit message: $COMMIT_MSG"
+
+# Call your custom script with the commit message
+./commit_sub.bat "$COMMIT_MSG"
+
+# Check if the script ran successfully
+if [ $? -ne 0 ]; then
+    echo "ERROR: commit_sub.bat failed."
+    exit 1
+fi
