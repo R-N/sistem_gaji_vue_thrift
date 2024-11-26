@@ -1,14 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Check if a commit message is provided
-if "%1"=="" (
-    echo Please provide a commit message.
-    echo Usage: push_sub.bat "Your commit message"
-    pause
-    exit /b 1
-)
-
 :: Store the commit message
 set "COMMIT_MESSAGE=%1"
 
